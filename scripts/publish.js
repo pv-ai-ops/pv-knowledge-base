@@ -50,19 +50,65 @@ ${content}`;
   });
 }
 
-// 处理HTML文件
+// 处理HTML文件 - 创建对应的Markdown文章并保留HTML文件
 const htmlDir = path.join(inboxDir, 'html');
 if (fs.existsSync(htmlDir)) {
   const htmlFiles = fs.readdirSync(htmlDir).filter(file => file.endsWith('.html'));
   
   htmlFiles.forEach(file => {
     const sourcePath = path.join(htmlDir, file);
-    const targetPath = path.join(sourceDir, file);
+    const htmlFileName = path.basename(file, '.html');
     
-    fs.copyFileSync(sourcePath, targetPath);
+    // 生成ASCII安全的文件名
+    const safeFileName = htmlFileName
+      .replace(/\s+vs\.\s+/g, '-vs-')
+      .replace(/\s+/g, '-')
+      .replace(/[^a-zA-Z0-9\-]/g, '')
+      .toLowerCase() + '.html';
+    
+    // 1. 复制HTML到source根目录 (用于直接访问)
+    const targetHtmlPath = path.join(sourceDir, safeFileName);
+    fs.copyFileSync(sourcePath, targetHtmlPath);
+    
+    // 2. 创建对应的Markdown文章 (用于在文章列表中显示)
+    const now = new Date();
+    const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
+    
+    const markdownContent = `---
+title: ${htmlFileName}
+date: ${dateStr}
+tags: [药物警戒, AI, 交互式工具]
+categories: [技术分析]
+---
+
+## 交互式分析工具
+
+这是一个交互式的技术分析工具，提供动态数据可视化和深度对比功能。
+
+---
+
+## 📱 完整交互式应用
+
+<iframe src="/pv-knowledge-base/${safeFileName}" width="100%" height="1200px" frameborder="0" style="border: 1px solid #e1e5e9; border-radius: 8px; margin: 20px 0;"></iframe>
+
+---
+
+## 工具特性
+
+该工具包含：
+- 动态图表和可视化
+- 交互式数据对比 
+- 实时参数调整
+- 专业的技术分析
+
+上方为完整功能的交互式应用，支持所有动态功能和数据可视化。`;
+
+    const markdownPath = path.join(sourceDir, '_posts', `${htmlFileName}.md`);
+    fs.writeFileSync(markdownPath, markdownContent);
+    
     fs.unlinkSync(sourcePath);
     
-    console.log(`✅ 处理HTML应用: ${file}`);
+    console.log(`✅ 处理HTML应用: ${file} (创建文章 + 保留交互功能)`);
     processedFiles++;
   });
 }
