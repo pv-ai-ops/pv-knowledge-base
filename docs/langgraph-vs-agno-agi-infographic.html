@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangGraph vs. Agno-AGI | 智能體框架深度對比</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Brilliant Blues -->
+    <!-- Application Structure Plan: A top-down, single-page scrolling narrative was designed to guide the user through a logical decision-making process. It starts with the high-level "Core Conflict" (the main trade-off), introduces the "Contenders" (framework philosophies), dives into a "Feature Showdown" (visualizing key data like performance and architecture), examines the "Ecosystem" (community and tools), and concludes with an actionable "Final Verdict" (use-case recommendations). This linear storytelling approach makes the complex comparison digestible for a technical audience, moving from abstract concepts to concrete data and finally to practical advice. -->
+    <!-- Visualization & Content Choices: 1. Core Trade-off -> Goal: Inform -> Method: Large, impactful typography to state the central theme. 2. Performance Claims -> Goal: Compare -> Method: Chart.js horizontal bar chart with a logarithmic scale to visually represent the vast order-of-magnitude differences in Agno's performance claims, which is more impactful than a simple table. Justification: A chart makes the data instantly understandable. 3. Multi-Agent Architecture -> Goal: Organize -> Method: Structured HTML/CSS diagrams using Tailwind's flexbox and borders to visually model LangGraph's "Supervisor" pattern vs. Agno's "Team" class. Justification: This avoids SVG/Mermaid while still clearly illustrating the structural differences in their approaches. 4. Community Metrics -> Goal: Inform/Compare -> Method: "Big Number" design with large text for GitHub stars to emphasize community traction and momentum. 5. Use Cases -> Goal: Organize/Inform -> Method: A two-column HTML list with icons to clearly separate and present the ideal scenarios for each framework. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #F0F4F8;
+            color: #003F5C;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 50vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #D45087, #F95D6A, #FF7C43, #FFA600);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+<div class="container mx-auto px-4 py-12 md:px-8">
+
+    <header class="text-center mb-16">
+        <h1 class="text-4xl md:text-6xl font-bold text-[#003F5C] tracking-tight">智能體框架對決</h1>
+        <h2 class="text-2xl md:text-4xl font-bold gradient-text mt-2">LangGraph vs. Agno-AGI</h2>
+        <p class="mt-6 max-w-3xl mx-auto text-lg text-[#2F4B7C]">一份為架構師準備的深度視覺化指南，剖析智能體開發的兩大主流選擇。</p>
+    </header>
+
+    <section id="core-conflict" class="mb-20">
+        <div class="text-center">
+            <h3 class="text-3xl font-bold text-[#003F5C] mb-4">核心權衡：一場工程決策的經典對決</h3>
+            <p class="text-xl text-[#2F4B7C] max-w-4xl mx-auto">在 LangGraph 和 Agno-AGI 之間的選擇，是在兩個同樣重要但方向相反的目標之間的權衡。</p>
+        </div>
+        <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <div class="text-6xl mb-4">🛡️</div>
+                <h4 class="text-2xl font-bold text-[#665191]">顯式控制與可靠性</h4>
+                <p class="mt-2 text-gray-600">LangGraph 提供底層原語，讓您精確構建和控制工作流的每一步，確保企業級的穩定性和可預測性。</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <div class="text-6xl mb-4">🚀</div>
+                <h4 class="text-2xl font-bold text-[#D45087]">極致性能與簡易性</h4>
+                <p class="mt-2 text-gray-600">Agno-AGI 採用全棧設計，提供高度優化的性能和開箱即用的體驗，旨在最大化開發速度和運行效率。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="performance" class="mb-20">
+        <div class="text-center mb-10">
+            <h3 class="text-3xl font-bold text-[#003F5C] mb-4">性能基準：驚人的數字背後</h3>
+            <p class="text-lg text-[#2F4B7C] max-w-4xl mx-auto">Agno-AGI 提出了引人注目的性能聲明。此圖表視覺化了其相對於 LangGraph 在框架自身開銷上的優勢。請注意，這並不代表端到端的任務延遲。</p>
+        </div>
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-200">
+            <div class="chart-container">
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <section id="architecture" class="mb-20">
+        <div class="text-center mb-10">
+            <h3 class="text-3xl font-bold text-[#003F5C] mb-4">多智能體架構：兩種截然不同的協作模型</h3>
+            <p class="text-lg text-[#2F4B7C] max-w-4xl mx-auto">隨著任務日益複雜，多智能體協作成為關鍵。兩個框架提供了不同的抽象層次來組織智能體團隊。</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <h4 class="text-2xl font-bold text-[#665191] mb-4">LangGraph: 圖的組合 (Graph of Graphs)</h4>
+                <p class="text-gray-600 mb-6">LangGraph 沒有固定的團隊結構，而是通過組合不同的圖（每個圖代表一個智能體）來實現協作，提供了極高的靈活性。最常見的模式是監督者模式。</p>
+                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <div class="bg-[#A05195] text-white font-bold py-3 px-6 rounded-lg shadow-md inline-block">監督者 (路由器)</div>
+                    <div class="flex justify-center mt-4">
+                        <div class="w-0.5 bg-gray-300 h-8"></div>
+                    </div>
+                    <div class="flex justify-around mt-4">
+                        <div class="w-0.5 bg-gray-300 h-8 rotate-45 translate-x-1/2"></div>
+                        <div class="w-0.5 bg-gray-300 h-8 -rotate-45 -translate-x-1/2"></div>
+                    </div>
+                    <div class="flex justify-around items-center gap-4 mt-2">
+                        <div class="bg-gray-100 text-gray-800 py-2 px-4 rounded-lg border border-gray-300">子智能體 A</div>
+                        <div class="bg-gray-100 text-gray-800 py-2 px-4 rounded-lg border border-gray-300">子智能體 B</div>
+                        <div class="bg-gray-100 text-gray-800 py-2 px-4 rounded-lg border border-gray-300">子智能體 C</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+                <h4 class="text-2xl font-bold text-[#D45087] mb-4">Agno-AGI: 專用的 `Team` 類</h4>
+                <p class="text-gray-600 mb-6">Agno-AGI 提供了一個名為 `Team` 的高級抽象，內置了多種協作模式，極大地簡化了多智能體系統的創建和管理。</p>
+                <div class="border-2 border-dashed border-pink-200 rounded-lg p-6 text-center bg-pink-50">
+                    <div class="bg-[#F95D6A] text-white font-bold py-4 px-8 rounded-lg shadow-md inline-block">Team (協作容器)</div>
+                    <div class="flex justify-around items-center gap-4 mt-6 flex-wrap">
+                        <div class="bg-white text-gray-800 py-2 px-4 rounded-lg border border-pink-300 shadow-sm">智能體 1</div>
+                        <div class="bg-white text-gray-800 py-2 px-4 rounded-lg border border-pink-300 shadow-sm">智能體 2</div>
+                        <div class="bg-white text-gray-800 py-2 px-4 rounded-lg border border-pink-300 shadow-sm">智能體 3</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="ecosystem" class="mb-20">
+        <div class="text-center mb-10">
+            <h3 class="text-3xl font-bold text-[#003F5C] mb-4">生態系統與社區動力</h3>
+            <p class="text-lg text-[#2F4B7C] max-w-4xl mx-auto">一個框架的價值不僅在於其代碼，還在於其背後的社區支持、開發工具和企業採納度。</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 text-center">
+                <h4 class="text-2xl font-bold text-[#665191] mb-4">LangGraph</h4>
+                <p class="text-4xl font-bold text-[#003F5C]">17.8k+</p>
+                <p class="text-gray-500 mb-4">GitHub Stars</p>
+                <p class="font-semibold text-gray-800">開發工具</p>
+                <p class="text-gray-600">深度集成 LangSmith & LangGraph Studio</p>
+                <p class="mt-4 font-semibold text-gray-800">企業採納</p>
+                <p class="text-gray-600">Klarna, Replit, Uber, GitLab 等</p>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-200 text-center">
+                <h4 class="text-2xl font-bold text-[#D45087] mb-4">Agno-AGI</h4>
+                <p class="text-4xl font-bold text-[#003F5C]">32.4k+</p>
+                <p class="text-gray-500 mb-4">GitHub Stars</p>
+                <p class="font-semibold text-gray-800">開發工具</p>
+                <p class="text-gray-600">內置 Playground UI & agno.com 監控</p>
+                <p class="mt-4 font-semibold text-gray-800">企業採納</p>
+                <p class="text-gray-600">處於早期採納階段，社區增長迅速</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="verdict">
+        <div class="text-center mb-10">
+            <h3 class="text-3xl font-bold text-[#003F5C] mb-4">最終結論：如何做出選擇？</h3>
+            <p class="text-lg text-[#2F4B7C] max-w-4xl mx-auto">沒有絕對的“更好”，只有“更適合”。您的項目需求將決定最佳選擇。</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-xl shadow-lg border-2 border-[#A05195]">
+                <h4 class="text-2xl font-bold text-[#665191] mb-4">選擇 LangGraph, 如果你...</h4>
+                <ul class="space-y-3">
+                    <li class="flex items-start"><span class="text-green-500 mr-3 mt-1">✓</span><span><strong>追求高可靠性與控制力：</strong> 應用行為必須可預測、可審計，尤其適用於企業自動化和金融服務。</span></li>
+                    <li class="flex items-start"><span class="text-green-500 mr-3 mt-1">✓</span><span><strong>需要複雜的自定義邏輯：</strong> 智能體的控制流高度定制化，無法適應標準模式。</span></li>
+                    <li class="flex items-start"><span class="text-green-500 mr-3 mt-1">✓</span><span><strong>需要強大的人機協同 (HITL)：</strong> 工作流中包含複雜的人工審批、干預和糾錯步驟。</span></li>
+                </ul>
+            </div>
+            <div class="bg-white p-8 rounded-xl shadow-lg border-2 border-[#F95D6A]">
+                <h4 class="text-2xl font-bold text-[#D45087] mb-4">選擇 Agno-AGI, 如果你...</h4>
+                <ul class="space-y-3">
+                    <li class="flex items-start"><span class="text-green-500 mr-3 mt-1">✓</span><span><strong>追求性能與低延遲：</strong> 用於大規模消費者應用、實時處理或資源受限的環境。</span></li>
+                    <li class="flex items-start"><span class="text-green-500 mr-3 mt-1">✓</span><span><strong>追求快速開發與簡易性：</strong> 需要快速原型設計和迭代，特別適合初創公司。</span></li>
+                    <li class="flex items-start"><span class="text-green-500 mr-3 mt-1">✓</span><span><strong>有原生多模態需求：</strong> 核心任務涉及處理文本、圖像、音頻等多種媒體。</span></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const wrapLabel = (label) => {
+            const maxLength = 16;
+            if (label.length <= maxLength) return label;
+
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+
+            words.forEach(word => {
+                if ((currentLine + ' ' + word).trim().length > maxLength) {
+                    lines.push(currentLine.trim());
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            });
+            if (currentLine) {
+                lines.push(currentLine.trim());
+            }
+            return lines;
+        };
+
+        const performanceData = {
+            labels: [
+                wrapLabel('智能體實例化速度 (倍數優勢)'),
+                wrapLabel('內存佔用 (倍數優勢)')
+            ],
+            datasets: [{
+                label: 'Agno-AGI 相對優勢',
+                data: [10000, 50],
+                backgroundColor: [
+                    'rgba(249, 93, 106, 0.7)',
+                    'rgba(255, 124, 67, 0.7)'
+                ],
+                borderColor: [
+                    '#D45087',
+                    '#F95D6A'
+                ],
+                borderWidth: 2
+            }]
+        };
+
+        const perfCtx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(perfCtx, {
+            type: 'bar',
+            data: performanceData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        type: 'logarithmic',
+                        title: {
+                            display: true,
+                            text: '相對優勢 (對數標度，越高越好)',
+                            font: { size: 14, family: "'Noto Sans TC', sans-serif" },
+                            color: '#003F5C'
+                        },
+                        ticks: {
+                            color: '#2F4B7C',
+                            callback: function(value, index, values) {
+                                if (value === 10000 || value === 1000 || value === 100 || value === 10 || value === 1) {
+                                    return value.toLocaleString() + 'x';
+                                }
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: '#003F5C',
+                            font: { size: 14, family: "'Noto Sans TC', sans-serif" }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: function(tooltipItems) {
+                                const item = tooltipItems[0];
+                                let label = item.chart.data.labels[item.dataIndex];
+                                if (Array.isArray(label)) {
+                                    return label.join(' ');
+                                }
+                                return label;
+                            },
+                            label: function(context) {
+                                let value = context.raw;
+                                let label = context.dataset.label || '';
+                                if (context.label.includes('速度')) {
+                                    return `${label}: 快約 ${value.toLocaleString()} 倍`;
+                                }
+                                if (context.label.includes('內存')) {
+                                    return `${label}: 少約 ${value.toLocaleString()} 倍`;
+                                }
+                                return `${label}: ${value.toLocaleString()}x`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
