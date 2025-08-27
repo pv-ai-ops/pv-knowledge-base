@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent 框架对决: FastGPT vs. agno-agi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cyber Fusion -->
+    <!-- Application Structure Plan: The infographic follows a top-down narrative structure. It begins with a high-level "Tale of the Tape" comparison using a radar chart to immediately establish the core differences. It then flows into thematic sections: "Two Philosophies" (core architecture), "Core Capabilities" (feature breakdown), "Performance Face-off" (metrics), and "Choose Your Fighter" (use cases). The narrative concludes with an actionable decision flowchart. This structure guides the user from a broad overview to specific details and finally to a practical choice, telling a complete story based on the source report. -->
+    <!-- Visualization & Content Choices: 1. Core Paradigm -> Goal: Compare -> Radar Chart (Chart.js/Canvas). Justification: Best for multi-variable comparison in a single view. 2. Orchestration Method -> Goal: Organize/Compare -> HTML/CSS Diagram. Justification: Visually represents FastGPT's UI-based flow and agno-agi's code-based structure without SVG. 3. Performance Metrics -> Goal: Inform -> Big Number Callouts (HTML). Justification: Maximizes impact for key stats. 4. Ideal Use Cases -> Goal: Organize -> Icon Lists (HTML/Unicode). Justification: Enhances readability and visual appeal. 5. Decision Framework -> Goal: Organize -> HTML/CSS Flowchart. Justification: Provides a clear, step-by-step decision guide without using prohibited libraries. CONFIRMING NO SVG. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #252A34;
+            color: #EAEAEA;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 450px;
+            }
+        }
+        .glass-card {
+            background: rgba(234, 234, 234, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(234, 234, 234, 0.1);
+        }
+        .flow-node {
+            border: 2px solid #FF9A00;
+            background-color: rgba(255, 154, 0, 0.1);
+            color: #FF9A00;
+        }
+        .code-block {
+            background-color: #1a1e24;
+            border: 2px solid #08D9D6;
+            color: #08D9D6;
+        }
+        .flow-arrow {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background-color: #EAEAEA;
+            opacity: 0.5;
+        }
+        .flow-arrow::after {
+            content: '▼';
+            position: absolute;
+            left: 50%;
+            bottom: -2px;
+            transform: translateX(-50%);
+            color: #EAEAEA;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+<div class="container mx-auto px-4 py-12 md:py-20">
+
+    <header class="text-center mb-16 md:mb-24">
+        <h1 class="text-4xl md:text-6xl font-black tracking-tight mb-4">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#FF9A00] to-[#FF2E63]">FastGPT</span> vs
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#08D9D6] to-[#00A3A0]">agno-agi</span>
+        </h1>
+        <p class="text-lg md:text-xl max-w-3xl mx-auto text-gray-300">两大主流 AI Agent 框架的终极对决：集成平台与开发者框架的范式之争。</p>
+    </header>
+
+    <section class="mb-16 md:mb-24">
+        <h2 class="text-3xl font-bold text-center mb-10">赛前分析：核心特性雷达图</h2>
+        <p class="text-center max-w-2xl mx-auto text-gray-400 mb-12">这张雷达图直观地展示了两个框架在六个关键维度上的核心差异。FastGPT 在易用性和知识库集成上表现卓越，而 agno-agi 则在性能和灵活性上遥遥领先。</p>
+        <div class="chart-container">
+            <canvas id="frameworkRadarChart"></canvas>
+        </div>
+    </section>
+
+    <section class="mb-16 md:mb-24">
+        <h2 class="text-3xl font-bold text-center mb-10">两种哲学：可视化编排 vs 代码定义</h2>
+        <p class="text-center max-w-2xl mx-auto text-gray-400 mb-12">编排是 Agent 框架的灵魂。FastGPT 通过拖拽式“Flow”降低门槛，而 agno-agi 则通过纯 Python 代码赋予开发者极致的控制力，这从根本上决定了它们的不同路径。</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-card rounded-xl p-8">
+                <h3 class="text-2xl font-bold mb-6 text-[#FF9A00]">FastGPT: 可视化流程编辑器</h3>
+                <div class="relative flex flex-col items-center space-y-12">
+                    <div class="flow-node font-bold py-3 px-6 rounded-lg shadow-lg">知识库搜索</div>
+                    <div class="flow-arrow h-12 top-12"></div>
+                    <div class="flow-node font-bold py-3 px-6 rounded-lg shadow-lg">LLM 对话</div>
+                    <div class="flow-arrow h-12 top-36"></div>
+                    <div class="flow-node font-bold py-3 px-6 rounded-lg shadow-lg">输出结果</div>
+                </div>
+            </div>
+            <div class="glass-card rounded-xl p-8">
+                <h3 class="text-2xl font-bold mb-6 text-[#08D9D6]">agno-agi: 代码定义智能体团队</h3>
+                <div class="code-block rounded-lg p-4 font-mono text-sm h-full flex flex-col justify-center">
+                    <p><span class="text-gray-400"># 定义智能体</span></p>
+                    <p>researcher = Agent("研究员")</p>
+                    <p>writer = Agent("写手")</p>
+                    <p class="mt-4"><span class="text-gray-400"># 组建团队</span></p>
+                    <p>blog_team = Team(</p>
+                    <p class="ml-4">agents=[researcher, writer],</p>
+                    <p class="ml-4">workflow="自动博客撰写"</p>
+                    <p>)</p>
+                    <p class="mt-4"><span class="text-gray-400"># 执行任务</span></p>
+                    <p>blog_team.run("分析AI框架趋势")</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-16 md:mb-24">
+        <h2 class="text-3xl font-bold text-center mb-10">性能对决：用户并发 vs 智能体计算</h2>
+        <p class="text-center max-w-2xl mx-auto text-gray-400 mb-12">两个框架解决了不同维度的性能问题。FastGPT 关注通过云原生架构支持高并发用户访问，而 agno-agi 则痴迷于框架层面的微观优化，以支持大规模智能体的高效计算。</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-card rounded-xl p-8 text-center">
+                <h3 class="text-2xl font-bold mb-4 text-[#FF9A00]">FastGPT</h3>
+                <p class="text-gray-300 text-lg mb-6">通过基础设施扩展</p>
+                <p class="text-6xl font-black text-white">∞</p>
+                <p class="text-gray-400 mt-2">高并发 & 动态扩缩容 (依赖Sealos等平台)</p>
+            </div>
+            <div class="glass-card rounded-xl p-8 text-center">
+                <h3 class="text-2xl font-bold mb-4 text-[#08D9D6]">agno-agi</h3>
+                <p class="text-gray-300 text-lg mb-6">框架级微观优化</p>
+                <div class="flex justify-around items-center">
+                    <div>
+                        <p class="text-4xl md:text-5xl font-black text-white">~3μs</p>
+                        <p class="text-gray-400 mt-2">智能体实例化</p>
+                    </div>
+                    <div>
+                        <p class="text-4xl md:text-5xl font-black text-white">~6.5KiB</p>
+                        <p class="text-gray-400 mt-2">内存占用</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-16 md:mb-24">
+        <h2 class="text-3xl font-bold text-center mb-10">选择你的阵营：理想用例与目标用户</h2>
+        <p class="text-center max-w-2xl mx-auto text-gray-400 mb-12">你的项目目标和团队构成，决定了哪个框架是你的最佳选择。是快速构建企业知识应用，还是打造前沿的自治AI系统？</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-card rounded-xl p-8 border-t-4 border-[#FF9A00]">
+                <h3 class="text-2xl font-bold mb-6 text-[#FF9A00]">FastGPT: 企业应用构建平台</h3>
+                <p class="mb-6 text-gray-300">适合需要快速交付、拥有完善UI、以知识库为核心的企业级应用。目标用户是应用开发者和业务团队。</p>
+                <ul class="space-y-3 text-gray-200">
+                    <li class="flex items-start"><span class="text-2xl mr-3">🏢</span> 内部知识机器人 (HR, IT)</li>
+                    <li class="flex items-start"><span class="text-2xl mr-3">💬</span> 客户支持自动化</li>
+                    <li class="flex items-start"><span class="text-2xl mr-3">🔍</span> 智能文档检索系统</li>
+                    <li class="flex items-start"><span class="text-2xl mr-3">🚀</span> 无代码/低代码AI原型设计</li>
+                </ul>
+            </div>
+            <div class="glass-card rounded-xl p-8 border-t-4 border-[#08D9D6]">
+                <h3 class="text-2xl font-bold mb-6 text-[#08D9D6]">agno-agi: AI系统架构师工具包</h3>
+                <p class="mb-6 text-gray-300">为构建性能至上、需要深度控制和灵活性的复杂自治系统而生。目标用户是AI工程师和研究人员。</p>
+                <ul class="space-y-3 text-gray-200">
+                    <li class="flex items-start"><span class="text-2xl mr-3">🤖</span> 复杂自治智能体 (金融分析)</li>
+                    <li class="flex items-start"><span class="text-2xl mr-3">🔬</span> 多智能体模拟与研究</li>
+                    <li class="flex items-start"><span class="text-2xl mr-3">✍️</span> 智能体工作流自动化</li>
+                    <li class="flex items-start"><span class="text-2xl mr-3">🧠</span> 前沿智能体架构实验</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="text-3xl font-bold text-center mb-10">决策流程图：如何选择？</h2>
+        <p class="text-center max-w-2xl mx-auto text-gray-400 mb-12">跟随这个简单的流程图，根据你的核心需求，找到最适合你的框架。</p>
+        <div class="glass-card rounded-xl p-8 md:p-12">
+            <div class="flex flex-col items-center space-y-6">
+                <div class="bg-gray-700 rounded-lg p-4 text-center shadow-lg">
+                    <p class="font-bold text-lg">项目核心目标是什么？</p>
+                </div>
+
+                <div class="w-full flex justify-center items-center">
+                    <div class="w-1/2 border-t-2 border-gray-600"></div>
+                    <div class="w-1/2 border-t-2 border-gray-600"></div>
+                </div>
+                <div class="w-full flex justify-around">
+                    <div class="w-px bg-gray-600 h-8"></div>
+                    <div class="w-px bg-gray-600 h-8"></div>
+                </div>
+
+                <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+                    <div>
+                        <p class="text-gray-300 mb-4">基于知识库的问答应用</p>
+                        <div class="bg-[#FF9A00] text-gray-900 font-bold py-3 px-6 rounded-lg shadow-lg">
+                            选择 FastGPT
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-gray-300 mb-4">构建复杂的自治系统</p>
+                        <div class="bg-[#08D9D6] text-gray-900 font-bold py-3 px-6 rounded-lg shadow-lg">
+                            选择 agno-agi
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    const ctx = document.getElementById('frameworkRadarChart').getContext('2d');
+    const chartData = {
+        labels: [
+            '易用性 (非开发者)',
+            '开发速度',
+            ['性能', '(智能体级)'],
+            ['灵活性与', '控制力'],
+            '知识库集成度',
+            '生产就绪性'
+        ],
+        datasets: [{
+            label: 'FastGPT',
+            data: [9, 8, 5, 4, 9, 8],
+            backgroundColor: 'rgba(255, 154, 0, 0.2)',
+            borderColor: '#FF9A00',
+            pointBackgroundColor: '#FF9A00',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#FF9A00',
+            borderWidth: 2
+        }, {
+            label: 'agno-agi',
+            data: [3, 5, 9, 9, 7, 7],
+            backgroundColor: 'rgba(8, 217, 214, 0.2)',
+            borderColor: '#08D9D6',
+            pointBackgroundColor: '#08D9D6',
+            pointBorderColor: '#fff',
+            pointHoverBackgroundColor: '#fff',
+            pointHoverBorderColor: '#08D9D6',
+            borderWidth: 2
+        }]
+    };
+
+    new Chart(ctx, {
+        type: 'radar',
+        data: chartData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    angleLines: { color: 'rgba(234, 234, 234, 0.2)' },
+                    grid: { color: 'rgba(234, 234, 234, 0.2)' },
+                    pointLabels: {
+                        color: '#EAEAEA',
+                        font: { size: 12, family: "'Noto Sans SC', sans-serif" }
+                    },
+                    ticks: {
+                        color: '#252A34',
+                        backdropColor: 'rgba(234, 234, 234, 0.8)',
+                        stepSize: 2
+                    },
+                    suggestedMin: 0,
+                    suggestedMax: 10,
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: '#EAEAEA',
+                        font: { size: 14, family: "'Noto Sans SC', sans-serif" }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+</body>
+</html>

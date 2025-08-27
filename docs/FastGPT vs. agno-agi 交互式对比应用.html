@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent 框架对比: FastGPT vs. agno-agi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Subtle Accents -->
+    <!-- Application Structure Plan: The application is designed as a top-down narrative dashboard. It starts with a high-level summary and a core comparison chart (the "Paradigm Duel") to immediately frame the two frameworks. The user then flows into thematic sections ("Core Philosophy," "Capabilities," "Performance," "Use Cases"), each designed for focused comparison. Navigation is handled by a sticky header, allowing users to jump between these logical sections. This structure was chosen over a direct report-to-page mapping to enhance usability and allow users to compare the frameworks based on specific interests (e.g., a developer might jump straight to "Performance," while a product manager might focus on "Use Cases"). The key interaction is clicking on tabs and buttons to reveal detailed text and view comparative data, making the exploration self-guided. -->
+    <!-- Visualization & Content Choices: 1. Core Paradigm Chart: Report Info -> Core Paradigm, Target User, Performance Focus. Goal -> Compare high-level differences. Viz -> Radar Chart (Chart.js). Interaction -> Hovering reveals tooltips with specific data points. Justification -> A radar chart is excellent for comparing multiple quantitative and qualitative attributes of two entities in a single, easy-to-grasp visualization. 2. Capabilities Comparison: Report Info -> Orchestration, RAG, Extensibility. Goal -> Detailed feature comparison. Presentation -> Tabbed interface with side-by-side text blocks. Interaction -> Clicking tabs switches the content view. Justification -> Tabs organize complex information cleanly, allowing users to focus on one feature at a time without overwhelming them. 3. Performance Metrics: Report Info -> agno-agi's specific performance data. Goal -> Highlight performance differences. Presentation -> Dynamic stat cards and a brief text explanation. Interaction -> None, static display for clarity. Justification -> Simple, bold numbers are highly effective for conveying key performance indicators. 4. Use Case Selector: Report Info -> Ideal use cases for each framework. Goal -> Guide user decision-making. Presentation -> Two-column layout with interactive buttons. Interaction -> Clicking a button reveals a list of ideal use cases for that framework. Justification -> This interactive element makes the abstract concept of "use cases" more tangible and helps users self-identify with one of the frameworks. CONFIRMING NO SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #FDFBF8;
+            color: #4A4A4A;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #D97706; /* Amber-600 */
+            border-bottom-color: #D97706;
+        }
+        .tab-button {
+            transition: all 0.3s;
+        }
+        .tab-button.active {
+            background-color: #F59E0B; /* Amber-500 */
+            color: #FFFFFF;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .card {
+            background-color: #FFFFFF;
+            border: 1px solid #F3F4F6;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05);
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+<header class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg shadow-sm">
+    <nav class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+            <div class="text-2xl font-bold text-gray-800">
+                <span class="text-amber-600">AI Agent</span> 框架对决
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#summary" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">核心摘要</a>
+                <a href="#philosophy" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">理念架构</a>
+                <a href="#capabilities" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">核心能力</a>
+                <a href="#performance" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">性能与部署</a>
+                <a href="#use-cases" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">理想用例</a>
+                <a href="#decision" class="nav-link text-gray-600 border-b-2 border-transparent pb-1">如何选择</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="container mx-auto px-6 py-12">
+
+    <section id="summary" class="text-center mb-24 scroll-mt-24">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">两种范式的对决</h1>
+        <p class="max-w-3xl mx-auto text-lg text-gray-600 mb-12">
+            深入探索 FastGPT 与 agno-agi：一个是为了快速构建知识应用而生的集成<strong class="text-amber-600">平台</strong>，另一个是为构建复杂多智能体系统设计的高性能<strong class="text-amber-600">框架</strong>。本应用将通过交互式对比，助您理解其核心差异，并为您的项目做出最佳选择。
+        </p>
+        <div class="chart-container">
+            <canvas id="paradigmChart"></canvas>
+        </div>
+        <p class="mt-4 text-sm text-gray-500">将鼠标悬停在图表上以查看各项指标的详细对比。</p>
+    </section>
+
+    <section id="philosophy" class="mb-24 scroll-mt-24">
+        <h2 class="text-3xl font-bold text-center mb-2 text-gray-900">基础理念与架构</h2>
+        <p class="text-center text-gray-500 mb-12">理解每个框架背后的“为什么”，是把握其技术选型和设计哲学的关键。</p>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="card p-8">
+                <h3 class="text-2xl font-bold mb-4 text-amber-600">FastGPT: 集成的应用平台</h3>
+                <p class="text-gray-600">
+                    FastGPT 的核心是提供一个“开箱即用”的完整解决方案。它将数据处理、模型编排、用户界面等所有工具集成在一个统一的环境中，旨在最大化开发速度和便利性。其技术栈 (Next.js, TypeScript) 表明它是一个面向最终用户的产品，UI 是其核心交付物，而非附加项。这种模式追求的是让用户，甚至是业务人员，能够快速构建和部署功能强大的知识驱动型应用。
+                </p>
+            </div>
+            <div class="card p-8">
+                <h3 class="text-2xl font-bold mb-4 text-cyan-600">agno-agi: 高性能开发者框架</h3>
+                <p class="text-gray-600">
+                    agno-agi 的哲学是为开发者提供一个强大、模块化、代码优先的工具集。它强调“纯粹的 Python”，无缝融入现有 AI/ML 生态。其架构将核心框架、UI 和 API 模板分离，赋予开发者对技术栈的完全控制权。性能是其基础原则，专为需要极致效率的大规模多智能体系统而设计。这种模式服务于需要深度定制和控制的专业 AI 工程师。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="capabilities" class="mb-24 scroll-mt-24">
+        <h2 class="text-3xl font-bold text-center mb-2 text-gray-900">核心能力深度剖析</h2>
+        <p class="text-center text-gray-500 mb-12">从应用编排到知识管理，两大框架在核心功能的实现上路径迥异。</p>
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <div class="flex justify-center border-b border-gray-200 mb-8">
+                <button data-tab="orchestration" class="tab-button active text-lg font-medium py-3 px-6 rounded-t-lg">智能体与应用编排</button>
+                <button data-tab="rag" class="tab-button text-lg font-medium py-3 px-6 rounded-t-lg">知识管理 (RAG)</button>
+                <button data-tab="tools" class="tab-button text-lg font-medium py-3 px-6 rounded-t-lg">工具与可扩展性</button>
+            </div>
+            <div id="tab-content" class="fade-in">
+            </div>
+        </div>
+    </section>
+
+    <section id="performance" class="mb-24 scroll-mt-24">
+        <h2 class="text-3xl font-bold text-center mb-2 text-gray-900">性能、可扩展性与生产就绪性</h2>
+        <p class="text-center text-gray-500 mb-12">两个框架解决了不同维度的扩展性问题：一个关注高并发用户，另一个关注大规模智能体计算。</p>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="card p-8">
+                <h3 class="text-2xl font-bold mb-4 text-amber-600">FastGPT: 通过基础设施扩展</h3>
+                <p class="text-gray-600 mb-4">
+                    FastGPT 的可扩展性依赖于其云原生部署方案（如 Sealos），通过增加服务器资源来应对高并发的用户请求。这是一种经典的 Web 服务扩展模式，通过负载均衡和数据库副本来提升性能。其瓶颈在于处理大量 HTTP 请求和数据库负载，适合需要服务大量用户的应用场景。
+                </p>
+            </div>
+            <div class="card p-8">
+                <h3 class="text-2xl font-bold mb-4 text-cyan-600">agno-agi: 框架级性能优化</h3>
+                <p class="text-gray-600 mb-4">
+                    agno-agi 在框架层面进行了极致的微观优化，痴迷于性能。其目标是解决在单个复杂工作流中运行成百上千个智能体所带来的巨大计算开销。这是一个算法和运行时效率问题，通过最小化每个智能体的资源占用来实现扩展。
+                </p>
+                <div class="flex justify-around text-center mt-6">
+                    <div>
+                        <p class="text-3xl font-bold text-cyan-500">~3μs</p>
+                        <p class="text-gray-500">智能体实例化时间</p>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-bold text-cyan-500">~6.5KiB</p>
+                        <p class="text-gray-500">智能体内存占用</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="use-cases" class="mb-24 scroll-mt-24">
+        <h2 class="text-3xl font-bold text-center mb-2 text-gray-900">理想用例与目标画像</h2>
+        <p class="text-center text-gray-500 mb-12">点击下方按钮，查看每个框架最擅长的应用场景和目标用户。</p>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="text-center">
+                <button id="fastgpt-usecase-btn" class="bg-amber-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-amber-600 transition-all w-full md:w-auto">探索 FastGPT 的用例</button>
+                <div id="fastgpt-usecases" class="hidden mt-6 text-left space-y-4 fade-in">
+                    <div class="card p-6">
+                        <h4 class="font-bold text-lg">🎯 理想用户</h4>
+                        <p class="text-gray-600">企业开发团队、业务分析师、产品经理。</p>
+                    </div>
+                    <div class="card p-6">
+                        <h4 class="font-bold text-lg">💡 理想用例</h4>
+                        <ul class="list-disc list-inside text-gray-600 mt-2">
+                            <li>内部知识机器人 (如 HR 问答)</li>
+                            <li>客户支持自动化 (如产品 FAQ)</li>
+                            <li>智能文档检索系统</li>
+                            <li>无代码/低代码 AI 应用原型设计</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <button id="agno-agi-usecase-btn" class="bg-cyan-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-cyan-600 transition-all w-full md:w-auto">探索 agno-agi 的用例</button>
+                <div id="agno-agi-usecases" class="hidden mt-6 text-left space-y-4 fade-in">
+                    <div class="card p-6">
+                        <h4 class="font-bold text-lg">🎯 理想用户</h4>
+                        <p class="text-gray-600">AI 工程师、研究人员、资深 Python 开发者。</p>
+                    </div>
+                    <div class="card p-6">
+                        <h4 class="font-bold text-lg">💡 理想用例</h4>
+                        <ul class="list-disc list-inside text-gray-600 mt-2">
+                            <li>复杂自治智能体 (如金融分析)</li>
+                            <li>多智能体模拟 (如市场动态仿真)</li>
+                            <li>智能体工作流自动化 (如内容创作)</li>
+                            <li>前沿智能体架构的研究与开发</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="decision" class="bg-white rounded-lg shadow-lg p-8 md:p-12 scroll-mt-24">
+        <h2 class="text-3xl font-bold text-center mb-4 text-gray-900">战略采纳建议：如何选择？</h2>
+        <p class="text-center text-gray-500 mb-10">回答以下关键问题，可以帮助您确定哪个框架更适合您的项目。</p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-gray-700">
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h4 class="font-semibold text-lg mb-2">1. 团队技能</h4>
+                <p>您的团队更擅长全栈 Web 开发 (TypeScript) 还是 Python AI/ML？</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h4 class="font-semibold text-lg mb-2">2. 项目目标</h4>
+                <p>项目核心是知识库问答，还是执行复杂任务的自治系统？</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h4 class="font-semibold text-lg mb-2">3. 用户界面</h4>
+                <p>您需要开箱即用的 UI，还是计划构建自定义前端？</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h4 class="font-semibold text-lg mb-2">4. 性能瓶颈</h4>
+                <p>是用户并发量，还是智能体工作流的计算复杂度？</p>
+            </div>
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h4 class="font-semibold text-lg mb-2">5. 定制化 vs. 便利性</h4>
+                <p>您偏好一体化平台，还是完全控制每个组件的灵活框架？</p>
+            </div>
+            <div class="bg-amber-50 p-6 rounded-lg border-l-4 border-amber-500">
+                <h4 class="font-bold text-lg text-amber-700">结论：选择 FastGPT</h4>
+                <p class="text-amber-800">如果您需要快速交付面向用户的企业级知识管理应用，且团队中包含非技术人员。</p>
+            </div>
+            <div class="bg-cyan-50 p-6 rounded-lg border-l-4 border-cyan-500 col-start-1 md:col-start-auto">
+                <h4 class="font-bold text-lg text-cyan-700">结论：选择 agno-agi</h4>
+                <p class="text-cyan-800">如果您正在构建以智能体自主性为核心、性能至关重要的复杂系统，且团队精通 Python。</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-gray-800 text-white mt-16">
+    <div class="container mx-auto px-6 py-8 text-center">
+        <p>这是一个基于研究报告生成的交互式Web应用。</p>
+        <p class="text-sm text-gray-400 mt-2">所有内容均源自提供的 FastGPT 与 agno-agi 对比分析报告。</p>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const chartData = {
+            labels: ['易用性 (非开发者)', '开发速度', '性能 (智能体级)', '灵活性与控制力', '社区与生态', '知识库集成度'],
+            datasets: [
+                {
+                    label: 'FastGPT',
+                    data: [9, 8, 5, 4, 7, 9],
+                    backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                    borderColor: 'rgba(245, 158, 11, 1)',
+                    pointBackgroundColor: 'rgba(245, 158, 11, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(245, 158, 11, 1)'
+                },
+                {
+                    label: 'agno-agi',
+                    data: [3, 5, 9, 9, 6, 7],
+                    backgroundColor: 'rgba(6, 182, 212, 0.2)',
+                    borderColor: 'rgba(6, 182, 212, 1)',
+                    pointBackgroundColor: 'rgba(6, 182, 212, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(6, 182, 212, 1)'
+                }
+            ]
+        };
+
+        const chartConfig = {
+            type: 'radar',
+            data: chartData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                elements: {
+                    line: {
+                        borderWidth: 3
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 13,
+                                family: "'Noto Sans SC', sans-serif"
+                            },
+                            color: '#4A4A4A'
+                        },
+                        ticks: {
+                            backdropColor: 'rgba(255, 255, 255, 0.75)',
+                            stepSize: 2
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 10
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14,
+                                family: "'Noto Sans SC', sans-serif"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.r !== null) {
+                                    label += context.parsed.r;
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        const ctx = document.getElementById('paradigmChart').getContext('2d');
+        new Chart(ctx, chartConfig);
+
+        const tabsData = {
+            orchestration: `
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-xl mb-3 text-amber-600">FastGPT: 可视化 "Flow"</h4>
+                            <p>采用拖拽式工作流编辑器，通过连接功能节点来构建应用逻辑，无需编码。这极大地降低了技术门槛，非常适合构建结构化、可预测的工作流，如客服机器人。</p>
+                            <ul class="mt-4 space-y-2 text-sm">
+                                <li class="flex items-start"><span class="text-green-500 mr-2">✔</span><strong>高可及性:</strong> 非开发者也能轻松上手。</li>
+                                <li class="flex items-start"><span class="text-green-500 mr-2">✔</span><strong>清晰可视化:</strong> 复杂逻辑一目了然。</li>
+                                <li class="flex items-start"><span class="text-red-500 mr-2">✖</span><strong>灵活性不足:</strong> 难以处理高度动态的场景。</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-3 text-cyan-600">agno-agi: 代码定义的 "团队"</h4>
+                            <p>通过 Python 代码定义智能体 (Agent) 和团队 (Team)，实现复杂的、动态的多智能体协作。这种方式提供了极致的灵活性和强大的可维护性，适合处理未知和复杂的任务。</p>
+                            <ul class="mt-4 space-y-2 text-sm">
+                                <li class="flex items-start"><span class="text-green-500 mr-2">✔</span><strong>极致灵活性:</strong> 可实现涌现式的智能体交互。</li>
+                                <li class="flex items-start"><span class="text-green-500 mr-2">✔</span><strong>强大的可维护性:</strong> 代码易于测试和版本控制。</li>
+                                <li class="flex items-start"><span class="text-red-500 mr-2">✖</span><strong>高技术门槛:</strong> 要求扎实的编程能力。</li>
+                            </ul>
+                        </div>
+                    </div>
+                `,
+            rag: `
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-xl mb-3 text-amber-600">FastGPT: 集成的知识库平台</h4>
+                            <p>知识库是其核心产品化功能。提供功能丰富的 UI，让用户可以轻松上传、管理、预处理数据。整个 RAG 流程无缝集成在平台内，为用户提供一站式体验，关注点在于便捷的数据管理。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-3 text-cyan-600">agno-agi: 可插拔的知识能力</h4>
+                            <p>知识是智能体的一种可插拔能力。开发者通过代码配置和集成各种向量数据库，赋予智能体使用知识的能力。它提倡 "智能体式 RAG"，即智能体能自主决定何时以及搜索何种信息，关注点在于赋能智能体的自主性。</p>
+                        </div>
+                    </div>
+                `,
+            tools: `
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-xl mb-3 text-amber-600">FastGPT: 标准化的插件系统</h4>
+                            <p>拥有专门的插件仓库和标准化的插件格式，类似于一个 "应用市场"。这种模式旨在扩展一个平台，便于版本管理和第三方开发者贡献，为构建一个可控的生态系统奠定基础。</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-xl mb-3 text-cyan-600">agno-agi: "工具即代码"</h4>
+                            <p>任何 Python 函数都可以轻松转化为智能体可用的工具。这是一种代码原生的扩展方式，对 Python 开发者极为友好，提供了最无摩擦的集成体验。其理念是在编写一个程序，而不是在为一个平台开发插件。</p>
+                        </div>
+                    </div>
+                `
+        };
+
+        const tabContainer = document.getElementById('tab-content');
+        const tabButtons = document.querySelectorAll('.tab-button');
+
+        function updateTabContent(tabId) {
+            tabContainer.innerHTML = tabsData[tabId];
+            tabContainer.classList.remove('fade-in');
+            void tabContainer.offsetWidth;
+            tabContainer.classList.add('fade-in');
+
+            tabButtons.forEach(button => {
+                button.classList.toggle('active', button.dataset.tab === tabId);
+            });
+        }
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                updateTabContent(button.dataset.tab);
+            });
+        });
+
+        updateTabContent('orchestration');
+
+
+        const fastGptBtn = document.getElementById('fastgpt-usecase-btn');
+        const agnoAgiBtn = document.getElementById('agno-agi-usecase-btn');
+        const fastGptCases = document.getElementById('fastgpt-usecases');
+        const agnoAgiCases = document.getElementById('agno-agi-usecases');
+
+        fastGptBtn.addEventListener('click', () => {
+            fastGptCases.classList.toggle('hidden');
+        });
+
+        agnoAgiBtn.addEventListener('click', () => {
+            agnoAgiCases.classList.toggle('hidden');
+        });
+
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
