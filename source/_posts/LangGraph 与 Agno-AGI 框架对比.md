@@ -1,8 +1,8 @@
 ---
 title: LangGraph 与 Agno-AGI 框架对比
 date: 2025-08-27 02:41:33
-tags: [药物警戒, AI]
-categories: [技术分析]
+tags: [AI框架, LangGraph, Agno-AGI, 框架对比, 药物警戒, 技术文档]
+categories: [框架对比]
 ---
 
 # 智能体框架架构师指南：LangGraph与Agno-AGI深度对比分析

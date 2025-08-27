@@ -59,16 +59,16 @@
 <p>点击上方交互式工具查看完整的技术对比分析。</p>
 ]]></content>
       <categories>
-        <category>技术分析</category>
+        <category>技术评测</category>
       </categories>
       <tags>
-        <tag>AI</tag>
-        <tag>Framework</tag>
-        <tag>Comparison</tag>
+        <tag>AI框架</tag>
+        <tag>对比分析</tag>
         <tag>FastGPT</tag>
-        <tag>agno-agi</tag>
+        <tag>Agno-AGI</tag>
         <tag>药物警戒</tag>
-        <tag>Pharmacovigilance</tag>
+        <tag>技术评测</tag>
+        <tag>性能测试</tag>
       </tags>
   </entry>
   <entry>
@@ -108,14 +108,15 @@
 <p>上方为完整的交互式分析工具，支持所有动态功能和数据可视化。</p>
 ]]></content>
       <categories>
-        <category>技术分析</category>
+        <category>工具评测</category>
       </categories>
       <tags>
-        <tag>AI</tag>
         <tag>FastGPT</tag>
-        <tag>agno-agi</tag>
-        <tag>药物警戒</tag>
+        <tag>Agno-AGI</tag>
         <tag>交互式工具</tag>
+        <tag>数据可视化</tag>
+        <tag>框架对比</tag>
+        <tag>技术工具</tag>
       </tags>
   </entry>
   <entry>
@@ -155,14 +156,15 @@
 <p>上方为完整的技术信息图，包含所有图表和交互式决策工具。</p>
 ]]></content>
       <categories>
-        <category>技术分析</category>
+        <category>可视化分析</category>
       </categories>
       <tags>
-        <tag>AI</tag>
         <tag>FastGPT</tag>
-        <tag>agno-agi</tag>
-        <tag>药物警戒</tag>
+        <tag>Agno-AGI</tag>
         <tag>数据可视化</tag>
+        <tag>框架对比</tag>
+        <tag>信息图</tag>
+        <tag>技术图解</tag>
       </tags>
   </entry>
   <entry>
@@ -331,11 +333,15 @@
 <h3 id="6-3-结论：智能体框架的未来"><a href="#6-3-结论：智能体框架的未来" class="headerlink" title="6.3 结论：智能体框架的未来"></a>6.3 结论：智能体框架的未来</h3><p>FastGPT 和 agno-agi 代表了智能体框架发展的两条不同但互补的道路。FastGPT 体现了 AI 应用构建的“民主化”，使更广泛的用户能够创建强大的应用。而 agno-agi 则代表了构建高风险、高性能智能体系统的“专业化”，为专家提供了精密的工具。两者并存的现象表明，AI 生态系统正日趋成熟，针对不同类别的问题，正在涌现出不同的专业工具。选择合适的框架，是成功构建下一代智能应用的关键第一步。</p>
 ]]></content>
       <categories>
-        <category>技术分析</category>
+        <category>框架对比</category>
       </categories>
       <tags>
-        <tag>AI</tag>
+        <tag>AI框架</tag>
+        <tag>FastGPT</tag>
+        <tag>Agno-AGI</tag>
         <tag>药物警戒</tag>
+        <tag>框架对比</tag>
+        <tag>技术文档</tag>
       </tags>
   </entry>
   <entry>
@@ -387,14 +393,15 @@
 <p>上方为完整的交互式分析工具，支持所有动态功能和专业的技术选型建议。</p>
 ]]></content>
       <categories>
-        <category>技术分析</category>
+        <category>工具评测</category>
       </categories>
       <tags>
-        <tag>AI</tag>
-        <tag>药物警戒</tag>
-        <tag>交互式工具</tag>
-        <tag>LangGraph</tag>
         <tag>Agno-AGI</tag>
+        <tag>交互式工具</tag>
+        <tag>数据可视化</tag>
+        <tag>框架对比</tag>
+        <tag>技术工具</tag>
+        <tag>LangGraph</tag>
       </tags>
   </entry>
   <entry>
@@ -483,14 +490,15 @@
 <p>上方为高清完整版技术信息图，包含详细的对比分析和专业建议。</p>
 ]]></content>
       <categories>
-        <category>技术分析</category>
+        <category>可视化分析</category>
       </categories>
       <tags>
-        <tag>AI</tag>
-        <tag>药物警戒</tag>
-        <tag>数据可视化</tag>
-        <tag>LangGraph</tag>
         <tag>Agno-AGI</tag>
+        <tag>数据可视化</tag>
+        <tag>框架对比</tag>
+        <tag>信息图</tag>
+        <tag>技术图解</tag>
+        <tag>LangGraph</tag>
       </tags>
   </entry>
   <entry>
@@ -765,11 +773,15 @@
 <h3 id="7-3-最终结论"><a href="#7-3-最终结论" class="headerlink" title="7.3 最终结论"></a>7.3 最终结论</h3><p>在真空中不存在“更好”的框架。最优选择完全取决于项目的具体需求、开发团队的技能以及组织的战略重点。本报告提供了做出明智选择所需的架构洞察和数据驱动的分析。希望这些信息能帮助您在构建下一代智能体应用时，充满信心地选择最适合您的技术栈。</p>
 ]]></content>
       <categories>
-        <category>技术分析</category>
+        <category>框架对比</category>
       </categories>
       <tags>
-        <tag>AI</tag>
+        <tag>AI框架</tag>
+        <tag>Agno-AGI</tag>
         <tag>药物警戒</tag>
+        <tag>框架对比</tag>
+        <tag>技术文档</tag>
+        <tag>LangGraph</tag>
       </tags>
   </entry>
 </search>

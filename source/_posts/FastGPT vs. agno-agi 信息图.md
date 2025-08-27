@@ -1,8 +1,8 @@
 ---
 title: FastGPT vs. agno-agi 信息图
 date: 2025-08-27 10:46:00
-tags: [药物警戒, AI, 数据可视化, FastGPT, agno-agi]
-categories: [技术分析]
+tags: [信息图, 数据可视化, FastGPT, Agno-AGI, 框架对比, 技术图解]
+categories: [可视化分析]
 ---
 
 ## AI框架技术信息图

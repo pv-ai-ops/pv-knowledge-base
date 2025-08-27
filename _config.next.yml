@@ -91,3 +91,21 @@ back2top:
 # Site State
 site_state:
   enable: true
+
+# Comments
+comments:
+  enable: true
+  provider: gitalk
+
+# Gitalk
+# For more info: https://gitalk.github.io
+# OAuth app created at: https://github.com/settings/applications/new
+gitalk:
+  enable: true
+  github_id: pv-ai-ops
+  repo: pv-knowledge-base
+  client_id: Ov23li7NhKZ5nN2X9q1Q
+  client_secret: 8f7e6d5c4b3a2910111213141516171819202122
+  admin_user: pv-ai-ops
+  distraction_free_mode: false
+  language: zh-CN

@@ -1,8 +1,8 @@
 ---
 title: FastGPT vs. agno-agi 交互式对比应用
 date: 2025-08-27 10:45:00
-tags: [药物警戒, AI, 交互式工具, FastGPT, agno-agi]
-categories: [技术分析]
+tags: [交互式工具, 数据可视化, FastGPT, Agno-AGI, 框架对比, 技术工具]
+categories: [工具评测]
 ---
 
 ## 交互式AI框架对比工具

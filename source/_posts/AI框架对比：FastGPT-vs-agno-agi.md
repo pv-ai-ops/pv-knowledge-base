@@ -1,8 +1,8 @@
 ---
 title: AI框架对比：FastGPT vs agno-agi 在药物警戒中的应用
 date: 2025-08-27 09:59:40
-tags: [AI, Framework, Comparison, FastGPT, agno-agi, 药物警戒, Pharmacovigilance]
-categories: [技术分析]
+tags: [AI框架, 对比分析, FastGPT, Agno-AGI, 药物警戒, 技术评测, 性能测试]
+categories: [技术评测]
 ---
 
 ## 概述

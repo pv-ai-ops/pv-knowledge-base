@@ -1,8 +1,8 @@
 ---
 title: LangGraph vs. Agno-AGI 互動式分析  
 date: 2025-08-27 10:47:00
-tags: [药物警戒, AI, 交互式工具, LangGraph, Agno-AGI]
-categories: [技术分析]
+tags: [交互式工具, 数据可视化, LangGraph, Agno-AGI, 框架对比, 技术工具]
+categories: [工具评测]
 ---
 
 ## LangGraph vs. Agno-AGI 深度对比工具
