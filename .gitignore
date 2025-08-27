@@ -18,3 +18,7 @@ npm-debug.log*
 
 # System
 .env
+
+# Keep content-inbox directory structure but ignore contents
+content-inbox/*
+!content-inbox/README.md

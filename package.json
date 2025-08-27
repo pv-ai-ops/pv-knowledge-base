@@ -5,8 +5,10 @@
   "scripts": {
     "build": "hexo generate",
     "clean": "hexo clean",
-    "deploy": "hexo deploy",
-    "server": "hexo server"
+    "deploy": "git add . && git commit -m 'Deploy: Auto publish content 🚀' && git push origin doc-page",
+    "server": "hexo server",
+    "publish": "node scripts/publish.js",
+    "preview": "hexo clean && hexo generate && hexo server"
   },
   "hexo": {
     "version": "7.3.0"
