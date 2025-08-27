@@ -107,5 +107,6 @@ gitalk:
   client_id: fca74e00c1171d5deb5c
   client_secret: 08d3e9828d0cd4ef25080f6c30cafeb41f4ab90f
   admin_user: asd1245dss
+  proxy: https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token
   distraction_free_mode: false
   language: zh-CN
