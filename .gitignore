@@ -1,40 +1,20 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+.DS_Store
+Thumbs.db
+db.json
+*.log
+node_modules/
+public/
+.deploy*/
+_multiconfig.yml
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Hexo specific
+.hexo/
+npm-debug.log*
+.npm
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
+# Editor
 .vscode/
+.idea/
 
-# Ignore Microsoft Office temporary files specifically within the 'doc' directory and its subdirectories
-doc/**/~$*
-
-# Claude Code Sub Agent temporary files and logs
-.claude/agents/**/logs/
-.claude/agents/**/tmp/
+# System
+.env

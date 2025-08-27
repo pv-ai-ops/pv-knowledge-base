@@ -1,0 +1,93 @@
+# Next theme configuration for Pharmacovigilance Knowledge Base
+
+# Scheme
+scheme: Gemini
+
+# Dark Mode
+darkmode: true
+
+# Favicon - use default theme favicons
+# favicon:
+#   small: /images/favicon-16x16.png
+#   medium: /images/favicon-32x32.png
+
+# Header
+menu:
+  home: / || fa fa-home
+  about: /about/ || fa fa-user
+  tags: /tags/ || fa fa-tags
+  categories: /categories/ || fa fa-th
+  archives: /archives/ || fa fa-archive
+
+# Sidebar
+sidebar:
+  position: left
+  display: post
+  padding: 18
+  offset: 12
+
+# Posts
+post_meta:
+  created_at: true
+  updated_at:
+    enable: true
+    another_day: true
+  categories: true
+
+# Code Highlight
+highlight_theme: normal
+prism_theme: default
+
+# Math Equations
+math:
+  mathjax:
+    enable: true
+
+# Search
+local_search:
+  enable: true
+  trigger: auto
+  top_n_per_article: 1
+  unescape: false
+  preload: false
+
+# Social Links
+social:
+  GitHub: https://github.com/pv-ai-ops || fab fa-github
+
+# Footer
+footer:
+  since: 2025
+  icon:
+    name: fa fa-shield-alt
+    animated: true
+    color: "#06B6D4"
+  copyright: pv-ai-ops
+
+# Custom Logo - use text logo
+# custom_logo:
+#   enabled: true
+#   image: /images/logo.png
+
+# Reading Progress
+reading_progress:
+  enable: true
+  position: top
+  color: "#06B6D4"
+  height: 3px
+
+# Back to Top
+back2top:
+  enable: true
+  sidebar: false
+  scrollpercent: true
+
+# Avatar - use default theme avatar
+# avatar:
+#   url: /images/avatar.png
+#   rounded: true
+#   rotated: false
+
+# Site State
+site_state:
+  enable: true
