@@ -22,3 +22,4 @@ npm-debug.log*
 # Keep content-inbox directory structure but ignore contents
 content-inbox/*
 !content-inbox/README.md
+.playwright-mcp/
