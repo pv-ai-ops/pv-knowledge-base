@@ -62,8 +62,12 @@ content-inbox/
 ```
 
 **Automated Processing (`scripts/publish.js`):**
-- **Markdown**: Auto-adds Front Matter (title, date, tags), moves to `source/_posts/`
-- **HTML**: Preserves interactivity, moves to `source/` root (skip_render enabled)  
+- **URL-Safe File Naming**: Automatically converts file names to URL-friendly format using `createSafeFileName()`:
+  - `vs.` → `-vs-`, colons `：:` → `-`, spaces → `-`
+  - Preserves Chinese characters while removing problematic symbols
+  - Prevents GitHub OAuth callback URL mismatch issues with Gitalk comments
+- **Markdown**: Auto-adds Front Matter (title, date, tags), moves to `source/_posts/` with safe file names
+- **HTML**: Preserves interactivity, moves to `source/` root (skip_render enabled) with safe file names  
 - **Assets**: Copies to `source/assets/`
 - **Cleanup**: Deletes original files from inbox after successful processing
 
@@ -74,10 +78,17 @@ content-inbox/
 - Allows complex JavaScript applications (Chart.js, interactive visualizations)
 - Files in `source/` root are accessible at site root (e.g., `/interactive-app.html`)
 
+### Gitalk Comment System
+- **Configuration**: Located in `_config.next.yml` under `gitalk:` section
+- **OAuth Setup**: GitHub OAuth App configured for `pv-ai-ops/pv-knowledge-base`
+- **URL Matching**: File naming automation prevents OAuth callback URL mismatch issues
+- **Proxy**: Uses CORS proxy for GitHub API access
+- **Language**: Chinese (zh-CN) interface
+
 ### GitHub Actions Deployment
 - **Trigger**: Push to `doc-page` branch
 - **Process**: Install deps → Build static files → Deploy to `gh-pages`
-- **Target**: `./public` directory becomes GitHub Pages root
+- **Target**: `./docs` directory becomes GitHub Pages root (configured as `public_dir` in `_config.yml`)
 - **Auto-deploy**: No manual intervention needed after push
 
 ## Common Content Types & Patterns
@@ -101,12 +112,20 @@ content-inbox/
 - **Customizations**: Medical/AI color scheme (#06B6D4), Chinese font support
 
 ### File Management
-- **Generated Files**: `public/` directory (gitignored)
-- **Source Control**: Only source files in `content-inbox/` and `source/`
+- **Generated Files**: `docs/` directory (configured as `public_dir`, not gitignored for GitHub Pages)
+- **Source Control**: Source files in `content-inbox/` and `source/`
 - **Asset Handling**: Copy to `source/assets/` for proper Hexo processing
+- **URL Structure**: Permalink format `:year/:month/:day/:title/` creates dated URL paths
+
+### Automated File Naming System
+- **Purpose**: Prevents OAuth callback URL mismatch issues with special characters
+- **Function**: `createSafeFileName()` in `scripts/publish.js`
+- **Rules**: Preserves Chinese characters, converts spaces and special symbols to URL-safe format
+- **Applies to**: Both Markdown articles and HTML applications automatically
 
 ### Typical Issue Resolution
-- **GitHub Pages not updating**: Check if `index.html` exists in root (should not)
+- **Gitalk comments not loading**: Check if article URL contains special characters; republish to apply safe naming
+- **GitHub Pages not updating**: Verify `docs/` directory is committed and pushed
 - **HTML apps not working**: Verify `skip_render` includes the file pattern
 - **Missing search**: Ensure `hexo-generator-searchdb` is installed
 - **Build failures**: Run `npm run clean` before `npm run build`
@@ -117,3 +136,11 @@ content-inbox/
 - **Focus**: Pharmacovigilance, AI in drug safety, technical analysis
 - **Tone**: Professional, technical, Chinese-first with English technical terms
 - **Target Audience**: Pharmaceutical AI engineers, regulatory professionals
+
+## Important Reminders
+
+- **Never commit sensitive information**: OAuth client secrets are already configured; avoid exposing additional API keys
+- **URL Safety**: All new content goes through automated file naming to prevent Gitalk OAuth issues
+- **Chinese Content**: Preserve Chinese characters in titles and content; only convert problematic symbols
+- **Testing**: Use `npm run preview` for local development; `npm run deploy` publishes to production
+- **GitHub Pages**: Site auto-deploys from `docs/` directory on `doc-page` branch pushes
