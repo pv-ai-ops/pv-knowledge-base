@@ -20,33 +20,32 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"pv-ai-ops.github.io","root":"/pv-knowledge-base/","images":"/pv-knowledge-base/images","scheme":"Gemini","darkmode":true,"version":"8.24.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null,"enable":true,"provider":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/pv-knowledge-base/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/pv-knowledge-base/js/config.js" defer></script>
 
-    <meta name="description" content="概述在药物警戒(Pharmacovigilance)领域，AI Agent框架的选择至关重要。本文深入对比分析FastGPT和agno-agi两个框架，帮助医药安全团队选择最适合的技术方案。 药物警戒应用场景FastGPT 和 agno-agi 在药物警戒领域都有独特的应用价值：  不良事件检测: 自动化识别和分类药物不良反应报告 文献监测: 智能扫描医学文献中的安全信号 法规合规: 辅助生成符合">
+    <meta name="description" content="LangGraph vs. Agno-AGI 技术信息图全面的AI框架技术对比可视化图表，专为药物警戒领域技术决策者设计。通过精美的信息图表现形式，直观展示LangGraph和Agno-AGI的核心差异与应用优势。  📊 完整技术信息图   信息图核心内容🏗️ 架构设计对比 LangGraph:   基于LangChain生态的图结构框架 声明式工作流定义 强大的状态管理机制   Agno-A">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AI框架对比：FastGPT vs agno-agi 在药物警戒中的应用">
-<meta property="og:url" content="https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/AI%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94%EF%BC%9AFastGPT-vs-agno-agi/index.html">
+<meta property="og:title" content="LangGraph vs. Agno-AGI 資訊圖">
+<meta property="og:url" content="https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/LangGraph-vs-Agno-AGI%E8%B3%87%E8%A8%8A%E5%9C%96/index.html">
 <meta property="og:site_name" content="药物警戒知识库 | PV Knowledge Base">
-<meta property="og:description" content="概述在药物警戒(Pharmacovigilance)领域，AI Agent框架的选择至关重要。本文深入对比分析FastGPT和agno-agi两个框架，帮助医药安全团队选择最适合的技术方案。 药物警戒应用场景FastGPT 和 agno-agi 在药物警戒领域都有独特的应用价值：  不良事件检测: 自动化识别和分类药物不良反应报告 文献监测: 智能扫描医学文献中的安全信号 法规合规: 辅助生成符合">
+<meta property="og:description" content="LangGraph vs. Agno-AGI 技术信息图全面的AI框架技术对比可视化图表，专为药物警戒领域技术决策者设计。通过精美的信息图表现形式，直观展示LangGraph和Agno-AGI的核心差异与应用优势。  📊 完整技术信息图   信息图核心内容🏗️ 架构设计对比 LangGraph:   基于LangChain生态的图结构框架 声明式工作流定义 强大的状态管理机制   Agno-A">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-08-27T01:59:40.000Z">
-<meta property="article:modified_time" content="2025-08-27T04:04:02.516Z">
+<meta property="article:published_time" content="2025-08-27T02:48:00.000Z">
+<meta property="article:modified_time" content="2025-08-27T04:06:35.056Z">
 <meta property="article:author" content="pv-ai-ops">
-<meta property="article:tag" content="AI框架">
-<meta property="article:tag" content="对比分析">
-<meta property="article:tag" content="FastGPT">
 <meta property="article:tag" content="Agno-AGI">
-<meta property="article:tag" content="药物警戒">
-<meta property="article:tag" content="技术评测">
-<meta property="article:tag" content="性能测试">
+<meta property="article:tag" content="数据可视化">
+<meta property="article:tag" content="框架对比">
+<meta property="article:tag" content="信息图">
+<meta property="article:tag" content="技术图解">
+<meta property="article:tag" content="LangGraph">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/AI%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94%EF%BC%9AFastGPT-vs-agno-agi/">
+<link rel="canonical" href="https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/LangGraph-vs-Agno-AGI%E8%B3%87%E8%A8%8A%E5%9C%96/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/AI%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94%EF%BC%9AFastGPT-vs-agno-agi/","path":"2025/08/27/AI框架对比：FastGPT-vs-agno-agi/","title":"AI框架对比：FastGPT vs agno-agi 在药物警戒中的应用"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/LangGraph-vs-Agno-AGI%E8%B3%87%E8%A8%8A%E5%9C%96/","path":"2025/08/27/LangGraph-vs-Agno-AGI資訊圖/","title":"LangGraph vs. Agno-AGI 資訊圖"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>AI框架对比：FastGPT vs agno-agi 在药物警戒中的应用 | 药物警戒知识库 | PV Knowledge Base</title>
+<title>LangGraph vs. Agno-AGI 資訊圖 | 药物警戒知识库 | PV Knowledge Base</title>
   
 
 
@@ -171,7 +170,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8D%AF%E7%89%A9%E8%AD%A6%E6%88%92%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">药物警戒应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E4%BA%92%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%B7%A5%E5%85%B7"><span class="nav-number">3.</span> <span class="nav-text">交互式对比工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%93%8A-%E4%BA%A4%E4%BA%92%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%BA%94%E7%94%A8-FastGPT-vs-agno-agi-%E4%BA%A4%E4%BA%92%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%BA%94%E7%94%A8-html"><span class="nav-number">3.1.</span> <span class="nav-text">📊 [交互式对比应用](&#x2F;FastGPT vs. agno-agi 交互式对比应用.html)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%93%88-%E6%8A%80%E6%9C%AF%E6%9E%B6%E6%9E%84%E4%BF%A1%E6%81%AF%E5%9B%BE-FastGPT-vs-agno-agi-%E4%BF%A1%E6%81%AF%E5%9B%BE-html"><span class="nav-number">3.2.</span> <span class="nav-text">📈 [技术架构信息图](&#x2F;FastGPT vs. agno-agi 信息图.html)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8D%AF%E7%89%A9%E8%AD%A6%E6%88%92%E8%A7%86%E8%A7%92%E4%B8%8B%E7%9A%84%E6%A0%B8%E5%BF%83%E5%AF%B9%E6%AF%94"><span class="nav-number">4.</span> <span class="nav-text">药物警戒视角下的核心对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A8%E8%8D%90%E5%9C%BA%E6%99%AF"><span class="nav-number">5.</span> <span class="nav-text">推荐场景</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LangGraph-vs-Agno-AGI-%E6%8A%80%E6%9C%AF%E4%BF%A1%E6%81%AF%E5%9B%BE"><span class="nav-number">1.</span> <span class="nav-text">LangGraph vs. Agno-AGI 技术信息图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%8A-%E5%AE%8C%E6%95%B4%E6%8A%80%E6%9C%AF%E4%BF%A1%E6%81%AF%E5%9B%BE"><span class="nav-number">2.</span> <span class="nav-text">📊 完整技术信息图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E5%9B%BE%E6%A0%B8%E5%BF%83%E5%86%85%E5%AE%B9"><span class="nav-number">3.</span> <span class="nav-text">信息图核心内容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%8F%97%EF%B8%8F-%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E5%AF%B9%E6%AF%94"><span class="nav-number">3.1.</span> <span class="nav-text">🏗️ 架构设计对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%93%8A-%E6%8A%80%E6%9C%AF%E7%89%B9%E6%80%A7%E7%9F%A9%E9%98%B5"><span class="nav-number">3.2.</span> <span class="nav-text">📊 技术特性矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%8E%AF-%E8%8D%AF%E7%89%A9%E8%AD%A6%E6%88%92%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">3.3.</span> <span class="nav-text">🎯 药物警戒应用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LangGraph-%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5"><span class="nav-number">3.3.1.</span> <span class="nav-text">LangGraph 最佳实践</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Agno-AGI-%E4%BC%98%E5%8A%BF%E9%A2%86%E5%9F%9F"><span class="nav-number">3.3.2.</span> <span class="nav-text">Agno-AGI 优势领域</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%93%88-%E6%80%A7%E8%83%BD%E5%9F%BA%E5%87%86%E5%AF%B9%E6%AF%94"><span class="nav-number">3.4.</span> <span class="nav-text">📈 性能基准对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%92%A1-%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B%E5%86%B3%E7%AD%96%E6%A0%91"><span class="nav-number">3.5.</span> <span class="nav-text">💡 技术选型决策树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%F0%9F%94%8D-%E8%AF%A6%E7%BB%86%E5%AF%B9%E6%AF%94%E7%BB%B4%E5%BA%A6"><span class="nav-number">3.6.</span> <span class="nav-text">🔍 详细对比维度</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -184,18 +183,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/pv-knowledge-base/archives/">
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/pv-knowledge-base/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/pv-knowledge-base/tags/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -227,7 +226,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/AI%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94%EF%BC%9AFastGPT-vs-agno-agi/">
+    <link itemprop="mainEntityOfPage" href="https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/LangGraph-vs-Agno-AGI%E8%B3%87%E8%A8%8A%E5%9C%96/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/pv-knowledge-base/images/avatar.gif">
@@ -240,12 +239,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="AI框架对比：FastGPT vs agno-agi 在药物警戒中的应用 | 药物警戒知识库 | PV Knowledge Base">
+      <meta itemprop="name" content="LangGraph vs. Agno-AGI 資訊圖 | 药物警戒知识库 | PV Knowledge Base">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          AI框架对比：FastGPT vs agno-agi 在药物警戒中的应用
+          LangGraph vs. Agno-AGI 資訊圖
         </h1>
 
         <div class="post-meta-container">
@@ -257,7 +256,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2025-08-27 09:59:40 / 修改时间：12:04:02" itemprop="dateCreated datePublished" datetime="2025-08-27T09:59:40+08:00">2025-08-27</time>
+      <time title="创建时间：2025-08-27 10:48:00 / 修改时间：12:06:35" itemprop="dateCreated datePublished" datetime="2025-08-27T10:48:00+08:00">2025-08-27</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -265,7 +264,7 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/pv-knowledge-base/categories/%E6%8A%80%E6%9C%AF%E8%AF%84%E6%B5%8B/" itemprop="url" rel="index"><span itemprop="name">技术评测</span></a>
+          <a href="/pv-knowledge-base/categories/%E5%8F%AF%E8%A7%86%E5%8C%96%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">可视化分析</span></a>
         </span>
     </span>
 
@@ -278,60 +277,87 @@
     
     
     
-    <div class="post-body" itemprop="articleBody"><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>在药物警戒(Pharmacovigilance)领域，AI Agent框架的选择至关重要。本文深入对比分析FastGPT和agno-agi两个框架，帮助医药安全团队选择最适合的技术方案。</p>
-<h2 id="药物警戒应用场景"><a href="#药物警戒应用场景" class="headerlink" title="药物警戒应用场景"></a>药物警戒应用场景</h2><p><strong>FastGPT</strong> 和 <strong>agno-agi</strong> 在药物警戒领域都有独特的应用价值：</p>
+    <div class="post-body" itemprop="articleBody"><h2 id="LangGraph-vs-Agno-AGI-技术信息图"><a href="#LangGraph-vs-Agno-AGI-技术信息图" class="headerlink" title="LangGraph vs. Agno-AGI 技术信息图"></a>LangGraph vs. Agno-AGI 技术信息图</h2><p>全面的AI框架技术对比可视化图表，专为药物警戒领域技术决策者设计。通过精美的信息图表现形式，直观展示LangGraph和Agno-AGI的核心差异与应用优势。</p>
+<hr>
+<h2 id="📊-完整技术信息图"><a href="#📊-完整技术信息图" class="headerlink" title="📊 完整技术信息图"></a>📊 完整技术信息图</h2><iframe src="/pv-knowledge-base/langgraph-vs-agno-agi-infographic.html" width="100%" height="1000px" frameborder="0" style="border: 1px solid #e1e5e9; border-radius: 8px; margin: 20px 0;"></iframe>
+
+<hr>
+<h2 id="信息图核心内容"><a href="#信息图核心内容" class="headerlink" title="信息图核心内容"></a>信息图核心内容</h2><h3 id="🏗️-架构设计对比"><a href="#🏗️-架构设计对比" class="headerlink" title="🏗️ 架构设计对比"></a>🏗️ 架构设计对比</h3><ul>
+<li><p><strong>LangGraph</strong>: </p>
 <ul>
-<li><strong>不良事件检测</strong>: 自动化识别和分类药物不良反应报告</li>
-<li><strong>文献监测</strong>: 智能扫描医学文献中的安全信号</li>
-<li><strong>法规合规</strong>: 辅助生成符合监管要求的安全报告</li>
-<li><strong>信号检测</strong>: 从大规模数据中发现潜在的药物安全问题</li>
+<li>基于LangChain生态的图结构框架</li>
+<li>声明式工作流定义</li>
+<li>强大的状态管理机制</li>
 </ul>
-<h2 id="交互式对比工具"><a href="#交互式对比工具" class="headerlink" title="交互式对比工具"></a>交互式对比工具</h2><p>我们创建了专业的技术对比工具来展示详细的框架分析：</p>
-<h3 id="📊-交互式对比应用-FastGPT-vs-agno-agi-交互式对比应用-html"><a href="#📊-交互式对比应用-FastGPT-vs-agno-agi-交互式对比应用-html" class="headerlink" title="📊 [交互式对比应用](&#x2F;FastGPT vs. agno-agi 交互式对比应用.html)"></a>📊 [交互式对比应用](&#x2F;FastGPT vs. agno-agi 交互式对比应用.html)</h3><ul>
-<li>雷达图展示核心能力对比</li>
-<li>交互式选项卡深度解析功能特性</li>
-<li>实时性能指标监控</li>
-<li>药物警戒使用场景评估工具</li>
+</li>
+<li><p><strong>Agno-AGI</strong>:</p>
+<ul>
+<li>纯Python高性能智能体框架  </li>
+<li>事件驱动架构设计</li>
+<li>极致的运行时优化</li>
 </ul>
-<h3 id="📈-技术架构信息图-FastGPT-vs-agno-agi-信息图-html"><a href="#📈-技术架构信息图-FastGPT-vs-agno-agi-信息图-html" class="headerlink" title="📈 [技术架构信息图](&#x2F;FastGPT vs. agno-agi 信息图.html)"></a>📈 [技术架构信息图](&#x2F;FastGPT vs. agno-agi 信息图.html)</h3><ul>
-<li>可视化框架架构对比</li>
-<li>性能基准测试结果</li>
-<li>医药领域适用性分析</li>
+</li>
 </ul>
-<h2 id="药物警戒视角下的核心对比"><a href="#药物警戒视角下的核心对比" class="headerlink" title="药物警戒视角下的核心对比"></a>药物警戒视角下的核心对比</h2><table>
+<h3 id="📊-技术特性矩阵"><a href="#📊-技术特性矩阵" class="headerlink" title="📊 技术特性矩阵"></a>📊 技术特性矩阵</h3><table>
 <thead>
 <tr>
-<th>维度</th>
-<th>FastGPT</th>
-<th>agno-agi</th>
+<th>特性维度</th>
+<th>LangGraph</th>
+<th>Agno-AGI</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><strong>部署复杂度</strong></td>
-<td>简单，适合快速原型</td>
-<td>复杂，但更灵活</td>
+<td><strong>学习曲线</strong></td>
+<td>中等</td>
+<td>较陡</td>
 </tr>
 <tr>
-<td><strong>监管合规</strong></td>
-<td>基础合规支持</td>
-<td>深度定制合规能力</td>
+<td><strong>性能表现</strong></td>
+<td>良好</td>
+<td>卓越</td>
 </tr>
 <tr>
-<td><strong>数据处理</strong></td>
-<td>中等规模数据</td>
-<td>大规模数据处理</td>
+<td><strong>生态集成</strong></td>
+<td>丰富</td>
+<td>精简</td>
 </tr>
 <tr>
-<td><strong>集成能力</strong></td>
-<td>标准API集成</td>
-<td>企业级系统集成</td>
+<td><strong>扩展灵活性</strong></td>
+<td>高</td>
+<td>极高</td>
 </tr>
 </tbody></table>
-<h2 id="推荐场景"><a href="#推荐场景" class="headerlink" title="推荐场景"></a>推荐场景</h2><ul>
-<li><strong>FastGPT</strong>: 适合中小型药企的快速AI应用部署</li>
-<li><strong>agno-agi</strong>: 适合大型制药公司的复杂监管环境</li>
+<h3 id="🎯-药物警戒应用场景"><a href="#🎯-药物警戒应用场景" class="headerlink" title="🎯 药物警戒应用场景"></a>🎯 药物警戒应用场景</h3><h4 id="LangGraph-最佳实践"><a href="#LangGraph-最佳实践" class="headerlink" title="LangGraph 最佳实践"></a>LangGraph 最佳实践</h4><ul>
+<li><strong>多源数据融合</strong>: 整合EHR、文献、报告等多种数据</li>
+<li><strong>复杂推理链</strong>: 多步骤的安全信号检测流程  </li>
+<li><strong>工作流自动化</strong>: 标准化的监管报告生成</li>
 </ul>
-<p>点击上方交互式工具查看完整的技术对比分析。</p>
+<h4 id="Agno-AGI-优势领域"><a href="#Agno-AGI-优势领域" class="headerlink" title="Agno-AGI 优势领域"></a>Agno-AGI 优势领域</h4><ul>
+<li><strong>实时监测系统</strong>: 高频数据流实时处理</li>
+<li><strong>大规模智能体</strong>: 分布式安全监测网络</li>
+<li><strong>高性能计算</strong>: 复杂算法模型并行处理</li>
+</ul>
+<h3 id="📈-性能基准对比"><a href="#📈-性能基准对比" class="headerlink" title="📈 性能基准对比"></a>📈 性能基准对比</h3><ul>
+<li><strong>处理速度</strong>: 实时响应能力测试结果</li>
+<li><strong>内存效率</strong>: 资源占用优化对比</li>
+<li><strong>并发能力</strong>: 多任务处理性能评估</li>
+<li><strong>扩展性</strong>: 集群部署适应性分析</li>
+</ul>
+<h3 id="💡-技术选型决策树"><a href="#💡-技术选型决策树" class="headerlink" title="💡 技术选型决策树"></a>💡 技术选型决策树</h3><p>提供结构化的技术选择指导：</p>
+<ol>
+<li><strong>项目复杂度评估</strong></li>
+<li><strong>性能要求分析</strong> </li>
+<li><strong>团队技术栈匹配</strong></li>
+<li><strong>生态系统需求</strong></li>
+<li><strong>长期维护考虑</strong></li>
+</ol>
+<h3 id="🔍-详细对比维度"><a href="#🔍-详细对比维度" class="headerlink" title="🔍 详细对比维度"></a>🔍 详细对比维度</h3><ul>
+<li><strong>开发效率</strong>: 快速原型到生产部署</li>
+<li><strong>维护成本</strong>: 长期运维和更新难度</li>
+<li><strong>社区支持</strong>: 文档、工具和社区活跃度</li>
+<li><strong>商业化成熟度</strong>: 企业级特性支持</li>
+</ul>
+<p>上方为高清完整版技术信息图，包含详细的对比分析和专业建议。</p>
 
     </div>
 
@@ -341,26 +367,25 @@
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/pv-knowledge-base/tags/AI%E6%A1%86%E6%9E%B6/" rel="tag"># AI框架</a>
-              <a href="/pv-knowledge-base/tags/%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/" rel="tag"># 对比分析</a>
-              <a href="/pv-knowledge-base/tags/FastGPT/" rel="tag"># FastGPT</a>
               <a href="/pv-knowledge-base/tags/Agno-AGI/" rel="tag"># Agno-AGI</a>
-              <a href="/pv-knowledge-base/tags/%E8%8D%AF%E7%89%A9%E8%AD%A6%E6%88%92/" rel="tag"># 药物警戒</a>
-              <a href="/pv-knowledge-base/tags/%E6%8A%80%E6%9C%AF%E8%AF%84%E6%B5%8B/" rel="tag"># 技术评测</a>
-              <a href="/pv-knowledge-base/tags/%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95/" rel="tag"># 性能测试</a>
+              <a href="/pv-knowledge-base/tags/%E6%95%B0%E6%8D%AE%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag"># 数据可视化</a>
+              <a href="/pv-knowledge-base/tags/%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/" rel="tag"># 框架对比</a>
+              <a href="/pv-knowledge-base/tags/%E4%BF%A1%E6%81%AF%E5%9B%BE/" rel="tag"># 信息图</a>
+              <a href="/pv-knowledge-base/tags/%E6%8A%80%E6%9C%AF%E5%9B%BE%E8%A7%A3/" rel="tag"># 技术图解</a>
+              <a href="/pv-knowledge-base/tags/LangGraph/" rel="tag"># LangGraph</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/pv-knowledge-base/2025/08/27/FastGPT%20%E4%B8%8E%20Agno-AGI%20%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/" rel="prev" title="FastGPT 与 Agno-AGI 框架对比">
-                  <i class="fa fa-angle-left"></i> FastGPT 与 Agno-AGI 框架对比
+                <a href="/pv-knowledge-base/2025/08/27/LangGraph-vs-Agno-AGI%E4%BA%92%E5%8B%95%E5%BC%8F%E5%88%86%E6%9E%90/" rel="prev" title="LangGraph vs. Agno-AGI 互動式分析">
+                  <i class="fa fa-angle-left"></i> LangGraph vs. Agno-AGI 互動式分析
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/pv-knowledge-base/2025/08/27/FastGPT%20vs.%20agno-agi%20%E4%BA%A4%E4%BA%92%E5%BC%8F%E5%AF%B9%E6%AF%94%E5%BA%94%E7%94%A8/" rel="next" title="FastGPT vs. agno-agi 交互式对比应用">
-                  FastGPT vs. agno-agi 交互式对比应用 <i class="fa fa-angle-right"></i>
+                <a href="/pv-knowledge-base/2025/08/28/%E6%B5%8B%E8%AF%95%E6%96%87%E7%AB%A0-AI-vs-ML-%E6%8A%80%E6%9C%AF%E5%AF%B9%E6%AF%94%E5%88%86%E6%9E%90/" rel="next" title="测试文章：AI vs. ML 技术对比分析">
+                  测试文章：AI vs. ML 技术对比分析 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -412,7 +437,7 @@
 </noscript>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"pv-ai-ops","repo":"pv-knowledge-base","client_id":"fca74e00c1171d5deb5c","client_secret":"08d3e9828d0cd4ef25080f6c30cafeb41f4ab90f","admin_user":"asd1245dss","distraction_free_mode":false,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"13f3594a987004ad564d790d112f17a4"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"pv-ai-ops","repo":"pv-knowledge-base","client_id":"fca74e00c1171d5deb5c","client_secret":"08d3e9828d0cd4ef25080f6c30cafeb41f4ab90f","admin_user":"asd1245dss","distraction_free_mode":false,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"14a31be13bdca01fc8aa987f4f1bbd30"}</script>
 <script src="/pv-knowledge-base/js/third-party/comments/gitalk.js" defer></script>
 
 </body>

@@ -23,7 +23,7 @@
     <meta name="description" content="智能体框架架构师指南：LangGraph与Agno-AGI深度对比分析1.0 执行摘要与核心差异本节旨在提供一份高层次的战略概览，为技术决策者直接阐明两大框架的核心权衡。报告的核心论点是：在LangGraph和Agno-AGI之间的选择，是典型的工程决策，即在**显式控制与可靠性（LangGraph）和极致性能与集成简易性（Agno-AGI）**之间的权衡。 1.1 智能体框架的兴起近年来，大型语">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LangGraph 与 Agno-AGI 框架对比">
-<meta property="og:url" content="https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/LangGraph%20%E4%B8%8E%20Agno-AGI%20%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/index.html">
+<meta property="og:url" content="https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/LangGraph%E4%B8%8EAgno-AGI%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/index.html">
 <meta property="og:site_name" content="药物警戒知识库 | PV Knowledge Base">
 <meta property="og:description" content="智能体框架架构师指南：LangGraph与Agno-AGI深度对比分析1.0 执行摘要与核心差异本节旨在提供一份高层次的战略概览，为技术决策者直接阐明两大框架的核心权衡。报告的核心论点是：在LangGraph和Agno-AGI之间的选择，是典型的工程决策，即在**显式控制与可靠性（LangGraph）和极致性能与集成简易性（Agno-AGI）**之间的权衡。 1.1 智能体框架的兴起近年来，大型语">
 <meta property="og:locale" content="zh_CN">
@@ -39,10 +39,10 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/LangGraph%20%E4%B8%8E%20Agno-AGI%20%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/">
+<link rel="canonical" href="https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/LangGraph%E4%B8%8EAgno-AGI%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/LangGraph%20%E4%B8%8E%20Agno-AGI%20%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/","path":"2025/08/27/LangGraph 与 Agno-AGI 框架对比/","title":"LangGraph 与 Agno-AGI 框架对比"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/LangGraph%E4%B8%8EAgno-AGI%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/","path":"2025/08/27/LangGraph与Agno-AGI框架对比/","title":"LangGraph 与 Agno-AGI 框架对比"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>LangGraph 与 Agno-AGI 框架对比 | 药物警戒知识库 | PV Knowledge Base</title>
@@ -183,18 +183,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/pv-knowledge-base/archives/">
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">8</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/pv-knowledge-base/categories/">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/pv-knowledge-base/tags/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -226,7 +226,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/LangGraph%20%E4%B8%8E%20Agno-AGI%20%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/">
+    <link itemprop="mainEntityOfPage" href="https://pv-ai-ops.github.io/pv-knowledge-base/2025/08/27/LangGraph%E4%B8%8EAgno-AGI%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/pv-knowledge-base/images/avatar.gif">
@@ -567,7 +567,7 @@
             <div class="post-nav-item">
             </div>
             <div class="post-nav-item">
-                <a href="/pv-knowledge-base/2025/08/27/FastGPT%20%E4%B8%8E%20Agno-AGI%20%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/" rel="next" title="FastGPT 与 Agno-AGI 框架对比">
+                <a href="/pv-knowledge-base/2025/08/27/FastGPT%E4%B8%8EAgno-AGI%E6%A1%86%E6%9E%B6%E5%AF%B9%E6%AF%94/" rel="next" title="FastGPT 与 Agno-AGI 框架对比">
                   FastGPT 与 Agno-AGI 框架对比 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
@@ -620,7 +620,7 @@
 </noscript>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"pv-ai-ops","repo":"pv-knowledge-base","client_id":"fca74e00c1171d5deb5c","client_secret":"08d3e9828d0cd4ef25080f6c30cafeb41f4ab90f","admin_user":"asd1245dss","distraction_free_mode":false,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"9b2c5cd23ad585f235e66b1b3de173bd"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"pv-ai-ops","repo":"pv-knowledge-base","client_id":"fca74e00c1171d5deb5c","client_secret":"08d3e9828d0cd4ef25080f6c30cafeb41f4ab90f","admin_user":"asd1245dss","distraction_free_mode":false,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"9528a8c66b42f5db0992a47ebbb3ed9c"}</script>
 <script src="/pv-knowledge-base/js/third-party/comments/gitalk.js" defer></script>
 
 </body>

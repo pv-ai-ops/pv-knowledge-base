@@ -7,6 +7,17 @@ console.log('🚀 开始处理content-inbox中的新内容...');
 const inboxDir = path.join(__dirname, '../content-inbox');
 const sourceDir = path.join(__dirname, '../source');
 
+// 创建URL安全的文件名处理函数
+function createSafeFileName(fileName) {
+  return fileName
+    .replace(/\s+vs\.\s+/g, '-vs-')         // "vs." -> "-vs-"
+    .replace(/\s*[:：]\s*/g, '-')           // 冒号 -> "-" 
+    .replace(/\s+/g, '-')                   // 空格 -> "-"
+    .replace(/[^\w\u4e00-\u9fa5\-]/g, '')   // 保留字母数字中文和连字符
+    .replace(/-+/g, '-')                    // 多个连字符合并
+    .replace(/^-|-$/g, '');                 // 移除首尾连字符
+}
+
 // 确保目标目录存在
 if (!fs.existsSync(path.join(sourceDir, 'assets'))) {
   fs.mkdirSync(path.join(sourceDir, 'assets'), { recursive: true });
@@ -23,15 +34,18 @@ if (fs.existsSync(markdownDir)) {
     const sourcePath = path.join(markdownDir, file);
     const content = fs.readFileSync(sourcePath, 'utf8');
     
+    // 生成URL安全的文件名
+    const originalTitle = path.basename(file, '.md');
+    const safeFileName = createSafeFileName(originalTitle) + '.md';
+    
     // 检查是否已有Front Matter
     let finalContent = content;
     if (!content.startsWith('---')) {
-      const title = path.basename(file, '.md');
       const now = new Date();
       const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
       
       finalContent = `---
-title: ${title}
+title: ${originalTitle}
 date: ${dateStr}
 tags: [药物警戒, AI]
 categories: [技术分析]
@@ -40,12 +54,12 @@ categories: [技术分析]
 ${content}`;
     }
     
-    // 移动到_posts目录
-    const targetPath = path.join(sourceDir, '_posts', file);
+    // 使用安全的文件名移动到_posts目录
+    const targetPath = path.join(sourceDir, '_posts', safeFileName);
     fs.writeFileSync(targetPath, finalContent);
     fs.unlinkSync(sourcePath);
     
-    console.log(`✅ 处理Markdown: ${file}`);
+    console.log(`✅ 处理Markdown: ${file} -> ${safeFileName}`);
     processedFiles++;
   });
 }
@@ -59,12 +73,8 @@ if (fs.existsSync(htmlDir)) {
     const sourcePath = path.join(htmlDir, file);
     const htmlFileName = path.basename(file, '.html');
     
-    // 生成ASCII安全的文件名
-    const safeFileName = htmlFileName
-      .replace(/\s+vs\.\s+/g, '-vs-')
-      .replace(/\s+/g, '-')
-      .replace(/[^a-zA-Z0-9\-]/g, '')
-      .toLowerCase() + '.html';
+    // 使用统一的文件名安全处理函数
+    const safeFileName = createSafeFileName(htmlFileName) + '.html';
     
     // 1. 复制HTML到source根目录 (用于直接访问)
     const targetHtmlPath = path.join(sourceDir, safeFileName);
@@ -103,12 +113,13 @@ categories: [技术分析]
 
 上方为完整功能的交互式应用，支持所有动态功能和数据可视化。`;
 
-    const markdownPath = path.join(sourceDir, '_posts', `${htmlFileName}.md`);
+    const safeMarkdownFileName = createSafeFileName(htmlFileName) + '.md';
+    const markdownPath = path.join(sourceDir, '_posts', safeMarkdownFileName);
     fs.writeFileSync(markdownPath, markdownContent);
     
     fs.unlinkSync(sourcePath);
     
-    console.log(`✅ 处理HTML应用: ${file} (创建文章 + 保留交互功能)`);
+    console.log(`✅ 处理HTML应用: ${file} -> ${safeFileName} (创建文章 + 保留交互功能)`);
     processedFiles++;
   });
 }
