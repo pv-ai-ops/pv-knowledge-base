@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交互式报告：agents.md 规范深度分析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Blue/Orange Accents -->
+    <!-- Application Structure Plan: A thematic, five-section SPA design (导览, 技术规范, 生态系统, 社区之声, 战略考量) using tab-based navigation. This structure transforms the linear report into a multi-faceted exploratory tool, catering to different user personas (developers, leaders, architects) by grouping content logically (Why, How, Who, What-If, So-What). This prioritizes user-driven exploration over a passive reading experience, making the complex information more digestible and engaging. Key interactions include an interactive ecosystem chart, a dynamic pros/cons comparison, and a visual tech stack diagram. -->
+    <!-- Visualization & Content Choices: 1. Ecosystem Chart (Report Info: Adopters vs Holdouts -> Goal: Compare -> Viz: Interactive Bar Chart -> Interaction: Hover for details -> Justification: More impactful than a list for showing coalition strength -> Library: Chart.js). 2. Tech Stack Diagram (Report Info: Mind/Body Analogy -> Goal: Organize -> Viz: HTML/CSS Flexbox Diagram -> Interaction: Hover to highlight layers -> Justification: Visually clarifies the abstract architecture -> Library/Method: HTML/Tailwind/JS). 3. Pros/Cons (Report Info: Community Debate -> Goal: Compare/Organize -> Viz: Two-column card layout -> Interaction: Click to expand -> Justification: Clearly separates arguments for easy comparison -> Library/Method: HTML/Tailwind/JS). 4. Key Stats (Report Info: Adoption numbers -> Goal: Inform -> Viz: Animated number callouts -> Interaction: Count-up on scroll -> Justification: Draws attention to key data points -> Library/Method: HTML/Tailwind/JS). -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #F8F5F2;
+            color: #333333;
+        }
+        .nav-btn {
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-btn.active, .nav-btn:hover {
+            color: #5A7D9A;
+            border-bottom-color: #5A7D9A;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .tech-stack-diagram > div {
+            border: 2px solid #D1D5DB;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .tech-stack-diagram > div:hover {
+            background-color: #EBF0F4;
+            border-color: #5A7D9A;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#3E5A74] mb-2">`agents.md` 规范深度分析</h1>
+            <p class="text-lg text-gray-600">一份关于新兴 AI 编码代理标准的交互式报告</p>
+        </header>
+
+        <nav class="sticky top-0 bg-[#F8F5F2]/80 backdrop-blur-sm z-10 mb-12 border-b border-gray-200">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-center space-x-4 sm:space-x-8 py-4 text-sm sm:text-base font-medium text-gray-500">
+                    <button class="nav-btn active" data-target="overview">导览</button>
+                    <button class="nav-btn" data-target="specs">技术规范</button>
+                    <button class="nav-btn" data-target="ecosystem">生态系统</button>
+                    <button class="nav-btn" data-target="debate">社区之声</button>
+                    <button class="nav-btn" data-target="strategy">战略考量</button>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            <section id="overview" class="content-section active">
+                <div class="max-w-4xl mx-auto">
+                    <div class="card p-8 mb-8">
+                        <h2 class="text-2xl font-bold text-[#5A7D9A] mb-4">核心问题：标准的“寒武纪大爆发”</h2>
+                        <p class="text-gray-700 leading-relaxed">随着 AI 编码代理的激增，行业陷入了标准碎片化的混乱局面。每个工具（如 Claude, Gemini）都引入了自己专有的指令文件格式，导致开发者需要为同一个项目维护大量冗余的配置文件，极大地增加了维护成本和认知负担。这种混乱阻碍了不同 AI 工具间的协同工作，形成了一种技术壁垒。</p>
+                    </div>
+                    <div class="text-center my-8">
+                        <span class="text-4xl text-gray-400">↓</span>
+                    </div>
+                    <div class="card p-8">
+                        <h2 class="text-2xl font-bold text-[#5A7D9A] mb-4">解决方案：“为代理而生的 README”</h2>
+                        <p class="text-gray-700 leading-relaxed mb-4">`agents.md` 应运而生，它旨在成为一个单一、开放且可预测的标准。正如 `README.md` 为人类贡献者提供项目入口，`agents.md` 为 AI 代理提供了一个统一的、专门的位置，以获取它们有效工作所需的上下文和指令。其核心理念是：</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><strong class="font-semibold">关注点分离:</strong> 将面向人类的 `README.md` 与面向机器的 `agents.md` 分开。</li>
+                            <li><strong class="font-semibold">互操作性:</strong> 实现“一个文件，适配所有代理”，避免供应商锁定。</li>
+                            <li><strong class="font-semibold">简洁性:</strong> 使用开发者熟悉的 Markdown 语法，无复杂模式，降低采纳门槛。</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="specs" class="content-section">
+                <div class="max-w-5xl mx-auto">
+                    <h2 class="text-3xl font-bold text-center text-[#3E5A74] mb-8">技术规范与最佳实践</h2>
+                    <p class="text-center text-gray-600 mb-12">本节将剖析如何构建和使用一个高效的 `agents.md` 文件。虽然规范本身很灵活，但遵循推荐的结构和最佳实践，可以最大化其效用，确保 AI 代理能够准确、高效地理解并执行指令。</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="card p-6">
+                            <h3 class="text-xl font-bold text-[#5A7D9A] mb-4">推荐文件结构</h3>
+                            <p class="text-sm text-gray-500 mb-4">一个结构清晰的文件能有效指导 AI 代理。</p>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start"><span class="text-[#E87A5D] mr-2">●</span><div><strong>项目概述与结构:</strong> 描述核心功能和关键目录。</div></li>
+                                <li class="flex items-start"><span class="text-[#E87A5D] mr-2">●</span><div><strong>设置、构建与测试命令:</strong> 提供精确、可复制的 shell 命令。</div></li>
+                                <li class="flex items-start"><span class="text-[#E87A5D] mr-2">●</span><div><strong>编码约定与风格指南:</strong> 确保 AI 生成的代码风格一致。</div></li>
+                                <li class="flex items-start"><span class="text-[#E87A5D] mr-2">●</span><div><strong>架构原则:</strong> 说明项目遵循的 MVC、微服务等设计模式。</div></li>
+                                <li class="flex items-start"><span class="text-[#E87A5D] mr-2">●</span><div><strong>提交与 PR 指南:</strong> 规范版本控制历史。</div></li>
+                                <li class="flex items-start"><span class="text-[#E87A5D] mr-2">●</span><div><strong>安全注意事项:</strong> 传达安全规则，如防止 SQL 注入。</div></li>
+                            </ul>
+                        </div>
+                        <div class="card p-6">
+                            <h3 class="text-xl font-bold text-[#5A7D9A] mb-4">高级用法：Monorepo</h3>
+                             <p class="text-sm text-gray-500 mb-4">对于大型单体仓库，`agents.md` 设计了强大的层次化发现机制。</p>
+                            <p class="text-gray-700 leading-relaxed">你可以在项目的任意子目录中放置嵌套的 `agents.md` 文件。AI 代理工作时，会自动查找并读取距离当前工作目录<strong>最近</strong>的 `agents.md` 文件。这允许你为每个子项目或包提供量身定制的指令，避免根级文件变得臃肿。</p>
+                        </div>
+                    </div>
+                     <div class="card p-6 mt-8">
+                        <h3 class="text-xl font-bold text-[#5A7D9A] mb-4">实施与维护最佳实践</h3>
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                            <div>
+                                <div class="text-4xl mb-2">📝</div>
+                                <h4 class="font-semibold">明确且简洁</h4>
+                                <p class="text-sm text-gray-600">指令清晰直接，避免模糊。建议长度在 150 行以内。</p>
+                            </div>
+                            <div>
+                                <div class="text-4xl mb-2">💻</div>
+                                <h4 class="font-semibold">使用具体命令</h4>
+                                <p class="text-sm text-gray-600">用反引号包裹 shell 命令，便于 AI 解析和执行。</p>
+                            </div>
+                            <div>
+                                <div class="text-4xl mb-2">🔄</div>
+                                <h4 class="font-semibold">与代码同步更新</h4>
+                                <p class="text-sm text-gray-600">将其视为代码，纳入 Code Review 流程，保持时效性。</p>
+                            </div>
+                            <div>
+                                <div class="text-4xl mb-2">🔗</div>
+                                <h4 class="font-semibold">链接而非复制</h4>
+                                <p class="text-sm text-gray-600">引用其他文档使用链接，维护单一信息源。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ecosystem" class="content-section">
+                 <div class="max-w-5xl mx-auto">
+                    <h2 class="text-3xl font-bold text-center text-[#3E5A74] mb-8">生态系统与行业采纳</h2>
+                    <p class="text-center text-gray-600 mb-12">`agents.md` 的推广得益于一个多元化的支持者联盟，但同时也面临着来自行业巨头的竞争标准，形成了一场经典的“标准之战”。</p>
+                    <div class="card p-6 mb-8">
+                        <h3 class="text-xl font-bold text-center text-[#5A7D9A] mb-4">采纳者联盟 vs 坚守者</h3>
+                        <div class="chart-container">
+                            <canvas id="ecosystemChart"></canvas>
+                        </div>
+                    </div>
+                     <div class="card p-6">
+                        <h3 class="text-xl font-bold text-center text-[#5A7D9A] mb-4">主要标准对比</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="p-4 font-semibold">标准 / 文件名</th>
+                                        <th class="p-4 font-semibold">主要支持者</th>
+                                        <th class="p-4 font-semibold">格式</th>
+                                        <th class="p-4 font-semibold">互操作性</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="p-4 font-medium text-[#5A7D9A]">`agents.md`</td>
+                                        <td class="p-4">OpenAI, Google (Jules), Cursor</td>
+                                        <td class="p-4">标准 Markdown</td>
+                                        <td class="p-4"><span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">高</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="p-4 font-medium text-[#E87A5D]">`claude.md`</td>
+                                        <td class="p-4">Anthropic</td>
+                                        <td class="p-4">标准 Markdown</td>
+                                        <td class="p-4"><span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs">低 (专有)</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="p-4 font-medium text-[#E87A5D]">`gemini.md`</td>
+                                        <td class="p-4">Google (Gemini CLI)</td>
+                                        <td class="p-4">标准 Markdown</td>
+                                        <td class="p-4"><span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs">低 (专有)</span></td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="p-4 font-medium text-[#E87A5D]">`.cursor/rules`</td>
+                                        <td class="p-4">Cursor (高级)</td>
+                                        <td class="p-4">带 frontmatter 的 MD</td>
+                                        <td class="p-4"><span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs">低 (专有)</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="debate" class="content-section">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-3xl font-bold text-center text-[#3E5A74] mb-8">社区之声：一场激烈的辩论</h2>
+                    <p class="text-center text-gray-600 mb-12">关于 `agents.md` 的价值，开发者社区存在着支持与质疑两种声音。这不仅是技术路线之争，更是一场关于人机协作哲学的深刻探讨。</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-2xl font-bold text-green-600 mb-4 text-center">支持论点 👍</h3>
+                            <div class="space-y-4">
+                                <div class="card p-6">
+                                    <h4 class="font-semibold mb-2">推动更优文档实践</h4>
+                                    <p class="text-sm text-gray-600">AI 代理的即时反馈，迫使团队编写和维护高质量、准确的流程文档，最终也惠及人类开发者。</p>
+                                </div>
+                                <div class="card p-6">
+                                    <h4 class="font-semibold mb-2">实用的上下文管理</h4>
+                                    <p class="text-sm text-gray-600">在当前 LLM 上下文窗口有限的现实下，它提供了一个集中存放指令的实用方案，提高了 AI 响应的准确性。</p>
+                                </div>
+                                <div class="card p-6">
+                                    <h4 class="font-semibold mb-2">标准化的固有优势</h4>
+                                    <p class="text-sm text-gray-600">统一到单一文件名，能显著减少项目根目录的混乱，简化跨工具配置。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-red-600 mb-4 text-center">争议与质疑 👎</h3>
+                            <div class="space-y-4">
+                                <div class="card p-6">
+                                    <h4 class="font-semibold mb-2">文档重复问题</h4>
+                                    <p class="text-sm text-gray-600">其内容常与 `README.md` 重复，增加了维护工作量，并有信息不同步的风险，违背了“单一信息源”原则。</p>
+                                </div>
+                                <div class="card p-6">
+                                    <h4 class="font-semibold mb-2">“照管”AI 的“反功能”</h4>
+                                    <p class="text-sm text-gray-600">要求开发者像“保姆”一样手把手地喂指令给 AI，与 AI 旨在简化人类工作的承诺背道而驰。</p>
+                                </div>
+                                <div class="card p-6">
+                                    <h4 class="font-semibold mb-2">格式局限与成本</h4>
+                                    <p class="text-sm text-gray-600">单一扁平文件对复杂项目不够用，且文件中的每一行文字都会消耗 token，带来成本和延迟。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card p-8 mt-12 bg-blue-50 border border-blue-200">
+                        <h3 class="text-xl font-bold text-[#5A7D9A] mb-4 text-center">一个前瞻性结论：一项过渡性技术</h3>
+                        <p class="text-gray-700 text-center max-w-3xl mx-auto">`agents.md` 很可能是为应对<strong>当前这一代</strong> LLM 的特定局限性（如上下文窗口有限）而设计的务实“脚手架”。随着模型能力进化，未来的 AI 代理或许能直接理解整个代码库的文档，无需专门的指令文件。这个视角调和了辩论双方：它在<strong>当下</strong>是有效的，但其批评者对<strong>未来</strong>的判断也可能是正确的。</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="strategy" class="content-section">
+                <div class="max-w-5xl mx-auto">
+                    <h2 class="text-3xl font-bold text-center text-[#3E5A74] mb-8">战略考量与未来展望</h2>
+                    <p class="text-center text-gray-600 mb-12">超越功能性，我们需要从风险和战略层面审视 `agents.md`，并探讨代理驱动开发的未来演进方向。</p>
+                    
+                    <div class="card p-6 mb-8">
+                        <h3 class="text-xl font-bold text-red-600 mb-4">新的攻击面：提示注入风险</h3>
+                        <p class="text-gray-700 leading-relaxed mb-4">`agents.md` 的内容会直接成为 AI 代理系统提示的一部分，这使其成为提示注入攻击的直接载体。攻击者可通过提交恶意的 `agents.md` 文件，诱导代理执行数据泄露、任意命令执行等危险操作。因此，必须采取严格的安全措施：</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><strong>将 `agents.md` 视为代码:</strong> 纳入强制性代码审查。</li>
+                            <li><strong>审查第三方指令:</strong> 切勿盲目信任来自未知来源的指令。</li>
+                            <li><strong>遵循最小权限原则:</strong> 不在文件中包含任何敏感数据。</li>
+                            <li><strong>使用安全强化的代理:</strong> 代理应在沙箱中执行，并限制其权限。</li>
+                        </ul>
+                    </div>
+
+                    <div class="card p-6 mb-8">
+                        <h3 class="text-xl font-bold text-[#5A7D9A] mb-4">在 AI 代理技术栈中的定位</h3>
+                        <p class="text-gray-700 leading-relaxed mb-4">`agents.md` 的核心功能是提供<strong>静态的、声明式的上下文</strong>。它不是执行框架，而是知识与上下文层的一个关键组件。我们可以用一个类比来理解：</p>
+                        <div class="tech-stack-diagram grid md:grid-cols-3 gap-4 mt-6">
+                            <div>
+                                <h4 class="font-bold text-lg">🧠 “心智”</h4>
+                                <p class="text-sm"><strong>(推理与知识)</strong></p>
+                                <p class="text-xs mt-2">LLM + 上下文。`agents.md` 在此扮演项目的“长期记忆”或“操作手册”。</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">⚡️ “神经系统”</h4>
+                                <p class="text-sm"><strong>(编排)</strong></p>
+                                <p class="text-xs mt-2">代理框架 (如 LangChain, AutoGen) 负责协调推理、感知和行动。</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg">💪 “身体”</h4>
+                                <p class="text-sm"><strong>(行动与感知)</strong></p>
+                                <p class="text-xs mt-2">工具/函数调用 API 是代理与外部世界交互的“手”和“感官”。</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card p-8 bg-gray-50">
+                        <h3 class="text-2xl font-bold text-center text-[#3E5A74] mb-6">开发者角色的转变：从实施者到 AI 编排者</h3>
+                        <p class="text-gray-700 text-center mb-6">随着 AI 代理承担更多底层实施工作，人类开发者的角色正从代码的直接编写者，转变为更高层次的“AI 编排者”。核心职责将转变为：</p>
+                        <div class="flex flex-col md:flex-row justify-around text-center gap-6">
+                            <div>
+                                <h4 class="font-semibold text-[#5A7D9A]">高级系统设计</h4>
+                                <p class="text-sm">定义架构、模块和接口。</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-[#5A7D9A]">战略决策与目标设定</h4>
+                                <p class="text-sm">将业务需求转化为 AI 可执行的任务。</p>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-[#5A7D9A]">AI 监督与质量保证</h4>
+                                <p class="text-sm">审查 AI 产出，确保质量与安全。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+
+                    navButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    contentSections.forEach(section => {
+                        if (section.id === targetId) {
+                            section.classList.add('active');
+                        } else {
+                            section.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            const ecosystemData = {
+                labels: ['IDE / 编辑器', 'CLI 工具', '基础模型', '其他工具'],
+                datasets: [
+                    {
+                        label: '采纳者',
+                        data: [2, 5, 1, 5],
+                        backgroundColor: 'rgba(90, 125, 154, 0.7)',
+                        borderColor: 'rgba(90, 125, 154, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '坚守者 (专有标准)',
+                        data: [1, 2, 1, 0],
+                        backgroundColor: 'rgba(232, 122, 93, 0.7)',
+                        borderColor: 'rgba(232, 122, 93, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            };
+            
+            const ecosystemAdopters = {
+                'IDE / 编辑器': ['Cursor', 'Zed'],
+                'CLI 工具': ['Google Jules', 'Aider', 'RooCode', 'Kilo Code', 'opencode'],
+                '基础模型': ['OpenAI Codex'],
+                '其他工具': ['Amp', 'Factory', 'Phoenix', 'Semgrep', 'Warp']
+            };
+
+            const ecosystemHoldouts = {
+                'IDE / 编辑器': ['Cursor (高级)'],
+                'CLI 工具': ['Google Gemini CLI'],
+                '基础模型': ['Anthropic Claude'],
+                '其他工具': []
+            };
+
+            const ctx = document.getElementById('ecosystemChart');
+            if(ctx) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: ecosystemData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: '工具/项目数量'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: '`agents.md` 标准采纳情况概览'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    footer: function(tooltipItems) {
+                                        let category = tooltipItems[0].label;
+                                        let datasetIndex = tooltipItems[0].datasetIndex;
+                                        let list = datasetIndex === 0 ? ecosystemAdopters[category] : ecosystemHoldouts[category];
+                                        if (list && list.length > 0) {
+                                            return '\n代表: ' + list.join(', ');
+                                        }
+                                        return '';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

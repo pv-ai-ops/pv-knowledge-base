@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LangExtract 技术分析交互式应用</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Indigo Accent -->
+    <!-- Application Structure Plan: A thematic, single-page dashboard structure is chosen over a linear document layout to empower user-driven exploration. The design features a sticky navigation header for quick access to key sections: a high-level "Why" section with key stats, an interactive tabbed "Core Features" section for deep dives, a step-by-step "How-to" guide for developers, a dynamic chart for "Competitive Analysis", and card-based "Use Cases". This non-linear architecture allows different user personas (e.g., tech leads, developers) to instantly access the information most relevant to their needs, enhancing usability and information retention compared to passively scrolling through a long report. -->
+    <!-- Visualization & Content Choices: The primary visualization is an interactive bar chart (Chart.js) for competitive analysis. Goal: Compare tools dynamically. Method: Users select a feature (e.g., Source Grounding, Ease of Use), and the chart updates to show scores for LangExtract and its alternatives. Justification: This transforms a static, hard-to-parse table into an engaging, insightful tool that highlights LangExtract's unique strengths more effectively. Other content is presented using interactive tabs and cards (HTML/CSS/JS) to organize dense information into digestible chunks, improving clarity and user experience. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #1e293b; /* slate-800 */
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #4f46e5; /* indigo-600 */
+            border-bottom-color: #4f46e5;
+        }
+        .tab-btn {
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            background-color: #4f46e5;
+            color: #ffffff;
+        }
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-slate-900">
+                <span class="text-indigo-600">Lang</span>Extract 解析
+            </h1>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#why" class="nav-link text-slate-600 font-medium border-b-2 border-transparent pb-1">核心价值</a>
+                <a href="#features" class="nav-link text-slate-600 font-medium border-b-2 border-transparent pb-1">架构支柱</a>
+                <a href="#workflow" class="nav-link text-slate-600 font-medium border-b-2 border-transparent pb-1">工作流程</a>
+                <a href="#comparison" class="nav-link text-slate-600 font-medium border-b-2 border-transparent pb-1">竞品分析</a>
+                <a href="#use-cases" class="nav-link text-slate-600 font-medium border-b-2 border-transparent pb-1">应用场景</a>
+                <a href="#adoption" class="nav-link text-slate-600 font-medium border-b-2 border-transparent pb-1">选型建议</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="why" class="text-center mb-24 section-fade-in">
+            <h2 class="text-4xl font-bold text-slate-900 mb-4">应对 LLM 信息提取的“信任危机”</h2>
+            <p class="max-w-3xl mx-auto text-lg text-slate-600 mb-12">
+                大型语言模型功能强大，但在高风险任务中，“幻觉”与结果的不可追溯性是巨大障碍。LangExtract 是一个目标明确的工程解决方案，旨在实现**结构化、可靠且可验证**的信息提取，其核心是无可比拟的**精确源头追溯**能力。
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-2xl font-bold text-indigo-600 mb-2">源头追溯</h3>
+                    <p class="text-slate-500">每个提取结果都能精确映射回源文本的字符位置，提供完整的审计追踪，建立信任。</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-2xl font-bold text-indigo-600 mb-2">模式遵循</h3>
+                    <p class="text-slate-500">通过少样本提示和受控生成，强制输出严格遵守预定义的 JSON 模式，确保数据一致性。</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg border border-slate-200">
+                    <h3 class="text-2xl font-bold text-indigo-600 mb-2">可视化审查</h3>
+                    <p class="text-slate-500">一键生成交互式 HTML 报告，高亮展示提取实体，极大加速人工审核与验证流程。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="mb-24 section-fade-in">
+            <h2 class="text-3xl font-bold text-center text-slate-900 mb-12">四大架构支柱</h2>
+            <div class="max-w-4xl mx-auto">
+                <div class="flex justify-center mb-8 border-b border-slate-200">
+                    <button class="tab-btn py-3 px-6 text-lg font-medium text-slate-500 active" data-tab="grounding">源头追溯</button>
+                    <button class="tab-btn py-3 px-6 text-lg font-medium text-slate-500" data-tab="schema">模式遵循</button>
+                    <button class="tab-btn py-3 px-6 text-lg font-medium text-slate-500" data-tab="scaling">规模化设计</button>
+                    <button class="tab-btn py-3 px-6 text-lg font-medium text-slate-500" data-tab="visualize">集成可视化</button>
+                </div>
+                <div id="tab-content" class="bg-white p-8 rounded-lg shadow-md border border-slate-200">
+                    <div class="tab-pane active" id="grounding">
+                        <h3 class="text-2xl font-bold mb-4 text-slate-800">深入解析精确源头追溯</h3>
+                        <p class="text-slate-600">LangExtract 的核心机制在于，它能够将每一个提取出的实体映射到其在原始文档中的精确起始和结束字符偏移量。这意味着提取的结果不是模型的转述或概括，而是源文本的一个精确、可验证的片段。这为所有提取操作提供了完整的审计追踪能力，将“黑箱”式的 AI 输出转变为透明、可核查的结果。</p>
+                    </div>
+                    <div class="tab-pane hidden" id="schema">
+                        <h3 class="text-2xl font-bold mb-4 text-slate-800">通过少样本提示与受控生成实现模式遵循</h3>
+                        <p class="text-slate-600">LangExtract 采用“无需微调”的范式，通过结合自然语言描述和高质量示例来指导 LLM 输出。更重要的是，它运用“受控生成”技术强制 LLM 的输出严格遵守预定义的 JSON 模式，确保数据格式的一致性和可靠性。注意：此功能对 Gemini 等模型支持最佳。</p>
+                    </div>
+                    <div class="tab-pane hidden" id="scaling">
+                        <h3 class="text-2xl font-bold mb-4 text-slate-800">为规模化而设计：长文档处理策略</h3>
+                        <p class="text-slate-600">为解决长文档的上下文窗口限制，LangExtract 采用了一套组合策略：<br>• <strong>分块 (Chunking):</strong> 将长文本分解成带重叠的块。<br>• <strong>并行处理 (Parallel Processing):</strong> 多线程并发请求，提高吞吐量。<br>• <strong>多遍扫描 (Multi-Pass Scanning):</strong> 多次扫描以提高稀疏信息的召回率，官方数据显示可提升12%。</p>
+                    </div>
+                    <div class="tab-pane hidden" id="visualize">
+                        <h3 class="text-2xl font-bold mb-4 text-slate-800">闭环：集成可视化以供人工审查</h3>
+                        <p class="text-slate-600">`lx.visualize` 函数能够生成一个独立的、交互式的 HTML 文件。在报告中，源文本会以颜色编码的方式高亮显示所有被提取出的实体，使得审查和质量保证工作变得直观而高效。这是开发工作流中的关键组成部分，极大地加速了从开发到验证的整个过程。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="workflow" class="mb-24 section-fade-in">
+            <h2 class="text-3xl font-bold text-center text-slate-900 mb-12">开发者工作流程：四步完成提取</h2>
+            <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md border border-slate-200">
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-xl font-semibold text-indigo-600 mb-2">第一步：定义提示 (Prompt)</h4>
+                        <p class="text-slate-600 mb-2">用自然语言清晰地描述你的提取任务、格式要求和约束条件。</p>
+                        <pre class="bg-slate-900 text-white p-4 rounded-md text-sm overflow-x-auto"><code>import textwrap
+prompt = textwrap.dedent("""\
+    按出现顺序列出角色、情感和关系。
+    提取时请使用确切的文本，不要转述。""")</code></pre>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold text-indigo-600 mb-2">第二步：构建示例 (Examples)</h4>
+                        <p class="text-slate-600 mb-2">提供一到两个高质量的“输入-输出”示例，这是指导 LLM 的关键。</p>
+                        <pre class="bg-slate-900 text-white p-4 rounded-md text-sm overflow-x-auto"><code>import langextract as lx
+examples = [lx.data.ExampleData(
+    input_text='...', 
+    extractions=[...]
+)]</code></pre>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold text-indigo-600 mb-2">第三步：运行提取 (Extract)</h4>
+                        <p class="text-slate-600 mb-2">调用核心函数 `lx.extract`，传入文本、提示和示例。</p>
+                        <pre class="bg-slate-900 text-white p-4 rounded-md text-sm overflow-x-auto"><code>result = lx.extract(
+    text_or_documents="朱丽叶为罗密欧而心痛",
+    prompt_description=prompt,
+    examples=examples,
+    model_id="gemini-2.5-flash",
+)</code></pre>
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-semibold text-indigo-600 mb-2">第四步：处理与可视化</h4>
+                        <p class="text-slate-600 mb-2">以编程方式处理结果，或生成可视化报告进行审查。</p>
+                        <pre class="bg-slate-900 text-white p-4 rounded-md text-sm overflow-x-auto"><code>for e in result.extractions: print(e)
+html = lx.visualize(result)</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="comparison" class="mb-24 section-fade-in">
+            <h2 class="text-3xl font-bold text-center text-slate-900 mb-4">交互式竞品分析</h2>
+            <p class="text-lg text-center text-slate-600 max-w-3xl mx-auto mb-8">LangExtract 并非通用框架，而是一个专注的工具。点击下方按钮，动态比较它与其他主流库在不同维度上的表现。</p>
+            <div class="max-w-5xl mx-auto bg-white p-8 rounded-lg shadow-md border border-slate-200">
+                <div class="flex justify-center flex-wrap gap-4 mb-8" id="chart-controls">
+                    <button class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full font-semibold" data-feature="grounding">源头追溯能力</button>
+                    <button class="px-4 py-2 bg-slate-100 text-slate-700 rounded-full font-semibold" data-feature="visualization">内置可视化</button>
+                    <button class="px-4 py-2 bg-slate-100 text-slate-700 rounded-full font-semibold" data-feature="easeOfUse">易用性 (提取任务)</button>
+                    <button class="px-4 py-2 bg-slate-100 text-slate-700 rounded-full font-semibold" data-feature="ecosystem">生态/灵活性</button>
+                </div>
+                <div class="chart-container relative h-96 md:h-[50vh] w-full max-w-4xl mx-auto">
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="use-cases" class="mb-24 section-fade-in">
+            <h2 class="text-3xl font-bold text-center text-slate-900 mb-12">高级应用与战略用例</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-md border border-slate-200">
+                    <h3 class="text-xl font-bold mb-3 text-slate-800">医疗 NLP (RadExtract)</h3>
+                    <p class="text-slate-600">将非结构化的放射学报告转化为结构化数据，提取关键发现，极大提高临床实用性和医学研究效率。</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md border border-slate-200">
+                    <h3 class="text-xl font-bold mb-3 text-slate-800">赋能下一代 RAG 系统</h3>
+                    <p class="text-slate-600">在数据入库前提取高质量元数据，实现更精准的“过滤式向量搜索”，或构建知识图谱以支持更复杂的 Graph-RAG。</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-md border border-slate-200">
+                    <h3 class="text-xl font-bold mb-3 text-slate-800">大规模数据挖掘与合规</h3>
+                    <p class="text-slate-600">在法律、金融等领域，从海量文档中提取关键条款和数据，同时满足严格的审计与合规要求。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="adoption" class="section-fade-in">
+            <h2 class="text-3xl font-bold text-center text-slate-900 mb-12">选型建议</h2>
+            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <div class="bg-green-50 border-l-4 border-green-500 p-8 rounded-r-lg">
+                    <h3 class="text-2xl font-bold text-green-800 mb-4">何时选择 LangExtract？</h3>
+                    <ul class="list-disc list-inside space-y-2 text-green-700">
+                        <li>用例涉及受监管数据（医疗、法律、金融），需要清晰的审计追踪。</li>
+                        <li>构建需要高质量元数据进行过滤的高级 RAG 系统。</li>
+                        <li>需要快速原型设计和验证提取任务，不想投入模型微调。</li>
+                        <li>人机协同审查和验证是工作流的核心组成部分。</li>
+                    </ul>
+                </div>
+                <div class="bg-amber-50 border-l-4 border-amber-500 p-8 rounded-r-lg">
+                    <h3 class="text-2xl font-bold text-amber-800 mb-4">何时考虑替代方案？</h3>
+                    <ul class="list-disc list-inside space-y-2 text-amber-700">
+                        <li>主要需求是简单的 API 响应验证 (可考虑 <strong>Instructor</strong>)。</li>
+                        <li>构建复杂的多步骤代理应用 (可考虑 <strong>LangChain</strong>)。</li>
+                        <li>需要成熟生态系统的全部能力，包括机器学习和规则组件 (可考虑 <strong>spaCy</strong>)。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 mt-16 border-t border-slate-200">
+        <p class="text-slate-500">基于谷歌 LangExtract 技术报告生成的交互式分析应用。</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tab functionality
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabPanes = document.querySelectorAll('.tab-pane');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    tabPanes.forEach(pane => {
+                        if (pane.id === button.dataset.tab) {
+                            pane.classList.remove('hidden');
+                            pane.classList.add('active');
+                        } else {
+                            pane.classList.add('hidden');
+                            pane.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            // Chart.js functionality
+            const chartData = {
+                labels: ['LangExtract', 'Instructor', 'LangChain', 'spaCy-llm'],
+                features: {
+                    grounding: {
+                        label: '源头追溯能力评分 (越高越好)',
+                        scores: [5, 0, 1, 3],
+                        backgroundColor: 'rgba(79, 70, 229, 0.6)',
+                        borderColor: 'rgba(79, 70, 229, 1)',
+                    },
+                    visualization: {
+                        label: '内置可视化能力评分 (越高越好)',
+                        scores: [5, 0, 0, 0],
+                        backgroundColor: 'rgba(30, 64, 175, 0.6)',
+                        borderColor: 'rgba(30, 64, 175, 1)',
+                    },
+                    easeOfUse: {
+                        label: '易用性 (针对提取任务) 评分 (越高越好)',
+                        scores: [4, 4, 2, 3],
+                        backgroundColor: 'rgba(20, 184, 166, 0.6)',
+                        borderColor: 'rgba(20, 184, 166, 1)',
+                    },
+                    ecosystem: {
+                        label: '生态/灵活性评分 (越高越好)',
+                        scores: [2, 2, 5, 4],
+                        backgroundColor: 'rgba(217, 119, 6, 0.6)',
+                        borderColor: 'rgba(217, 119, 6, 1)',
+                    }
+                }
+            };
+
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            let comparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: chartData.features.grounding.label,
+                        data: chartData.features.grounding.scores,
+                        backgroundColor: chartData.features.grounding.backgroundColor,
+                        borderColor: chartData.features.grounding.borderColor,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y + ' / 5';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const chartControls = document.getElementById('chart-controls');
+            chartControls.addEventListener('click', (e) => {
+                if (e.target.tagName === 'BUTTON') {
+                    const feature = e.target.dataset.feature;
+                    if (feature) {
+                        // Update button styles
+                        chartControls.querySelectorAll('button').forEach(btn => {
+                            btn.classList.remove('bg-indigo-100', 'text-indigo-700');
+                            btn.classList.add('bg-slate-100', 'text-slate-700');
+                        });
+                        e.target.classList.add('bg-indigo-100', 'text-indigo-700');
+                        e.target.classList.remove('bg-slate-100', 'text-slate-700');
+
+                        // Update chart data
+                        const newFeatureData = chartData.features[feature];
+                        comparisonChart.data.datasets[0].data = newFeatureData.scores;
+                        comparisonChart.data.datasets[0].label = newFeatureData.label;
+                        comparisonChart.data.datasets[0].backgroundColor = newFeatureData.backgroundColor;
+                        comparisonChart.data.datasets[0].borderColor = newFeatureData.borderColor;
+                        comparisonChart.update();
+                    }
+                }
+            });
+            
+            // Intersection Observer for section fade-in animation
+            const sections = document.querySelectorAll('.section-fade-in');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Active nav link highlighting on scroll
+            const navLinks = document.querySelectorAll('.nav-link');
+            const allSections = document.querySelectorAll('section[id]');
+
+            const onScroll = () => {
+                let currentSection = '';
+                allSections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 100) {
+                        currentSection = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.classList.add('active');
+                    }
+                });
+            };
+            
+            window.addEventListener('scroll', onScroll);
+            onScroll(); // Initial check
+        });
+    </script>
+</body>
+</html>
