@@ -137,6 +137,26 @@ content-inbox/
 - **Tone**: Professional, technical, Chinese-first with English technical terms
 - **Target Audience**: Pharmaceutical AI engineers, regulatory professionals
 
+## AI Integration Requirements
+
+### Image Recognition Protocol (ULTRATHINK)
+
+**CRITICAL**: All image identification and analysis MUST use Gemini instead of the Read tool directly:
+
+- **For screenshot analysis**: Use `chrome_screenshot` tools to capture pages, then send to `mcp__gemini-cli__ask-gemini` with the image path
+- **For file image analysis**: Always use `@file_path` syntax with Gemini CLI instead of Read tool for image files
+- **Image content description**: Let Gemini provide detailed visual analysis, layout description, and content interpretation
+- **Technical diagrams**: Use Gemini to extract technical information, architectural details, and visual patterns from technical graphics
+
+**Example workflow**:
+```bash
+1. Take screenshot → chrome_screenshot or playwright_screenshot
+2. Send to Gemini → ask-gemini with @image_path 
+3. Get detailed visual analysis → comprehensive description and insights
+```
+
+**Never use Read tool for images** - it bypasses the intelligent visual analysis capabilities that Gemini provides.
+
 ## Important Reminders
 
 - **Never commit sensitive information**: OAuth client secrets are already configured; avoid exposing additional API keys
@@ -144,3 +164,4 @@ content-inbox/
 - **Chinese Content**: Preserve Chinese characters in titles and content; only convert problematic symbols
 - **Testing**: Use `npm run preview` for local development; `npm run deploy` publishes to production
 - **GitHub Pages**: Site auto-deploys from `docs/` directory on `doc-page` branch pushes
+- **Image Analysis**: Always use Gemini for image recognition and visual content analysis
