@@ -49,6 +49,12 @@ npm run deploy          # Git commit/push to trigger GitHub Actions deployment
 # Manual Hexo Commands
 hexo new post "Title"   # Create new post with Front Matter template
 hexo new page "name"    # Create new page
+
+# Claude Code Shortcuts
+npm run cc-setup         # Show Claude Code shortcuts setup instructions
+# After running: source scripts/cc-shortcuts.sh
+# Available shortcuts:
+#   ccd [args]           # claude --dangerously-skip-permissions [args] (original config + 64000 tokens)
 ```
 
 ## Content-Inbox System
