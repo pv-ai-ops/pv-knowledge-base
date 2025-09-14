@@ -29,21 +29,51 @@ let processedFiles = 0;
 const markdownDir = path.join(inboxDir, 'markdown');
 if (fs.existsSync(markdownDir)) {
   const markdownFiles = fs.readdirSync(markdownDir).filter(file => file.endsWith('.md'));
-  
+
   markdownFiles.forEach(file => {
     const sourcePath = path.join(markdownDir, file);
-    const content = fs.readFileSync(sourcePath, 'utf8');
-    
+    let content = fs.readFileSync(sourcePath, 'utf8');
+
     // 生成URL安全的文件名
     const originalTitle = path.basename(file, '.md');
     const safeFileName = createSafeFileName(originalTitle) + '.md';
-    
+
+    // 检查是否有同名的.assets文件夹
+    const assetsDir = path.join(markdownDir, originalTitle + '.assets');
+    if (fs.existsSync(assetsDir)) {
+      console.log(`📁 发现关联assets文件夹: ${originalTitle}.assets`);
+
+      // 复制.assets文件夹中的图片文件到source/assets
+      const assetFiles = fs.readdirSync(assetsDir);
+      assetFiles.forEach(assetFile => {
+        // 跳过Zone.Identifier文件
+        if (assetFile.endsWith(':Zone.Identifier')) {
+          return;
+        }
+
+        const assetSourcePath = path.join(assetsDir, assetFile);
+        const assetTargetPath = path.join(sourceDir, 'assets', assetFile);
+
+        fs.copyFileSync(assetSourcePath, assetTargetPath);
+        console.log(`  📎 复制资源: ${assetFile}`);
+      });
+
+      // 更新markdown内容中的图片路径
+      const oldPathPattern = new RegExp(`${originalTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.assets/`, 'g');
+      content = content.replace(oldPathPattern, '/pv-knowledge-base/assets/');
+      console.log(`  🔗 更新图片路径: ${originalTitle}.assets/ -> /pv-knowledge-base/assets/`);
+
+      // 删除原始.assets文件夹
+      fs.rmSync(assetsDir, { recursive: true });
+      console.log(`  🗑️ 清理原始assets文件夹`);
+    }
+
     // 检查是否已有Front Matter
     let finalContent = content;
     if (!content.startsWith('---')) {
       const now = new Date();
       const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
-      
+
       finalContent = `---
 title: ${originalTitle}
 date: ${dateStr}
@@ -53,12 +83,12 @@ categories: [技术分析]
 
 ${content}`;
     }
-    
+
     // 使用安全的文件名移动到_posts目录
     const targetPath = path.join(sourceDir, '_posts', safeFileName);
     fs.writeFileSync(targetPath, finalContent);
     fs.unlinkSync(sourcePath);
-    
+
     console.log(`✅ 处理Markdown: ${file} -> ${safeFileName}`);
     processedFiles++;
   });
