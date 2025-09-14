@@ -13,25 +13,25 @@ categories: [技术分析]
 #### 核心功能概述
 Replit Agent 3 基于前代版本，引入增强自主性，可无干预运行高达200分钟，同时处理从应用开发到测试和部署的任务。它采用自然语言界面，用户描述想法，代理生成代码、在真实浏览器中测试并自动修复问题。主要新增功能包括创建其他代理（如Slack或Telegram机器人）和自动化（如定时邮件），并集成Notion或Google Drive等服务。适用于免费和付费用户，支持全栈应用、前端原型和 workflow 自动化，通过网页或移动端实时跟踪进度。
 
-![Replit Agent 3 界面示例](Replit%20Agent%203%20关键评估要点.assets/maxresdefault.jpg)
+![Replit Agent 3 界面示例](/pv-knowledge-base/assets/maxresdefault.jpg)
 *图1: Replit Agent 3 的启动界面，展示自然语言提示输入框，用户可直接输入“Build a million dollar SaaS. NOW!”等描述开始构建。*
 
 #### 优势与潜在益处
 对于编程新手或追求快速构建的用户，Agent 3 通过自动化开发生命周期降低门槛，从构想到部署通常只需几分钟完成简单任务。它在创建生产力工具方面表现出色，如从Linear提取每日任务摘要邮件，或研究客人信息并保存到Drive的会议准备自动化。用户报告生产力提升，例如工作流效率增加300%。其成本效益测试系统——据报比替代方案快3倍、廉价10倍——适合迭代开发，无需手动监督。
 
-![Agent 3 任务流程图示](Replit%20Agent%203%20关键评估要点.assets/Fvtlns5WYAUcEWV.jpg)
+![Agent 3 任务流程图示](/pv-knowledge-base/assets/Fvtlns5WYAUcEWV.jpg)
 *图2: Agent 3 的任务处理流程示意图，展示从任务提示到研究代理再到完成任务的自动化过程，例如生成AI市场报告。*
 
 #### 局限性与挑战
 尽管创新，Agent 3 面临可靠性批评，如陷入循环、引入bug或认证层失败，导致时间和信用浪费。定价基于努力且不透明，有时小任务消耗大量资源，无退款政策加剧用户不满。限于Replit生态，无法与本地项目无缝集成，可能需提示工程技能优化结果。在比较中，它在云自主性方面突出，但企业级定制化落后。
 
-![里程碑开发截图](Replit%20Agent%203%20关键评估要点.assets/Fs5S-i6XsAAR63P.jpg)
+![里程碑开发截图](/pv-knowledge-base/assets/Fs5S-i6XsAAR63P.jpg)
 *图3: Agent 3 在项目里程碑中的界面截图，展示文本转换和管道总结任务的详细描述和完成状态。*
 
 #### 与其他工具比较
 Agent 3 在端到端自主性方面脱颖而出，与GitHub Copilot相比，后者专注代码建议而非完整项目构建。与Cursor相比，它强调无缝云部署，但Cursor更适合高级用户。Devin提供自主工程沙箱，但Agent 3的浏览器测试在真实应用验证上占优。总体而言，它因易用性获赞，但上下文丢失问题使其更适合原型而非复杂系统。
 
-![Agent 3 演示缩略图](Replit%20Agent%203%20关键评估要点.assets/maxresdefault-1757821159082-1.jpg)
+![Agent 3 演示缩略图](/pv-knowledge-base/assets/maxresdefault-1757821159082-1.jpg)
 *图4: Agent 3 的视频演示缩略图，突出其自主构建应用的能力。*
 
 ---
@@ -72,7 +72,7 @@ Replit Agent 3 代表AI驱动软件开发领域的显著演进，将其定位为
 
 展望未来，Replit 暗示未来增强，包括更多集成、基于触发器的自动化，以及“自主曲线”攀升，使Replit上构建任何东西更容易。虽然它民主化开发，用户建议从月度试用开始、维护备份，并结合手动监督用于关键操作。在创新与辩论充斥的领域，Agent 3 体现了AI协作的承诺，平衡赋权与谨慎采用的需要，以导航其演化能力和局限性。
 
-![Agent 3 推广图](Replit%20Agent%203%20关键评估要点.assets/maxresdefault-1757821159082-2.jpg)
+![Agent 3 推广图](/pv-knowledge-base/assets/maxresdefault-1757821159082-2.jpg)
 *图5: Agent 3 的推广截图，展示Replit品牌和团队成员，强调其创新性。*
 
 ### Key Citations
