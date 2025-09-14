@@ -43,8 +43,14 @@ if (fs.existsSync(markdownDir)) {
     if (fs.existsSync(assetsDir)) {
       console.log(`📁 发现关联assets文件夹: ${originalTitle}.assets`);
 
-      // 复制.assets文件夹中的图片文件到source/assets
+      // 生成文章唯一前缀（防止图片命名冲突）
+      const articlePrefix = createSafeFileName(originalTitle).toLowerCase() + '-';
+      console.log(`  🏷️ 使用前缀: ${articlePrefix}`);
+
+      // 复制.assets文件夹中的图片文件到source/assets，添加唯一前缀
       const assetFiles = fs.readdirSync(assetsDir);
+      const assetMapping = new Map(); // 记录原文件名→新文件名的映射
+
       assetFiles.forEach(assetFile => {
         // 跳过Zone.Identifier文件
         if (assetFile.endsWith(':Zone.Identifier')) {
@@ -52,16 +58,32 @@ if (fs.existsSync(markdownDir)) {
         }
 
         const assetSourcePath = path.join(assetsDir, assetFile);
-        const assetTargetPath = path.join(sourceDir, 'assets', assetFile);
+
+        // 为图片添加文章唯一前缀
+        const newAssetFileName = articlePrefix + assetFile.toLowerCase();
+        const assetTargetPath = path.join(sourceDir, 'assets', newAssetFileName);
+
+        // 记录文件名映射关系
+        assetMapping.set(assetFile, newAssetFileName);
 
         fs.copyFileSync(assetSourcePath, assetTargetPath);
-        console.log(`  📎 复制资源: ${assetFile}`);
+        console.log(`  📎 复制资源: ${assetFile} → ${newAssetFileName}`);
       });
 
-      // 更新markdown内容中的图片路径
-      const oldPathPattern = new RegExp(`${originalTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.assets/`, 'g');
-      content = content.replace(oldPathPattern, '/pv-knowledge-base/assets/');
-      console.log(`  🔗 更新图片路径: ${originalTitle}.assets/ -> /pv-knowledge-base/assets/`);
+      // 更新markdown内容中的图片路径和文件名
+      assetMapping.forEach((newFileName, oldFileName) => {
+        // 使用正确的路径格式（避免重复路径问题）
+        const oldImageRef = new RegExp(`${originalTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.assets/${oldFileName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'g');
+        const newImageRef = `/assets/${newFileName}`;
+
+        content = content.replace(oldImageRef, newImageRef);
+        console.log(`  🔗 更新图片引用: ${originalTitle}.assets/${oldFileName} → ${newImageRef}`);
+      });
+
+      // 如果还有其他通用的assets路径需要修正
+      const genericOldPathPattern = new RegExp(`${originalTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.assets/`, 'g');
+      content = content.replace(genericOldPathPattern, '/assets/');
+      console.log(`  📝 通用路径修正: ${originalTitle}.assets/ → /assets/`);
 
       // 删除原始.assets文件夹
       fs.rmSync(assetsDir, { recursive: true });
