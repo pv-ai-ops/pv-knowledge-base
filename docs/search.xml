@@ -811,6 +811,302 @@
       </tags>
   </entry>
   <entry>
+    <title>OpenAI Codex 升级概述</title>
+    <url>/pv-knowledge-base/2025/09/16/OpenAI-Codex-%E5%8D%87%E7%BA%A7%E6%A6%82%E8%BF%B0/</url>
+    <content><![CDATA[<h3 id="OpenAI-Codex-升级概述"><a href="#OpenAI-Codex-升级概述" class="headerlink" title="OpenAI Codex 升级概述"></a>OpenAI Codex 升级概述</h3><ul>
+<li><strong>主要更新</strong>：OpenAI 于 2025 年 9 月 15 日发布了 Codex 的重大升级，引入了 GPT-5-Codex 模型，这是一个针对代理式编码优化的 GPT-5 变体，似乎能显著提升编码效率和自主性。</li>
+<li><strong>关键优势</strong>：模型在简单任务上减少了 93.7% 的令牌使用，在复杂任务上增加两倍推理时间，能够独立处理超过 7 小时的大型项目；但需注意，AI 生成代码仍需人工审查以确保准确性。</li>
+<li><strong>适用范围</strong>：集成于 CLI、IDE 扩展、云环境、GitHub 和 ChatGPT iOS 应用中，适用于软件工程师，但并非完全取代人类开发者的工具。</li>
+<li><strong>潜在争议</strong>：虽然基准测试显示性能提升（如 SWE-bench 得分从 72.8% 提高到 74.5%），但一些观点认为这可能加剧开发者对 OpenAI 生态的依赖，同时需权衡安全风险。</li>
+</ul>
+<h4 id="GPT-5-Codex-的核心功能"><a href="#GPT-5-Codex-的核心功能" class="headerlink" title="GPT-5-Codex 的核心功能"></a>GPT-5-Codex 的核心功能</h4><p>GPT-5-Codex 专为真实世界的软件工程任务设计，包括构建项目、调试、重构和代码审查。它能根据任务复杂性动态调整思考时间，在交互式会话中快速响应，或独立执行长时间任务。根据报道，在测试中它能自主工作超过 7 小时，迭代修复问题并交付成功实现。 这使得它更像一个可靠的“编程伙伴”，但研究建议开发者始终监督输出，以避免潜在错误。</p>
+<h4 id="工具与集成改进"><a href="#工具与集成改进" class="headerlink" title="工具与集成改进"></a>工具与集成改进</h4><p>升级包括 Codex CLI 的重建，支持图像附件（如截图和线框图）和进度跟踪；IDE 扩展兼容 VS Code 和 Cursor，实现本地-云无缝切换；云环境完成时间减少 90%，通过容器缓存和自动设置。 GitHub 代码审查功能能自动分析拉取请求，识别关键问题，并建议编辑。 这些改进旨在加速开发周期，但需考虑生态绑定可能带来的长期影响。</p>
+<p><img src="/pv-knowledge-base/./assets/openai-codex-%E5%8D%87%E7%BA%A7%E6%A6%82%E8%BF%B0-g07jg95aeams5rp.jpg" alt="Codex 云环境示例"><br><em>图示：Codex 云环境的性能优化示例，展示任务完成时间减少 90%。</em></p>
+<h4 id="对开发者的影响"><a href="#对开发者的影响" class="headerlink" title="对开发者的影响"></a>对开发者的影响</h4><p>证据显示，这项升级可能帮助开发者卸载重复性工作，例如 Cisco Meraki 的技术主管表示，它帮助快速重构代码并保持项目进度。 然而，在敏感话题如安全上，建议平衡观点：AI 虽提升效率，但过度依赖可能引入风险。总体而言，它似乎适合专业开发者，但初学者应结合人工判断使用。</p>
+<hr>
+<p>OpenAI 于 2025 年 9 月 15 日正式宣布了对 Codex 的全面升级，这一举措标志着 AI 辅助编程工具进入了一个新阶段。Codex 作为 OpenAI 的 AI 编码助手，此次更新引入了 GPT-5-Codex，这是一个基于 GPT-5 进一步优化的模型，专为“代理式编码”（agentic coding）任务设计。 该模型在处理复杂软件工程任务时表现出色，包括从零构建完整项目、添加功能、调试、执行大规模重构以及进行代码审查。不同于通用 GPT-5，GPT-5-Codex 被训练为更可控、更高效，能够遵循特定的代理指令（如 AGENTS.md 指南），生成高质量代码而无需过多风格提示。</p>
+<p>此次升级的核心在于统一 Codex 体验，所有功能均通过单一 ChatGPT 账户访问，支持本地（如终端和 IDE）和云端之间的无缝上下文转移。这不仅提升了协作效率，还扩展了可用性，包括 GitHub 集成和 ChatGPT iOS 应用。 开发者可以通过 ChatGPT Plus、Pro、Business、Edu 和 Enterprise 计划访问，定价根据使用量灵活调整，企业计划支持共享积分池。</p>
+<p>在性能方面，GPT-5-Codex 展示了显著的效率提升。根据内部基准，对于用户交互的最简单 10% 转弯，它比 GPT-5 消耗的令牌减少了 93.7%；对于最复杂 10% 的转弯，它则投入两倍的推理时间，包括编辑、测试和迭代循环。 在 SWE-bench Verified 数据集上，该模型现在覆盖所有 500 个任务（此前基础设施限制下仅 477 个），得分从 GPT-5 的 72.8% 提升至 74.5%。 一个典型示例是处理 Gitea 拉取请求，该请求修改了 232 个文件和 3,541 行代码，以在整个应用逻辑中传播上下文变量，展示了其处理复杂依赖的能力。</p>
+<p>前端开发能力也得到强化，GPT-5-Codex 能处理图像输入如截图，进行视觉检查，并在云中启动浏览器预览变化，并将进度截图附加到任务或 GitHub PR 中。这在人类偏好评估中表现更可靠，尤其在构建美观桌面应用和移动网站时。</p>
+<p>工具链的更新同样值得关注。Codex CLI 被完全重建为开源工具（GitHub: <a href="https://github.com/openai/codex%EF%BC%89%EF%BC%8C%E5%9B%B4%E7%BB%95%E4%BB%A3%E7%90%86%E5%BC%8F%E5%B7%A5%E4%BD%9C%E6%B5%81%E8%AE%BE%E8%AE%A1%EF%BC%8C%E6%94%AF%E6%8C%81%E5%9B%BE%E5%83%8F%E9%99%84%E4%BB%B6%EF%BC%88%E5%A6%82%E6%88%AA%E5%9B%BE%E3%80%81%E7%BA%BF%E6%A1%86%E5%9B%BE%E5%92%8C%E5%9B%BE%E8%A1%A8%EF%BC%89%E4%BB%A5%E6%9E%84%E5%BB%BA%E5%85%B1%E4%BA%AB%E4%B8%8A%E4%B8%8B%E6%96%87%EF%BC%8C%E5%8C%85%E5%90%AB%E8%BF%9B%E5%BA%A6%E8%B7%9F%E8%B8%AA%E7%9A%84%E5%BE%85%E5%8A%9E%E4%BA%8B%E9%A1%B9%E5%88%97%E8%A1%A8%EF%BC%8C%E4%BB%A5%E5%8F%8A%E5%A6%82%E7%BD%91%E7%BB%9C%E6%90%9C%E7%B4%A2%E5%92%8C">https://github.com/openai/codex），围绕代理式工作流设计，支持图像附件（如截图、线框图和图表）以构建共享上下文，包含进度跟踪的待办事项列表，以及如网络搜索和</a> MCP（模型控制协议）的集成工具。 终端 UI 改进包括更好的工具调用和代码差异格式化。批准模式分为三种：只读（需显式批准行动）、自动（全工作区访问加外部批准）和全访问（允许文件读取和网络命令）。 此外，它支持压缩对话状态以管理长会话。</p>
+<p>Codex IDE 扩展将代理集成到 VS Code、Cursor 等环境中，利用打开文件或选定代码的上下文，实现更短提示和更快结果。开发者可在 IDE 中创建云任务、跟踪进度，并无缝切换本地-云工作。 云环境基础设施优化显著，新任务完成时间中位数减少 90%，通过容器缓存和自动环境配置（如扫描设置脚本并执行）。可配置互联网访问允许运行如 pip install 的命令获取依赖。</p>
+<p>代码审查功能是另一个亮点，GPT-5-Codex 能在 GitHub PR 从草稿转为就绪时自动触发，发布详细审查，识别关键缺陷，并建议编辑。可通过“@codex review”显式调用，并指定焦点如安全漏洞或过时依赖。 在 OpenAI 内部，它审查大部分 PR，每天捕获数百问题，帮助团队更快迭代。</p>
+<p><img src="/pv-knowledge-base/./assets/openai-codex-%E5%8D%87%E7%BA%A7%E6%A6%82%E8%BF%B0-g07glujwiaageir.png" alt="GPT-5-Codex 性能图表"><br><em>图示：GPT-5-Codex 在编码效率上的基准比较，展示其在 SWE-bench 中的得分提升。</em></p>
+<p>从开发者反馈看，这一升级正改变工作流。Cisco Meraki 技术主管 Tres Wong-Godfrey 表示：“我需要为功能发布更新另一个团队的代码库……用 Codex，我卸载了重构和测试生成，同时专注于其他优先事项。它产生了高质量、全面测试的代码，我能快速交还——保持功能进度而不增加风险。” 类似证言显示，它适合协作设置，但需人工监督。</p>
+<p>安全性和可信赖性是重点。Codex 默认在禁用网络访问的沙盒环境中运行，以防有害行动或提示注入。 模型可在危险操作前请求许可，并验证输出。开发者可自定义设置，如限制云网络到受信任域，或在 CLI&#x2F;IDE 中批准命令。GPT-5-Codex 在生物和化学领域被分类为“高能力”，实施额外防护（如系统卡附录所述）。 OpenAI 强调，始终审查代理工作，使用提供的引用、日志和测试结果；Codex 作为辅助审查者，而非人类替代。</p>
+<p><img src="/pv-knowledge-base/./assets/openai-codex-%E5%8D%87%E7%BA%A7%E6%A6%82%E8%BF%B0-g07ge_8akaaa3ga.jpg" alt="Codex CLI 更新示例"><br><em>图示：Codex CLI 的新界面，展示 GPT-5-Codex 的推荐动画和版本更新。</em></p>
+<p>展望未来，这一升级可能加速 AI 在编程中的采用，但也引发讨论：OpenAI 通过垂直优化构建生态护城河，开发者需权衡绑定风险。 与 Claude Code 等竞品比较，GPT-5-Codex 在代理任务上更强，但需更多实测验证。 OpenAI 邀请社区反馈，并提供快速入门指南（如 <a href="https://developers.openai.com/codex/security%EF%BC%89%E3%80%82%E6%80%BB%E4%BD%93%E8%80%8C%E8%A8%80%EF%BC%8C%E8%BF%99%E6%AC%A1%E6%9B%B4%E6%96%B0%E5%BC%BA%E5%8C%96%E4%BA%86">https://developers.openai.com/codex/security）。总体而言，这次更新强化了</a> Codex 作为 AI 增强工具的地位，但成功取决于开发者采用和持续迭代。</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>关键改进</th>
+<th>示例用例</th>
+<th>性能指标</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GPT-5-Codex 效率</td>
+<td>简单任务令牌减少 93.7%；复杂任务推理时间增加 2 倍</td>
+<td>独立执行 7+ 小时大型任务</td>
+<td>SWE-bench：全 500 任务覆盖，得分 74.5%</td>
+</tr>
+<tr>
+<td>CLI 批准模式</td>
+<td>只读、自动、全访问</td>
+<td>带图像的安全命令执行</td>
+<td>长会话状态压缩</td>
+</tr>
+<tr>
+<td>云设置</td>
+<td>完成时间减少 90%；自动脚本执行</td>
+<td>依赖获取（如 pip install）</td>
+<td>浏览器集成用于前端</td>
+</tr>
+<tr>
+<td>代码审查</td>
+<td>自动 PR 分析；测试验证</td>
+<td>GitHub 集成检查漏洞</td>
+<td>OpenAI 内部每天捕获数百问题</td>
+</tr>
+<tr>
+<td>IDE 扩展</td>
+<td>上下文感知编辑</td>
+<td>本地-云无缝转移</td>
+<td>通过打开文件上下文更快提示</td>
+</tr>
+</tbody></table>
+<p><img src="/pv-knowledge-base/./assets/openai-codex-%E5%8D%87%E7%BA%A7%E6%A6%82%E8%BF%B0-g07felhxgaa1wki.jpg" alt="OpenAI 公告海报"><br><em>图示：OpenAI 关于 GPT-5-Codex 的宣传图，强调其编码自动化潜力。</em></p>
+<h3 id="Key-Citations"><a href="#Key-Citations" class="headerlink" title="Key Citations"></a>Key Citations</h3><ul>
+<li><a href="https://openai.com/index/introducing-upgrades-to-codex/">Introducing upgrades to Codex - OpenAI</a></li>
+<li><a href="https://techcrunch.com/2025/09/15/openai-upgrades-codex-with-a-new-version-of-gpt-5/">OpenAI upgrades Codex with a new version of GPT-5 - TechCrunch</a></li>
+<li><a href="https://siliconangle.com/2025/09/15/openai-debuts-gpt-5-codex-model-automate-time-consuming-coding-tasks/">OpenAI debuts GPT-5-Codex model to automate time-consuming coding tasks - SiliconANGLE</a></li>
+<li><a href="https://openai.com/index/gpt-5-system-card-addendum-gpt-5-codex/">Addendum to GPT-5 system card: GPT-5-Codex - OpenAI</a></li>
+<li><a href="https://www.reddit.com/r/cursor/comments/1nhwcmq/new_codex_release_gpt5codex_ide_upgrades_faster/">GPT-5-Codex, IDE upgrades, faster cloud, and built-in code review - Reddit</a></li>
+<li><a href="https://www.marktechpost.com/2025/09/15/openai-introduces-gpt-5-codex-an-advanced-version-of-gpt-5-further-optimized-for-agentic-coding-in-codex/">OpenAI Introduces GPT-5-Codex: An Advanced Version of GPT-5 - MarkTechPost</a></li>
+<li><a href="https://venturebeat.com/dev/openai-unveils-new-model-gpt-5-codex-optimized-for-agentic-coding">OpenAI unveils new model GPT-5-Codex optimized for ‘agentic coding’ - VentureBeat</a></li>
+<li><a href="https://simonwillison.net/2025/Sep/15/gpt-5-codex/">GPT‑5-Codex and upgrades to Codex - Simon Willison’s Weblog</a></li>
+<li><a href="https://thenewstack.io/openai-launches-a-new-gpt-5-model-for-its-codex-coding-agent/">OpenAI Launches a New GPT-5 Model for Its Codex Coding Agent - The New Stack</a></li>
+<li><a href="https://x.com/geekshellio/status/1967759953302786399">OpenAI 刚刚发布了 GPT-5-Codex！ - X Post by @geekshellio</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>技术分析</category>
+      </categories>
+      <tags>
+        <tag>药物警戒</tag>
+        <tag>AI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Qwen3-Next 模型概述</title>
+    <url>/pv-knowledge-base/2025/09/16/Qwen3-Next-%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/</url>
+    <content><![CDATA[<h3 id="Qwen3-Next-模型概述"><a href="#Qwen3-Next-模型概述" class="headerlink" title="Qwen3-Next 模型概述"></a>Qwen3-Next 模型概述</h3><p><strong>关键点：</strong></p>
+<ul>
+<li>Qwen3-Next 是阿里巴巴通义千问团队于 2025 年 9 月 10 日发布的下一代大语言模型架构，强调训练和推理效率，总参数 80B 但仅激活 3B 参数，实现与 Qwen3-32B 相当的性能，同时训练成本降低 90% 以上。</li>
+<li>核心创新包括混合注意力机制（Gated DeltaNet + Gated Attention）和超稀疏 MoE 结构（512 专家，仅激活 11 个），支持 256K 上下文长度，并通过多令牌预测提升解码速度。</li>
+<li>基准测试显示，其 Instruct 变体在知识、推理和编码任务中超越 Qwen3-32B，接近 Qwen3-235B；Thinking 变体在多步推理中优于 Gemini-2.5-Flash-Thinking。</li>
+<li>模型开源，支持 Hugging Face 等平台，可在单张 NVIDIA H200 GPU 上运行，适用于企业级部署，但目前仅限文本模态。</li>
+</ul>
+<h4 id="模型架构简述"><a href="#模型架构简述" class="headerlink" title="模型架构简述"></a>模型架构简述</h4><p>Qwen3-Next 采用 48 层混合布局：每 4 层中 3 层使用 Gated DeltaNet（高效长上下文处理），1 层使用 Gated Attention（确保精度）。MoE 组件激活率仅 3.7%，结合共享专家机制，避免路由崩溃。</p>
+<p><img src="https://pbs.twimg.com/media/G0lVrz1aMAMqnVP.jpg" alt="Qwen3-Next 混合架构示意图"></p>
+<h4 id="性能与效率亮点"><a href="#性能与效率亮点" class="headerlink" title="性能与效率亮点"></a>性能与效率亮点</h4><p>在推理速度上，预填充阶段在 4K 上下文下吞吐量比 Qwen3-32B 高 7 倍，长上下文下超 10 倍。训练仅需 Qwen3-32B 的 9.3% 计算资源。</p>
+<p><img src="https://pbs.twimg.com/media/G0ldAWZakAAGBdx.jpg" alt="预训练效率与推理速度图"></p>
+<h4 id="可用性"><a href="#可用性" class="headerlink" title="可用性"></a>可用性</h4><p>模型可在 Hugging Face（<a href="https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct%EF%BC%89%E5%92%8C">https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct）和</a> Alibaba Cloud API 上获取，支持 Transformers、vLLM 等框架。</p>
+<hr>
+<p>阿里巴巴通义千问团队于 2025 年 9 月 10 日正式发布 Qwen3-Next 系列模型，这标志着大语言模型（LLM）设计向极致效率方向的重大跃进。该架构作为 Qwen3.5 的预览版本，针对训练和推理阶段的资源瓶颈进行了全面优化，实现了参数规模与性能的完美平衡。旗舰模型 Qwen3-Next-80B-A3B 拥有 800 亿总参数，但每令牌仅激活约 30 亿参数，激活率低至 3.7%，从而大幅降低计算成本，同时在多项基准测试中表现出色，接近甚至超越更大规模的 Qwen3-235B 模型。</p>
+<h3 id="架构创新：混合注意力与超稀疏-MoE"><a href="#架构创新：混合注意力与超稀疏-MoE" class="headerlink" title="架构创新：混合注意力与超稀疏 MoE"></a>架构创新：混合注意力与超稀疏 MoE</h3><p>Qwen3-Next 的核心在于其创新的混合注意力机制和 MoE 设计，彻底改变了传统 Transformer 的范式。模型总共 48 层，采用重复的 12 个模块模式：每个模块包含 3 层 Gated DeltaNet（门控 DeltaNet，用于高效的增量更新和长序列处理）后跟 1 层 Gated Attention（门控注意力，用于精确的全局依赖捕捉）。这种 75% DeltaNet + 25% Attention 的布局，确保了在长上下文（原生支持 256K 令牌，可扩展至 1M）下的高效性和稳定性。</p>
+<p>Gated DeltaNet 作为“快速阅读器”，通过线性注意力机制减少二次方复杂度，支持更好的上下文学习；Gated Attention 则作为“仔细检查器”，集成输出门控以缓解低秩退化问题，使用 16 个查询头和 2 个键-值头（每个 256 维），并将旋转位置嵌入（RoPE）限制在前 64 维以提升外推能力。此外，模型引入零中心 RMSNorm 替换 QK-Norm，对归一化参数施加权重衰减，并以归一化方式初始化 MoE 路由器，进一步提升训练稳定性。</p>
+<p>MoE 组件是另一大亮点：总计 512 个专家，每步仅路由 10 个专家 + 1 个共享专家，激活率远低于前代 Qwen3 的 128 专家。该共享专家处理常见模式，避免路由崩溃，并与多令牌预测（MTP）结合，支持推测解码，提高接受率和多步推理速度。</p>
+<p><img src="https://pbs.twimg.com/media/G0lVrz1aMAMqnVP.jpg" alt="Qwen3-Next 混合架构示意图"></p>
+<h3 id="训练效率：资源节约的典范"><a href="#训练效率：资源节约的典范" class="headerlink" title="训练效率：资源节约的典范"></a>训练效率：资源节约的典范</h3><p>Qwen3-Next 在 15 万亿令牌数据集上预训练，仅消耗 Qwen3-32B 的 9.3% 计算资源和 Qwen3-30B-A3B 的 80% GPU 时长。在 32 张 GPU A6000 集群上，与 Megatron-LM、Tutel-2DH 和 SmartMoE 等基线相比，实现 1.55–3.32 倍 All-to-All 通信加速和 1.18–1.27 倍端到端训练加速。这种高效性源于稀疏激活和优化通信策略，使其适用于中小型研究团队。</p>
+<h3 id="推理性能：速度与精度的双赢"><a href="#推理性能：速度与精度的双赢" class="headerlink" title="推理性能：速度与精度的双赢"></a>推理性能：速度与精度的双赢</h3><p>推理阶段，Qwen3-Next 展现出惊人优势：在 4K 上下文下，预填充吞吐量比 Qwen3-32B 高近 7 倍，超过 32K 时超 10 倍；解码阶段在 4K 下高 4 倍，长上下文仍保持 10 倍以上优势。FP8 精度下，可在单张 NVIDIA H200 GPU 上运行，或 8-12GB VRAM + 64GB RAM 的系统。支持框架包括 Transformers、SGLang 和 vLLM，Alibaba Cloud API 定价为每百万令牌 0.5 美元输入 &#x2F; 2-6 美元输出，比前代降低 25%。</p>
+<p><img src="https://pbs.twimg.com/media/G0ldN9sbAAAwSft.jpg" alt="预填充阶段吞吐量图"></p>
+<p><img src="https://pbs.twimg.com/media/G0ldUVubUAA_LbW.jpg" alt="解码阶段吞吐量图"></p>
+<h3 id="基准测试：超越同规模，媲美旗舰"><a href="#基准测试：超越同规模，媲美旗舰" class="headerlink" title="基准测试：超越同规模，媲美旗舰"></a>基准测试：超越同规模，媲美旗舰</h3><p>Qwen3-Next 的变体包括 Base（基础模型）、Instruct（通用任务）和 Thinking（逐步推理）。Base 模型在下游任务中超越 Qwen3-32B-Base，尽管训练成本仅为其 10%。Instruct 变体在知识（MMLU-Pro 80.6）、推理（AIME25 69.5）和编码（LiveCodeBench 56.6）上领先 Qwen3-32B 非思考版，接近 Qwen3-235B-A22B-Instruct-2507。在长上下文 RULER 基准中，256K 内表现优异。</p>
+<p>Thinking 变体在多步任务中击败 Gemini-2.5-Flash-Thinking，Intelligence Index 达 54（Artificial Analysis），与 DeepSeek V3.1 (Reasoning) 相当。以下表格总结 Instruct 变体的关键基准对比（数据基于官方评估）：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>基准测试</th>
+<th>Qwen3-30B-A3B-Instruct-2507</th>
+<th>Qwen3-32B 非思考版</th>
+<th>Qwen3-235B-A22B-Instruct-2507</th>
+<th>Qwen3-Next-80B-A3B-Instruct</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>知识</td>
+<td>MMLU-Pro</td>
+<td>78.4</td>
+<td>71.9</td>
+<td>83.0</td>
+<td>80.6</td>
+</tr>
+<tr>
+<td></td>
+<td>MMLU-Redux</td>
+<td>89.3</td>
+<td>85.7</td>
+<td>93.1</td>
+<td>90.9</td>
+</tr>
+<tr>
+<td></td>
+<td>GPQA</td>
+<td>70.4</td>
+<td>54.6</td>
+<td>77.5</td>
+<td>72.9</td>
+</tr>
+<tr>
+<td></td>
+<td>SuperGPQA</td>
+<td>53.4</td>
+<td>43.2</td>
+<td>62.6</td>
+<td>58.8</td>
+</tr>
+<tr>
+<td>推理</td>
+<td>AIME25</td>
+<td>61.3</td>
+<td>20.2</td>
+<td>70.3</td>
+<td>69.5</td>
+</tr>
+<tr>
+<td></td>
+<td>HMMT25</td>
+<td>43.0</td>
+<td>9.8</td>
+<td>55.4</td>
+<td>54.1</td>
+</tr>
+<tr>
+<td></td>
+<td>LiveBench 20241125</td>
+<td>69.0</td>
+<td>59.8</td>
+<td>75.4</td>
+<td>75.8</td>
+</tr>
+<tr>
+<td>编码</td>
+<td>LiveCodeBench v6 (25.02-25.05)</td>
+<td>43.2</td>
+<td>29.1</td>
+<td>51.8</td>
+<td>56.6</td>
+</tr>
+<tr>
+<td></td>
+<td>MultiPL-E</td>
+<td>83.8</td>
+<td>76.9</td>
+<td>87.9</td>
+<td>87.8</td>
+</tr>
+<tr>
+<td></td>
+<td>Aider-Polyglot</td>
+<td>35.6</td>
+<td>40.0</td>
+<td>57.3</td>
+<td>49.8</td>
+</tr>
+<tr>
+<td>对齐</td>
+<td>IFEval</td>
+<td>84.7</td>
+<td>83.2</td>
+<td>88.7</td>
+<td>87.6</td>
+</tr>
+<tr>
+<td></td>
+<td>Arena-Hard v2</td>
+<td>69.0</td>
+<td>34.1</td>
+<td>79.2</td>
+<td>82.7</td>
+</tr>
+<tr>
+<td></td>
+<td>Creative Writing v3</td>
+<td>86.0</td>
+<td>78.3</td>
+<td>87.5</td>
+<td>85.3</td>
+</tr>
+<tr>
+<td>代理</td>
+<td>AgentBench v2</td>
+<td>49.3</td>
+<td>39.5</td>
+<td>62.7</td>
+<td>52.4</td>
+</tr>
+<tr>
+<td></td>
+<td>GAIA</td>
+<td>55.3</td>
+<td>47.3</td>
+<td>64.2</td>
+<td>58.7</td>
+</tr>
+<tr>
+<td></td>
+<td>WebArena</td>
+<td>42.7</td>
+<td>38.1</td>
+<td>51.9</td>
+<td>46.5</td>
+</tr>
+<tr>
+<td>多语言</td>
+<td>M-MMLU</td>
+<td>81.2</td>
+<td>74.6</td>
+<td>85.3</td>
+<td>83.4</td>
+</tr>
+<tr>
+<td></td>
+<td>M-MT-Bench</td>
+<td>8.5</td>
+<td>7.9</td>
+<td>8.9</td>
+<td>8.7</td>
+</tr>
+</tbody></table>
+<p><img src="https://pbs.twimg.com/media/G0nOUlmbMAABj52.jpg" alt="Instruct 模型性能对比图"></p>
+<p><img src="https://pbs.twimg.com/media/G0ldzaoaMAMiw3H.jpg" alt="Thinking 模型性能图"></p>
+<p><img src="https://pbs.twimg.com/media/G0ldsnuaYAAMsm7.jpg" alt="RULER 长上下文基准图"></p>
+<h3 id="社区反馈与未来展望"><a href="#社区反馈与未来展望" class="headerlink" title="社区反馈与未来展望"></a>社区反馈与未来展望</h3><p>社区反应热烈：Hacker News 和 Reddit 用户赞赏其在有限硬件上的可访问性（如 8-12GB VRAM），并称其为“高效 LLM 的未来”。然而，一些开发者指出，需要专用推理框架以最大化效率。目前模型为纯文本，支持 Qwen-Agent 工具调用，但缺乏多模态功能。未来 Qwen3.5 将在此基础上进一步提升生产力，推动高性能 AI 的民主化。</p>
+<p>总体而言，Qwen3-Next 以其平衡功率与实用性的设计，为企业和研究者提供了强大工具，尤其在资源受限场景下表现出色。</p>
+<h3 id="Key-Citations"><a href="#Key-Citations" class="headerlink" title="Key Citations"></a>Key Citations</h3><ul>
+<li><a href="https://qwen.ai/blog?id=4074cca80393150c248e508aa62983f9cb7d27cd&from=research.latest-advancements-list">Qwen3-Next - Qwen AI</a></li>
+<li><a href="https://news.smol.ai/issues/25-09-11-qwen3-next">Qwen3-Next-80B-A3B: Towards Ultimate Training &amp; Inference Efficiency</a></li>
+<li><a href="https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct">Qwen&#x2F;Qwen3-Next-80B-A3B-Instruct - Hugging Face</a></li>
+<li><a href="https://www.reddit.com/r/LocalLLaMA/comments/1nefmzr/qwen_released_qwen3next80ba3b_the_future_of/">Qwen released Qwen3-Next-80B-A3B — the FUTURE of efficient LLMs</a></li>
+<li><a href="https://news.ycombinator.com/item?id=45214130">Qwen3-Next: Towards Ultimate Training and Inference Efficiency</a></li>
+<li><a href="https://x.com/Alibaba_Qwen/status/1966197643904000262">Introducing Qwen3-Next-80B-A3B (X Post)</a></li>
+<li><a href="https://x.com/Alibaba_Qwen/status/1966204984179175866">Pretraining Efficiency &amp; Inference Speed (X Post)</a></li>
+<li><a href="https://x.com/Alibaba_Qwen/status/1966205861292093471">Thinking Model Performance (X Post)</a></li>
+<li><a href="https://x.com/Alibaba_Qwen/status/1966329580127727745">Instruct Model Performance (X Post)</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>技术分析</category>
+      </categories>
+      <tags>
+        <tag>药物警戒</tag>
+        <tag>AI</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Replit Agent 3 关键评估要点</title>
     <url>/pv-knowledge-base/2025/09/14/Replit-Agent-3-%E5%85%B3%E9%94%AE%E8%AF%84%E4%BC%B0%E8%A6%81%E7%82%B9/</url>
     <content><![CDATA[<h3 id="Replit-Agent-3-关键评估要点"><a href="#Replit-Agent-3-关键评估要点" class="headerlink" title="Replit Agent 3 关键评估要点"></a>Replit Agent 3 关键评估要点</h3><ul>

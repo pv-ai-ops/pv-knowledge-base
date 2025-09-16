@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/pv-knowledge-base/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/pv-knowledge-base/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/pv-knowledge-base/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/pv-knowledge-base/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/pv-knowledge-base/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"pv-ai-ops.github.io","root":"/pv-knowledge-base/","images":"/pv-knowledge-base/images","scheme":"Gemini","darkmode":true,"version":"8.24.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null,"enable":true,"provider":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/pv-knowledge-base/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/pv-knowledge-base/js/config.js" defer></script>
+
+    <meta name="description" content="Qwen3-Next 模型概述关键点：  Qwen3-Next 是阿里巴巴通义千问团队于 2025 年 9 月 10 日发布的下一代大语言模型架构，强调训练和推理效率，总参数 80B 但仅激活 3B 参数，实现与 Qwen3-32B 相当的性能，同时训练成本降低 90% 以上。 核心创新包括混合注意力机制（Gated DeltaNet + Gated Attention）和超稀疏 MoE 结构（5">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qwen3-Next 模型概述">
+<meta property="og:url" content="https://pv-ai-ops.github.io/pv-knowledge-base/2025/09/16/Qwen3-Next-%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="药物警戒知识库 | PV Knowledge Base">
+<meta property="og:description" content="Qwen3-Next 模型概述关键点：  Qwen3-Next 是阿里巴巴通义千问团队于 2025 年 9 月 10 日发布的下一代大语言模型架构，强调训练和推理效率，总参数 80B 但仅激活 3B 参数，实现与 Qwen3-32B 相当的性能，同时训练成本降低 90% 以上。 核心创新包括混合注意力机制（Gated DeltaNet + Gated Attention）和超稀疏 MoE 结构（5">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pbs.twimg.com/media/G0lVrz1aMAMqnVP.jpg">
+<meta property="og:image" content="https://pbs.twimg.com/media/G0ldAWZakAAGBdx.jpg">
+<meta property="og:image" content="https://pbs.twimg.com/media/G0lVrz1aMAMqnVP.jpg">
+<meta property="og:image" content="https://pbs.twimg.com/media/G0ldN9sbAAAwSft.jpg">
+<meta property="og:image" content="https://pbs.twimg.com/media/G0ldUVubUAA_LbW.jpg">
+<meta property="og:image" content="https://pbs.twimg.com/media/G0nOUlmbMAABj52.jpg">
+<meta property="og:image" content="https://pbs.twimg.com/media/G0ldzaoaMAMiw3H.jpg">
+<meta property="og:image" content="https://pbs.twimg.com/media/G0ldsnuaYAAMsm7.jpg">
+<meta property="article:published_time" content="2025-09-15T17:43:00.000Z">
+<meta property="article:modified_time" content="2025-09-16T01:43:00.686Z">
+<meta property="article:author" content="pv-ai-ops">
+<meta property="article:tag" content="药物警戒">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pbs.twimg.com/media/G0lVrz1aMAMqnVP.jpg">
+
+
+<link rel="canonical" href="https://pv-ai-ops.github.io/pv-knowledge-base/2025/09/16/Qwen3-Next-%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://pv-ai-ops.github.io/pv-knowledge-base/2025/09/16/Qwen3-Next-%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/","path":"2025/09/16/Qwen3-Next-模型概述/","title":"Qwen3-Next 模型概述"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Qwen3-Next 模型概述 | 药物警戒知识库 | PV Knowledge Base</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/pv-knowledge-base/js/utils.js" defer></script><script src="/pv-knowledge-base/js/motion.js" defer></script><script src="/pv-knowledge-base/js/sidebar.js" defer></script><script src="/pv-knowledge-base/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/pv-knowledge-base/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/pv-knowledge-base/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/pv-knowledge-base/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/pv-knowledge-base/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">药物警戒知识库 | PV Knowledge Base</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">AI驱动的药物安全监测技术分享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/pv-knowledge-base/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/pv-knowledge-base/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/pv-knowledge-base/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/pv-knowledge-base/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/pv-knowledge-base/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Qwen3-Next-%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">Qwen3-Next 模型概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E6%9E%B6%E6%9E%84%E7%AE%80%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">模型架构简述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%A7%E8%83%BD%E4%B8%8E%E6%95%88%E7%8E%87%E4%BA%AE%E7%82%B9"><span class="nav-number">1.2.</span> <span class="nav-text">性能与效率亮点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AF%E7%94%A8%E6%80%A7"><span class="nav-number">1.3.</span> <span class="nav-text">可用性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E5%88%9B%E6%96%B0%EF%BC%9A%E6%B7%B7%E5%90%88%E6%B3%A8%E6%84%8F%E5%8A%9B%E4%B8%8E%E8%B6%85%E7%A8%80%E7%96%8F-MoE"><span class="nav-number">2.</span> <span class="nav-text">架构创新：混合注意力与超稀疏 MoE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E6%95%88%E7%8E%87%EF%BC%9A%E8%B5%84%E6%BA%90%E8%8A%82%E7%BA%A6%E7%9A%84%E5%85%B8%E8%8C%83"><span class="nav-number">3.</span> <span class="nav-text">训练效率：资源节约的典范</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E7%90%86%E6%80%A7%E8%83%BD%EF%BC%9A%E9%80%9F%E5%BA%A6%E4%B8%8E%E7%B2%BE%E5%BA%A6%E7%9A%84%E5%8F%8C%E8%B5%A2"><span class="nav-number">4.</span> <span class="nav-text">推理性能：速度与精度的双赢</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E5%87%86%E6%B5%8B%E8%AF%95%EF%BC%9A%E8%B6%85%E8%B6%8A%E5%90%8C%E8%A7%84%E6%A8%A1%EF%BC%8C%E5%AA%B2%E7%BE%8E%E6%97%97%E8%88%B0"><span class="nav-number">5.</span> <span class="nav-text">基准测试：超越同规模，媲美旗舰</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BE%E5%8C%BA%E5%8F%8D%E9%A6%88%E4%B8%8E%E6%9C%AA%E6%9D%A5%E5%B1%95%E6%9C%9B"><span class="nav-number">6.</span> <span class="nav-text">社区反馈与未来展望</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Key-Citations"><span class="nav-number">7.</span> <span class="nav-text">Key Citations</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">pv-ai-ops</p>
+  <div class="site-description" itemprop="description">专注于药物警戒、AI技术在医药安全领域的应用与创新</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/pv-knowledge-base/archives/">
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/pv-knowledge-base/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/pv-knowledge-base/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/pv-ai-ops" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;pv-ai-ops" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://pv-ai-ops.github.io/pv-knowledge-base/2025/09/16/Qwen3-Next-%E6%A8%A1%E5%9E%8B%E6%A6%82%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/pv-knowledge-base/images/avatar.gif">
+      <meta itemprop="name" content="pv-ai-ops">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="药物警戒知识库 | PV Knowledge Base">
+      <meta itemprop="description" content="专注于药物警戒、AI技术在医药安全领域的应用与创新">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Qwen3-Next 模型概述 | 药物警戒知识库 | PV Knowledge Base">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Qwen3-Next 模型概述
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-09-16 01:43:00 / 修改时间：09:43:00" itemprop="dateCreated datePublished" datetime="2025-09-16T01:43:00+08:00">2025-09-16</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/pv-knowledge-base/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">技术分析</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="Qwen3-Next-模型概述"><a href="#Qwen3-Next-模型概述" class="headerlink" title="Qwen3-Next 模型概述"></a>Qwen3-Next 模型概述</h3><p><strong>关键点：</strong></p>
+<ul>
+<li>Qwen3-Next 是阿里巴巴通义千问团队于 2025 年 9 月 10 日发布的下一代大语言模型架构，强调训练和推理效率，总参数 80B 但仅激活 3B 参数，实现与 Qwen3-32B 相当的性能，同时训练成本降低 90% 以上。</li>
+<li>核心创新包括混合注意力机制（Gated DeltaNet + Gated Attention）和超稀疏 MoE 结构（512 专家，仅激活 11 个），支持 256K 上下文长度，并通过多令牌预测提升解码速度。</li>
+<li>基准测试显示，其 Instruct 变体在知识、推理和编码任务中超越 Qwen3-32B，接近 Qwen3-235B；Thinking 变体在多步推理中优于 Gemini-2.5-Flash-Thinking。</li>
+<li>模型开源，支持 Hugging Face 等平台，可在单张 NVIDIA H200 GPU 上运行，适用于企业级部署，但目前仅限文本模态。</li>
+</ul>
+<h4 id="模型架构简述"><a href="#模型架构简述" class="headerlink" title="模型架构简述"></a>模型架构简述</h4><p>Qwen3-Next 采用 48 层混合布局：每 4 层中 3 层使用 Gated DeltaNet（高效长上下文处理），1 层使用 Gated Attention（确保精度）。MoE 组件激活率仅 3.7%，结合共享专家机制，避免路由崩溃。</p>
+<p><img src="https://pbs.twimg.com/media/G0lVrz1aMAMqnVP.jpg" alt="Qwen3-Next 混合架构示意图"></p>
+<h4 id="性能与效率亮点"><a href="#性能与效率亮点" class="headerlink" title="性能与效率亮点"></a>性能与效率亮点</h4><p>在推理速度上，预填充阶段在 4K 上下文下吞吐量比 Qwen3-32B 高 7 倍，长上下文下超 10 倍。训练仅需 Qwen3-32B 的 9.3% 计算资源。</p>
+<p><img src="https://pbs.twimg.com/media/G0ldAWZakAAGBdx.jpg" alt="预训练效率与推理速度图"></p>
+<h4 id="可用性"><a href="#可用性" class="headerlink" title="可用性"></a>可用性</h4><p>模型可在 Hugging Face（<a target="_blank" rel="noopener" href="https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct%EF%BC%89%E5%92%8C">https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct）和</a> Alibaba Cloud API 上获取，支持 Transformers、vLLM 等框架。</p>
+<hr>
+<p>阿里巴巴通义千问团队于 2025 年 9 月 10 日正式发布 Qwen3-Next 系列模型，这标志着大语言模型（LLM）设计向极致效率方向的重大跃进。该架构作为 Qwen3.5 的预览版本，针对训练和推理阶段的资源瓶颈进行了全面优化，实现了参数规模与性能的完美平衡。旗舰模型 Qwen3-Next-80B-A3B 拥有 800 亿总参数，但每令牌仅激活约 30 亿参数，激活率低至 3.7%，从而大幅降低计算成本，同时在多项基准测试中表现出色，接近甚至超越更大规模的 Qwen3-235B 模型。</p>
+<h3 id="架构创新：混合注意力与超稀疏-MoE"><a href="#架构创新：混合注意力与超稀疏-MoE" class="headerlink" title="架构创新：混合注意力与超稀疏 MoE"></a>架构创新：混合注意力与超稀疏 MoE</h3><p>Qwen3-Next 的核心在于其创新的混合注意力机制和 MoE 设计，彻底改变了传统 Transformer 的范式。模型总共 48 层，采用重复的 12 个模块模式：每个模块包含 3 层 Gated DeltaNet（门控 DeltaNet，用于高效的增量更新和长序列处理）后跟 1 层 Gated Attention（门控注意力，用于精确的全局依赖捕捉）。这种 75% DeltaNet + 25% Attention 的布局，确保了在长上下文（原生支持 256K 令牌，可扩展至 1M）下的高效性和稳定性。</p>
+<p>Gated DeltaNet 作为“快速阅读器”，通过线性注意力机制减少二次方复杂度，支持更好的上下文学习；Gated Attention 则作为“仔细检查器”，集成输出门控以缓解低秩退化问题，使用 16 个查询头和 2 个键-值头（每个 256 维），并将旋转位置嵌入（RoPE）限制在前 64 维以提升外推能力。此外，模型引入零中心 RMSNorm 替换 QK-Norm，对归一化参数施加权重衰减，并以归一化方式初始化 MoE 路由器，进一步提升训练稳定性。</p>
+<p>MoE 组件是另一大亮点：总计 512 个专家，每步仅路由 10 个专家 + 1 个共享专家，激活率远低于前代 Qwen3 的 128 专家。该共享专家处理常见模式，避免路由崩溃，并与多令牌预测（MTP）结合，支持推测解码，提高接受率和多步推理速度。</p>
+<p><img src="https://pbs.twimg.com/media/G0lVrz1aMAMqnVP.jpg" alt="Qwen3-Next 混合架构示意图"></p>
+<h3 id="训练效率：资源节约的典范"><a href="#训练效率：资源节约的典范" class="headerlink" title="训练效率：资源节约的典范"></a>训练效率：资源节约的典范</h3><p>Qwen3-Next 在 15 万亿令牌数据集上预训练，仅消耗 Qwen3-32B 的 9.3% 计算资源和 Qwen3-30B-A3B 的 80% GPU 时长。在 32 张 GPU A6000 集群上，与 Megatron-LM、Tutel-2DH 和 SmartMoE 等基线相比，实现 1.55–3.32 倍 All-to-All 通信加速和 1.18–1.27 倍端到端训练加速。这种高效性源于稀疏激活和优化通信策略，使其适用于中小型研究团队。</p>
+<h3 id="推理性能：速度与精度的双赢"><a href="#推理性能：速度与精度的双赢" class="headerlink" title="推理性能：速度与精度的双赢"></a>推理性能：速度与精度的双赢</h3><p>推理阶段，Qwen3-Next 展现出惊人优势：在 4K 上下文下，预填充吞吐量比 Qwen3-32B 高近 7 倍，超过 32K 时超 10 倍；解码阶段在 4K 下高 4 倍，长上下文仍保持 10 倍以上优势。FP8 精度下，可在单张 NVIDIA H200 GPU 上运行，或 8-12GB VRAM + 64GB RAM 的系统。支持框架包括 Transformers、SGLang 和 vLLM，Alibaba Cloud API 定价为每百万令牌 0.5 美元输入 &#x2F; 2-6 美元输出，比前代降低 25%。</p>
+<p><img src="https://pbs.twimg.com/media/G0ldN9sbAAAwSft.jpg" alt="预填充阶段吞吐量图"></p>
+<p><img src="https://pbs.twimg.com/media/G0ldUVubUAA_LbW.jpg" alt="解码阶段吞吐量图"></p>
+<h3 id="基准测试：超越同规模，媲美旗舰"><a href="#基准测试：超越同规模，媲美旗舰" class="headerlink" title="基准测试：超越同规模，媲美旗舰"></a>基准测试：超越同规模，媲美旗舰</h3><p>Qwen3-Next 的变体包括 Base（基础模型）、Instruct（通用任务）和 Thinking（逐步推理）。Base 模型在下游任务中超越 Qwen3-32B-Base，尽管训练成本仅为其 10%。Instruct 变体在知识（MMLU-Pro 80.6）、推理（AIME25 69.5）和编码（LiveCodeBench 56.6）上领先 Qwen3-32B 非思考版，接近 Qwen3-235B-A22B-Instruct-2507。在长上下文 RULER 基准中，256K 内表现优异。</p>
+<p>Thinking 变体在多步任务中击败 Gemini-2.5-Flash-Thinking，Intelligence Index 达 54（Artificial Analysis），与 DeepSeek V3.1 (Reasoning) 相当。以下表格总结 Instruct 变体的关键基准对比（数据基于官方评估）：</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>基准测试</th>
+<th>Qwen3-30B-A3B-Instruct-2507</th>
+<th>Qwen3-32B 非思考版</th>
+<th>Qwen3-235B-A22B-Instruct-2507</th>
+<th>Qwen3-Next-80B-A3B-Instruct</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>知识</td>
+<td>MMLU-Pro</td>
+<td>78.4</td>
+<td>71.9</td>
+<td>83.0</td>
+<td>80.6</td>
+</tr>
+<tr>
+<td></td>
+<td>MMLU-Redux</td>
+<td>89.3</td>
+<td>85.7</td>
+<td>93.1</td>
+<td>90.9</td>
+</tr>
+<tr>
+<td></td>
+<td>GPQA</td>
+<td>70.4</td>
+<td>54.6</td>
+<td>77.5</td>
+<td>72.9</td>
+</tr>
+<tr>
+<td></td>
+<td>SuperGPQA</td>
+<td>53.4</td>
+<td>43.2</td>
+<td>62.6</td>
+<td>58.8</td>
+</tr>
+<tr>
+<td>推理</td>
+<td>AIME25</td>
+<td>61.3</td>
+<td>20.2</td>
+<td>70.3</td>
+<td>69.5</td>
+</tr>
+<tr>
+<td></td>
+<td>HMMT25</td>
+<td>43.0</td>
+<td>9.8</td>
+<td>55.4</td>
+<td>54.1</td>
+</tr>
+<tr>
+<td></td>
+<td>LiveBench 20241125</td>
+<td>69.0</td>
+<td>59.8</td>
+<td>75.4</td>
+<td>75.8</td>
+</tr>
+<tr>
+<td>编码</td>
+<td>LiveCodeBench v6 (25.02-25.05)</td>
+<td>43.2</td>
+<td>29.1</td>
+<td>51.8</td>
+<td>56.6</td>
+</tr>
+<tr>
+<td></td>
+<td>MultiPL-E</td>
+<td>83.8</td>
+<td>76.9</td>
+<td>87.9</td>
+<td>87.8</td>
+</tr>
+<tr>
+<td></td>
+<td>Aider-Polyglot</td>
+<td>35.6</td>
+<td>40.0</td>
+<td>57.3</td>
+<td>49.8</td>
+</tr>
+<tr>
+<td>对齐</td>
+<td>IFEval</td>
+<td>84.7</td>
+<td>83.2</td>
+<td>88.7</td>
+<td>87.6</td>
+</tr>
+<tr>
+<td></td>
+<td>Arena-Hard v2</td>
+<td>69.0</td>
+<td>34.1</td>
+<td>79.2</td>
+<td>82.7</td>
+</tr>
+<tr>
+<td></td>
+<td>Creative Writing v3</td>
+<td>86.0</td>
+<td>78.3</td>
+<td>87.5</td>
+<td>85.3</td>
+</tr>
+<tr>
+<td>代理</td>
+<td>AgentBench v2</td>
+<td>49.3</td>
+<td>39.5</td>
+<td>62.7</td>
+<td>52.4</td>
+</tr>
+<tr>
+<td></td>
+<td>GAIA</td>
+<td>55.3</td>
+<td>47.3</td>
+<td>64.2</td>
+<td>58.7</td>
+</tr>
+<tr>
+<td></td>
+<td>WebArena</td>
+<td>42.7</td>
+<td>38.1</td>
+<td>51.9</td>
+<td>46.5</td>
+</tr>
+<tr>
+<td>多语言</td>
+<td>M-MMLU</td>
+<td>81.2</td>
+<td>74.6</td>
+<td>85.3</td>
+<td>83.4</td>
+</tr>
+<tr>
+<td></td>
+<td>M-MT-Bench</td>
+<td>8.5</td>
+<td>7.9</td>
+<td>8.9</td>
+<td>8.7</td>
+</tr>
+</tbody></table>
+<p><img src="https://pbs.twimg.com/media/G0nOUlmbMAABj52.jpg" alt="Instruct 模型性能对比图"></p>
+<p><img src="https://pbs.twimg.com/media/G0ldzaoaMAMiw3H.jpg" alt="Thinking 模型性能图"></p>
+<p><img src="https://pbs.twimg.com/media/G0ldsnuaYAAMsm7.jpg" alt="RULER 长上下文基准图"></p>
+<h3 id="社区反馈与未来展望"><a href="#社区反馈与未来展望" class="headerlink" title="社区反馈与未来展望"></a>社区反馈与未来展望</h3><p>社区反应热烈：Hacker News 和 Reddit 用户赞赏其在有限硬件上的可访问性（如 8-12GB VRAM），并称其为“高效 LLM 的未来”。然而，一些开发者指出，需要专用推理框架以最大化效率。目前模型为纯文本，支持 Qwen-Agent 工具调用，但缺乏多模态功能。未来 Qwen3.5 将在此基础上进一步提升生产力，推动高性能 AI 的民主化。</p>
+<p>总体而言，Qwen3-Next 以其平衡功率与实用性的设计，为企业和研究者提供了强大工具，尤其在资源受限场景下表现出色。</p>
+<h3 id="Key-Citations"><a href="#Key-Citations" class="headerlink" title="Key Citations"></a>Key Citations</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://qwen.ai/blog?id=4074cca80393150c248e508aa62983f9cb7d27cd&from=research.latest-advancements-list">Qwen3-Next - Qwen AI</a></li>
+<li><a target="_blank" rel="noopener" href="https://news.smol.ai/issues/25-09-11-qwen3-next">Qwen3-Next-80B-A3B: Towards Ultimate Training &amp; Inference Efficiency</a></li>
+<li><a target="_blank" rel="noopener" href="https://huggingface.co/Qwen/Qwen3-Next-80B-A3B-Instruct">Qwen&#x2F;Qwen3-Next-80B-A3B-Instruct - Hugging Face</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.reddit.com/r/LocalLLaMA/comments/1nefmzr/qwen_released_qwen3next80ba3b_the_future_of/">Qwen released Qwen3-Next-80B-A3B — the FUTURE of efficient LLMs</a></li>
+<li><a target="_blank" rel="noopener" href="https://news.ycombinator.com/item?id=45214130">Qwen3-Next: Towards Ultimate Training and Inference Efficiency</a></li>
+<li><a target="_blank" rel="noopener" href="https://x.com/Alibaba_Qwen/status/1966197643904000262">Introducing Qwen3-Next-80B-A3B (X Post)</a></li>
+<li><a target="_blank" rel="noopener" href="https://x.com/Alibaba_Qwen/status/1966204984179175866">Pretraining Efficiency &amp; Inference Speed (X Post)</a></li>
+<li><a target="_blank" rel="noopener" href="https://x.com/Alibaba_Qwen/status/1966205861292093471">Thinking Model Performance (X Post)</a></li>
+<li><a target="_blank" rel="noopener" href="https://x.com/Alibaba_Qwen/status/1966329580127727745">Instruct Model Performance (X Post)</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/pv-knowledge-base/tags/%E8%8D%AF%E7%89%A9%E8%AD%A6%E6%88%92/" rel="tag"># 药物警戒</a>
+              <a href="/pv-knowledge-base/tags/AI/" rel="tag"># AI</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/pv-knowledge-base/2025/09/14/Replit-Agent-3-%E5%85%B3%E9%94%AE%E8%AF%84%E4%BC%B0%E8%A6%81%E7%82%B9/" rel="prev" title="Replit Agent 3 关键评估要点">
+                  <i class="fa fa-angle-left"></i> Replit Agent 3 关键评估要点
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/pv-knowledge-base/2025/09/16/OpenAI-Codex-%E5%8D%87%E7%BA%A7%E6%A6%82%E8%BF%B0/" rel="next" title="OpenAI Codex 升级概述">
+                  OpenAI Codex 升级概述 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-shield-alt"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">pv-ai-ops</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"pv-ai-ops","repo":"pv-knowledge-base","client_id":"fca74e00c1171d5deb5c","client_secret":"08d3e9828d0cd4ef25080f6c30cafeb41f4ab90f","admin_user":"asd1245dss","distraction_free_mode":false,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"8ed7a702d5ae5c6f7c2f365bd4657382"}</script>
+<script src="/pv-knowledge-base/js/third-party/comments/gitalk.js" defer></script>
+
+</body>
+</html>
