@@ -9,11 +9,21 @@ const sourceDir = path.join(__dirname, '../source');
 
 // 创建URL安全的文件名处理函数
 function createSafeFileName(fileName) {
-  return fileName
+  let safeName = fileName;
+
+  // 先尝试解码URL编码，避免Hexo后续处理时产生不一致
+  try {
+    safeName = decodeURIComponent(safeName);
+  } catch (e) {
+    // 如果解码失败，保持原文件名
+    console.log(`  ⚠️ URL解码失败，保持原文件名: ${fileName}`);
+  }
+
+  return safeName
     .replace(/\s+vs\.\s+/g, '-vs-')         // "vs." -> "-vs-"
-    .replace(/\s*[:：]\s*/g, '-')           // 冒号 -> "-" 
+    .replace(/\s*[:：]\s*/g, '-')           // 冒号 -> "-"
     .replace(/\s+/g, '-')                   // 空格 -> "-"
-    .replace(/[^\w\u4e00-\u9fa5\-]/g, '')   // 保留字母数字中文和连字符
+    .replace(/[^\w\u4e00-\u9fa5\-]/g, '')   // 保留字母数字中文和连字符，完全移除%等特殊字符
     .replace(/-+/g, '-')                    // 多个连字符合并
     .replace(/^-|-$/g, '');                 // 移除首尾连字符
 }
