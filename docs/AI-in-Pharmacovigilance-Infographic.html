@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI药物警戒应用与合规信息图</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Brilliant Blues -->
+    <!-- Infographic Narrative Plan: The structure is a linear, top-to-bottom narrative designed for scrolling, typical of an infographic. It starts with a high-impact title and key metric (Efficiency), then flows into specific applications (the "what"), the regulatory framework (the "how-to-comply"), and finally a strategic roadmap (the "how-to-implement"). This sequential story-telling approach is more direct and digestible than a multi-section app, making it ideal for presenting a comprehensive overview quickly. -->
+    <!-- Visualization & Content Choices: 1. PV Efficiency (Data) -> Goal: Compare -> Viz: Horizontal Bar Chart (Chart.js) -> Justification: Immediately establishes AI's value proposition with a strong visual comparison. 2. Application KPIs (Data) -> Goal: Inform -> Viz: Donut Charts (Chart.js) -> Justification: Provides quick, scannable metrics for specific case studies. 3. Compliance Framework (Concept) -> Goal: Organize -> Viz: Styled HTML/CSS Grid with Icons -> Justification: Visually breaks down a complex concept into four memorable pillars. 4. Implementation Plan (Process) -> Goal: Organize -> Viz: Vertical Timeline (HTML/CSS) -> Justification: Clearly illustrates the step-by-step process in a chronological flow. All charts use Canvas via Chart.js. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f0f8ff;
+            color: #1e293b;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .section-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px M6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .section-title {
+            font-weight: 900;
+            color: #004AAD;
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 2.25rem;
+        }
+        .section-subtitle {
+            text-align: center;
+            max-width: 3xl;
+            margin-left: auto;
+            margin-right: auto;
+            color: #334155;
+            font-size: 1.125rem;
+            margin-bottom: 3rem;
+        }
+    </style>
+</head>
+<body class="bg-blue-50">
+
+<main class="container mx-auto px-6 py-12">
+    <section id="header" class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-[#004AAD] mb-4">AI赋能药物警戒</h1>
+        <h2 class="text-2xl md:text-3xl font-semibold text-[#0062D5] mb-8">智能合规新时代信息图</h2>
+        <p class="max-w-3xl mx-auto text-lg text-slate-600">一份关于AI Agent在药物警戒(PV)领域的应用潜力、GCP法规及其合规实施路径的视觉指南。</p>
+    </section>
+
+    <section id="overview" class="mb-20">
+        <div class="section-card p-8">
+            <h3 class="text-2xl font-bold text-center text-slate-800 mb-2">AI显著提升药物警戒流程效率</h3>
+            <p class="text-slate-500 mb-8 max-w-2xl mx-auto text-center">人工智能能够自动化处理不良事件报告中的重复性工作，大幅提高数据处理的速度与准确性，让PV专家能更专注于高价值的医学分析和信号评估。</p>
+            <div class="chart-container">
+                <canvas id="efficiencyChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <section id="applications" class="mb-20">
+        <h2 class="section-title">AI Agent核心应用场景</h2>
+        <p class="section-subtitle">从自动化的个案处理到前瞻性的信号检测，AI正在重塑药物警戒的工作模式。以下案例展示了AI在关键环节的实际效益。</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center mb-12">
+            <div class="lg:col-span-3 section-card p-8">
+                <h3 class="text-xl font-bold mb-4 text-[#004AAD]">1. 个案处理自动化 (ICSR)</h3>
+                <p class="text-slate-600 mb-4">AI Agent自动从邮件、E2B文件等来源提取数据，完成录入、编码（MedDRA/WHODrug）、质量检查和叙述生成，极大缩短处理周期，降低人为错误。</p>
+                <ul class="list-disc list-inside text-slate-600 space-y-2">
+                    <li><strong>智能数据提取：</strong> 从非结构化文本中自动识别关键字段。</li>
+                    <li><strong>自动编码推荐：</strong> 基于机器学习模型推荐MedDRA和WHODrug编码。</li>
+                    <li><strong>自动生成病例叙述：</strong> 根据结构化数据生成合规的病例摘要。</li>
+                </ul>
+            </div>
+            <div class="lg:col-span-2 section-card p-8 bg-blue-50">
+                <h4 class="font-bold text-lg mb-2 text-center text-[#0062D5]">案例：全球Top 10药企</h4>
+                <p class="text-sm text-center text-slate-600 mb-4">部署AI驱动的PV平台，实现对超80%个案的自动化处理。</p>
+                <div class="h-48 w-48 mx-auto">
+                    <canvas id="caseChart1"></canvas>
+                </div>
+                <p class="text-center text-sm font-medium text-slate-700 mt-2">关键效益指标</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center mb-12">
+            <div class="lg:col-span-3 section-card p-8 lg:order-2">
+                <h3 class="text-xl font-bold mb-4 text-[#004AAD]">2. 智能信号检测与管理</h3>
+                <p class="text-slate-600 mb-4">AI Agent整合真实世界数据、电子健康记录等多种数据源，利用先进算法更早、更准地发现潜在安全风险信号，并能基于临床严重性对信号进行智能排序。</p>
+                <ul class="list-disc list-inside text-slate-600 space-y-2">
+                    <li><strong>多源数据整合分析：</strong> 结合自发呈报系统和EHR数据进行综合分析。</li>
+                    <li><strong>算法增强：</strong> 识别传统方法难以发现的复杂药物-事件关联模式。</li>
+                    <li><strong>信号优先级排序：</strong> 帮助团队聚焦最高风险的安全问题。</li>
+                </ul>
+            </div>
+            <div class="lg:col-span-2 section-card p-8 bg-blue-50 lg:order-1">
+                <h4 class="font-bold text-lg mb-2 text-center text-[#0062D5]">案例：欧盟IMI-WEB-RADR项目</h4>
+                <p class="text-sm text-center text-slate-600 mb-4">利用社交媒体等非传统数据源进行药物安全监测，成功识别出多个新的安全信号。</p>
+                <div class="h-48 w-48 mx-auto">
+                    <canvas id="caseChart2"></canvas>
+                </div>
+                <p class="text-center text-sm font-medium text-slate-700 mt-2">项目成果亮点</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
+            <div class="lg:col-span-3 section-card p-8">
+                <h3 class="text-xl font-bold mb-4 text-[#004AAD]">3. 文献监测与综述</h3>
+                <p class="text-slate-600 mb-4">AI Agent能自动扫描PubMed、Embase等文献数据库，根据标准筛选相关文献，并高亮显示可能包含ICSR的段落，极大提升文献审阅的效率和覆盖面。</p>
+                <ul class="list-disc list-inside text-slate-600 space-y-2">
+                    <li><strong>智能筛选与排序：</strong> 自动化执行复杂的文献检索策略。</li>
+                    <li><strong>ICSR识别：</strong> 利用NLP从文献中识别符合标准的个案信息。</li>
+                    <li><strong>自动生成摘要：</strong> 为PSUR等报告自动生成文献综述。</li>
+                </ul>
+            </div>
+            <div class="lg:col-span-2 section-card p-8 bg-blue-50">
+                <h4 class="font-bold text-lg mb-2 text-center text-[#0062D5]">案例：中型生物技术公司</h4>
+                <p class="text-sm text-center text-slate-600 mb-4">引入AI文献审阅工具，将每周文献筛选时间从40+小时减少到不足5小时。</p>
+                <div class="h-48 w-48 mx-auto">
+                    <canvas id="caseChart3"></canvas>
+                </div>
+                <p class="text-center text-sm font-medium text-slate-700 mt-2">效率提升对比</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="compliance" class="mb-20">
+        <h2 class="section-title">监管法规与合规框架</h2>
+        <p class="section-subtitle">拥抱AI技术的同时，必须严格遵守GCP及各国监管法规。AI系统不能损害数据的完整性、可靠性和可追溯性。企业应建立包含以下四大支柱的合规框架。</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="section-card p-6 text-center">
+                <div class="text-5xl mb-4">🛡️</div>
+                <h4 class="font-bold text-lg text-[#004AAD] mb-2">系统验证</h4>
+                <p class="text-sm text-slate-600">确保AI系统性能在预期使用场景下准确、可靠和一致，验证需贯穿系统整个生命周期。</p>
+            </div>
+            <div class="section-card p-6 text-center">
+                <div class="text-5xl mb-4">✍️</div>
+                <h4 class="font-bold text-lg text-[#004AAD] mb-2">数据完整性与溯源</h4>
+                <p class="text-sm text-slate-600">所有AI处理过的数据都必须可追溯到原始来源，并具备不可篡改的审计追踪功能。</p>
+            </div>
+            <div class="section-card p-6 text-center">
+                <div class="text-5xl mb-4">🧑‍⚕️</div>
+                <h4 class="font-bold text-lg text-[#004AAD] mb-2">人工监督</h4>
+                <p class="text-sm text-slate-600">最终的医学判断和决策权必须保留给合格的PV专业人员。AI是辅助工具，而非决策者。</p>
+            </div>
+            <div class="section-card p-6 text-center">
+                <div class="text-5xl mb-4">⚙️</div>
+                <h4 class="font-bold text-lg text-[#004AAD] mb-2">变更控制与治理</h4>
+                <p class="text-sm text-slate-600">对AI模型的任何更新或重新训练都必须遵循严格的变更控制流程，并进行相应的再验证。</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="roadmap">
+        <h2 class="section-title">企业合规实施路线图</h2>
+        <p class="section-subtitle">成功部署AI不仅是技术挑战，更是一项涉及合规、质量和组织变革的系统工程。企业应采取分阶段、重验证的方法，确保每一步都稳健、合规。</p>
+
+        <div class="relative wrap overflow-hidden p-10 h-full">
+            <div class="border-2-2 absolute border-opacity-20 border-[#419BFF] h-full border" style="left: 50%"></div>
+
+            <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                <div class="order-1 w-5/12"></div>
+                <div class="z-20 flex items-center order-1 bg-[#0062D5] shadow-xl w-12 h-12 rounded-full">
+                    <h1 class="mx-auto font-bold text-lg text-white">1</h1>
+                </div>
+                <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 section-card">
+                    <h3 class="font-bold text-[#004AAD] text-lg">战略规划与评估</h3>
+                    <p class="text-sm leading-snug tracking-wide text-slate-600">明确业务目标，成立跨职能团队，进行风险评估和可行性分析，选择初始用例。</p>
+                </div>
+            </div>
+
+            <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                <div class="order-1 w-5/12"></div>
+                <div class="z-20 flex items-center order-1 bg-[#0062D5] shadow-xl w-12 h-12 rounded-full">
+                    <h1 class="mx-auto text-white font-bold text-lg">2</h1>
+                </div>
+                <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 section-card">
+                    <h3 class="font-bold text-[#004AAD] text-lg">供应商甄选与验证</h3>
+                    <p class="text-sm leading-snug tracking-wide text-slate-600">对AI供应商进行严格的资质审计，评估其质量管理体系和对GCP的理解。</p>
+                </div>
+            </div>
+
+            <div class="mb-8 flex justify-between items-center w-full right-timeline">
+                <div class="order-1 w-5/12"></div>
+                <div class="z-20 flex items-center order-1 bg-[#0062D5] shadow-xl w-12 h-12 rounded-full">
+                    <h1 class="mx-auto font-bold text-lg text-white">3</h1>
+                </div>
+                <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 section-card">
+                    <h3 class="font-bold text-[#004AAD] text-lg">试点实施与性能确认</h3>
+                    <p class="text-sm leading-snug tracking-wide text-slate-600">在“沙盒”环境中进行试点，使用历史数据对AI模型性能进行基准测试和确认。</p>
+                </div>
+            </div>
+
+            <div class="mb-8 flex justify-between flex-row-reverse items-center w-full left-timeline">
+                <div class="order-1 w-5/12"></div>
+                <div class="z-20 flex items-center order-1 bg-[#0062D5] shadow-xl w-12 h-12 rounded-full">
+                    <h1 class="mx-auto text-white font-bold text-lg">4</h1>
+                </div>
+                <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 section-card">
+                    <h3 class="font-bold text-[#004AAD] text-lg">全面部署与人员培训</h3>
+                    <p class="text-sm leading-snug tracking-wide text-slate-600">系统集成到现有工作流，制定新SOP，并对所有相关人员进行全面培训。</p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center w-full right-timeline">
+                <div class="order-1 w-5/12"></div>
+                <div class="z-20 flex items-center order-1 bg-[#0062D5] shadow-xl w-12 h-12 rounded-full">
+                    <h1 class="mx-auto font-bold text-lg text-white">5</h1>
+                </div>
+                <div class="order-1 bg-white rounded-lg shadow-xl w-5/12 px-6 py-4 section-card">
+                    <h3 class="font-bold text-[#004AAD] text-lg">持续监控与优化</h3>
+                    <p class="text-sm leading-snug tracking-wide text-slate-600">建立持续监控机制，定期评估AI模型性能，警惕“模型漂移”，并进行持续优化。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-[#004AAD] text-white mt-20">
+    <div class="container mx-auto px-6 py-8 text-center">
+        <p>&copy; 2025 AI in Pharmacovigilance Research. All Rights Reserved.</p>
+        <p class="text-sm text-blue-200 mt-2">本信息图内容仅供研究参考，不构成任何法律或投资建议。</p>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+
+        const ctxEfficiency = document.getElementById('efficiencyChart').getContext('2d');
+        new Chart(ctxEfficiency, {
+            type: 'bar',
+            data: {
+                labels: ['个案接收与分流', '数据录入与编码', '质量审核', '信号检测初步筛选', '文献审阅'],
+                datasets: [
+                    {
+                        label: '传统人工处理时间占比',
+                        data: [100, 100, 100, 100, 100],
+                        backgroundColor: '#C4E4FF',
+                        borderColor: '#8BC8FF',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'AI辅助处理时间占比',
+                        data: [30, 20, 50, 40, 15],
+                        backgroundColor: '#419BFF',
+                        borderColor: '#0062D5',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback,
+                            label: (context) => `${context.dataset.label || ''}: ${context.parsed.x}%`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 110,
+                        ticks: {
+                            callback: (value) => value + '%'
+                        }
+                    }
+                }
+            }
+        });
+
+        const caseChart1Ctx = document.getElementById('caseChart1').getContext('2d');
+        new Chart(caseChart1Ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['处理时间缩短', '成本降低', '准确性提升'],
+                datasets: [{
+                    data: [60, 45, 15],
+                    backgroundColor: ['#419BFF', '#0062D5', '#004AAD'],
+                    borderColor: '#f0f8ff',
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
+                    tooltip: { callbacks: { title: tooltipTitleCallback, label: (c) => `${c.label}: ${c.raw}%` } }
+                }
+            }
+        });
+
+        const caseChart2Ctx = document.getElementById('caseChart2').getContext('2d');
+        new Chart(caseChart2Ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['信号识别灵敏度', '假阳性率降低', '新信号发现数'],
+                datasets: [{
+                    data: [25, 30, 10],
+                    backgroundColor: ['#419BFF', '#0062D5', '#004AAD'],
+                    borderColor: '#f0f8ff',
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
+                    tooltip: { callbacks: { title: tooltipTitleCallback, label: (c) => `${c.label}: +${c.raw}%` } }
+                }
+            }
+        });
+
+        const caseChart3Ctx = document.getElementById('caseChart3').getContext('2d');
+        new Chart(caseChart3Ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['人工筛选(小时/周)', 'AI辅助筛选(小时/周)'],
+                datasets: [{
+                    data: [40, 5],
+                    backgroundColor: ['#8BC8FF', '#004AAD'],
+                    borderColor: '#f0f8ff',
+                    borderWidth: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15 } },
+                    tooltip: { callbacks: { title: tooltipTitleCallback, label: (c) => `${c.label}: ${c.raw}` } }
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
