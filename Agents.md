@@ -20,6 +20,7 @@
    - 复制 `content-inbox/assets/` 下的文件到 `source/assets/`。
 3. 处理完成后脚本会运行 `hexo clean && hexo generate` 完成 `docs/` 目录更新；若需要自动启动预览，可在命令后追加 `--preview`、执行 `npm run publish:preview`，或设置 `PUBLISH_PREVIEW=1`。
 4. 原始素材在成功搬运后会从 `content-inbox/` 中移除，请提前自行备份需要长期保留的源文件。
+5. 如果访问 `http://localhost:4000/pv-knowledge-base/` 仍能打开页面，说明预览进程尚未停止，应立即运行 `npm run preview:stop`。
 
 ## 4. 常用命令
 - `npm run publish`：执行全量处理 + 构建；如需自动预览执行 `npm run publish:preview` 或 `npm run publish -- --preview`（后台启动，完成后运行 `npm run preview:stop` 关闭）。
@@ -39,5 +40,5 @@
 ## 6. 注意事项
 - 保持 Markdown 文件使用 UTF-8，无需额外 BOM。
 - 避免在自动生成的文件上直接手改，如需调整请修改原始素材并重新执行发布流程。
-- 使用 `--preview`/`npm run publish:preview` 会在后台启动预览，完成检查后记得运行 `npm run preview:stop`；直接运行 `npm run preview` 时依旧使用 `Ctrl+C` 结束。
+- 使用 `--preview`/`npm run publish:preview` 会在后台启动预览，完成检查后记得运行 `npm run preview:stop`（脚本会通过端口查杀 Hexo 实例）；直接运行 `npm run preview` 时依旧使用 `Ctrl+C` 结束。
 - 若脚本失败或遇到特殊场景（例如需保留未压缩的资源目录结构），请记录原因并与团队沟通后再处理。
