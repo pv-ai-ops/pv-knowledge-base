@@ -18,12 +18,13 @@
    - 找到关联的 `*.assets/`：按文章标题生成唯一前缀，复制至 `source/assets/` 并重写 Markdown 中的图片引用为 `/assets/<prefixed-name>`，避免部署路径失效。
    - 解析 `content-inbox/html/`：复制 HTML 到 `source/` 根目录，并生成嵌入 `<iframe>` 的 Markdown 文章以便出现在文章索引。
    - 复制 `content-inbox/assets/` 下的文件到 `source/assets/`。
-3. 处理完成后脚本会运行 `hexo clean && hexo generate` 完成 `docs/` 目录更新；若需要自动启动预览，可在命令后追加 `--preview` 或设置 `PUBLISH_PREVIEW=1`。
+3. 处理完成后脚本会运行 `hexo clean && hexo generate` 完成 `docs/` 目录更新；若需要自动启动预览，可在命令后追加 `--preview`、执行 `npm run publish:preview`，或设置 `PUBLISH_PREVIEW=1`。
 4. 原始素材在成功搬运后会从 `content-inbox/` 中移除，请提前自行备份需要长期保留的源文件。
 
 ## 4. 常用命令
-- `npm run publish`：执行全量处理 + 构建；如需自动预览执行 `npm run publish -- --preview`（预览结束后需手动 `Ctrl+C` 退出服务器）。
+- `npm run publish`：执行全量处理 + 构建；如需自动预览执行 `npm run publish:preview` 或 `npm run publish -- --preview`（后台启动，完成后运行 `npm run preview:stop` 关闭）。
 - `npm run preview`：清理、构建并启动 Hexo 预览服务器；适用于无需重复搬运内容时的检查，同样通过 `Ctrl+C` 结束。
+- `npm run preview:stop`：通过进程搜索关闭所有正在运行的 Hexo 预览实例。
 - `npm run build`：仅构建静态内容到 `docs/`。
 - `npm run clean`：清理 Hexo 缓存文件。
 - `npm run deploy`：在确认预览正确后执行，提交并推送 `doc-page` 分支以发布到 GitHub Pages。
@@ -38,5 +39,5 @@
 ## 6. 注意事项
 - 保持 Markdown 文件使用 UTF-8，无需额外 BOM。
 - 避免在自动生成的文件上直接手改，如需调整请修改原始素材并重新执行发布流程。
-- 使用 `--preview` 或 `npm run preview` 时，完成检查后务必 `Ctrl+C` 停止 `hexo server`，避免占用 4000 端口。
+- 使用 `--preview`/`npm run publish:preview` 会在后台启动预览，完成检查后记得运行 `npm run preview:stop`；直接运行 `npm run preview` 时依旧使用 `Ctrl+C` 结束。
 - 若脚本失败或遇到特殊场景（例如需保留未压缩的资源目录结构），请记录原因并与团队沟通后再处理。

@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execSync, spawn } = require('child_process');
 
 const args = process.argv.slice(2);
 const shouldPreview = args.includes('--preview') || process.env.PUBLISH_PREVIEW === '1';
@@ -221,8 +221,14 @@ if (needsBuild) {
     console.log('✅ 静态文件已生成到 docs/ 目录');
 
     if (shouldPreview) {
-      console.log('🌐 启动预览服务器: http://localhost:4000/pv-knowledge-base/（按 Ctrl+C 结束）');
-      execSync('hexo server', { stdio: 'inherit' });
+      console.log('🌐 正在后台启动预览服务器: http://localhost:4000/pv-knowledge-base/');
+      const child = spawn('hexo', ['server'], {
+        cwd: path.join(__dirname, '..'),
+        stdio: 'ignore',
+        detached: true
+      });
+      child.unref();
+      console.log('ℹ️ 预览已在后台运行。完成检查后可运行 `npm run preview:stop` 或执行 `pkill -f \"hexo server\"` 手动结束。');
     } else {
       console.log('ℹ️ 预览未自动启动。如需本地预览请运行 `npm run preview` 或在命令后追加 `--preview`。');
     }
