@@ -18,7 +18,7 @@ GPT-5-Codex 专为真实世界的软件工程任务设计，包括构建项目�
 #### 工具与集成改进
 升级包括 Codex CLI 的重建，支持图像附件（如截图和线框图）和进度跟踪；IDE 扩展兼容 VS Code 和 Cursor，实现本地-云无缝切换；云环境完成时间减少 90%，通过容器缓存和自动设置。 GitHub 代码审查功能能自动分析拉取请求，识别关键问题，并建议编辑。 这些改进旨在加速开发周期，但需考虑生态绑定可能带来的长期影响。
 
-![Codex 云环境示例](.//assets/openai-codex-升级概述-g07jg95aeams5rp.jpg)  
+![Codex 云环境示例](/assets/openai-codex-升级概述-g07jg95aeams5rp.jpg)  
 *图示：Codex 云环境的性能优化示例，展示任务完成时间减少 90%。*
 
 #### 对开发者的影响
@@ -40,14 +40,14 @@ Codex IDE 扩展将代理集成到 VS Code、Cursor 等环境中，利用打开�
 
 代码审查功能是另一个亮点，GPT-5-Codex 能在 GitHub PR 从草稿转为就绪时自动触发，发布详细审查，识别关键缺陷，并建议编辑。可通过“@codex review”显式调用，并指定焦点如安全漏洞或过时依赖。 在 OpenAI 内部，它审查大部分 PR，每天捕获数百问题，帮助团队更快迭代。
 
-![GPT-5-Codex 性能图表](.//assets/openai-codex-升级概述-g07glujwiaageir.png)  
+![GPT-5-Codex 性能图表](/assets/openai-codex-升级概述-g07glujwiaageir.png)  
 *图示：GPT-5-Codex 在编码效率上的基准比较，展示其在 SWE-bench 中的得分提升。*
 
 从开发者反馈看，这一升级正改变工作流。Cisco Meraki 技术主管 Tres Wong-Godfrey 表示：“我需要为功能发布更新另一个团队的代码库……用 Codex，我卸载了重构和测试生成，同时专注于其他优先事项。它产生了高质量、全面测试的代码，我能快速交还——保持功能进度而不增加风险。” 类似证言显示，它适合协作设置，但需人工监督。
 
 安全性和可信赖性是重点。Codex 默认在禁用网络访问的沙盒环境中运行，以防有害行动或提示注入。 模型可在危险操作前请求许可，并验证输出。开发者可自定义设置，如限制云网络到受信任域，或在 CLI/IDE 中批准命令。GPT-5-Codex 在生物和化学领域被分类为“高能力”，实施额外防护（如系统卡附录所述）。 OpenAI 强调，始终审查代理工作，使用提供的引用、日志和测试结果；Codex 作为辅助审查者，而非人类替代。
 
-![Codex CLI 更新示例](.//assets/openai-codex-升级概述-g07ge_8akaaa3ga.jpg)  
+![Codex CLI 更新示例](/assets/openai-codex-升级概述-g07ge_8akaaa3ga.jpg)  
 *图示：Codex CLI 的新界面，展示 GPT-5-Codex 的推荐动画和版本更新。*
 
 展望未来，这一升级可能加速 AI 在编程中的采用，但也引发讨论：OpenAI 通过垂直优化构建生态护城河，开发者需权衡绑定风险。 与 Claude Code 等竞品比较，GPT-5-Codex 在代理任务上更强，但需更多实测验证。 OpenAI 邀请社区反馈，并提供快速入门指南（如 https://developers.openai.com/codex/security）。总体而言，这次更新强化了 Codex 作为 AI 增强工具的地位，但成功取决于开发者采用和持续迭代。
@@ -60,7 +60,7 @@ Codex IDE 扩展将代理集成到 VS Code、Cursor 等环境中，利用打开�
 | 代码审查         | 自动 PR 分析；测试验证                            | GitHub 集成检查漏洞        | OpenAI 内部每天捕获数百问题            |
 | IDE 扩展         | 上下文感知编辑                                    | 本地-云无缝转移            | 通过打开文件上下文更快提示             |
 
-![OpenAI 公告海报](.//assets/openai-codex-升级概述-g07felhxgaa1wki.jpg)  
+![OpenAI 公告海报](/assets/openai-codex-升级概述-g07felhxgaa1wki.jpg)  
 *图示：OpenAI 关于 GPT-5-Codex 的宣传图，强调其编码自动化潜力。*
 
 ### Key Citations

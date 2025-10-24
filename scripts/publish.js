@@ -2,6 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
+const args = process.argv.slice(2);
+const shouldPreview = args.includes('--preview') || process.env.PUBLISH_PREVIEW === '1';
+
 console.log('🚀 开始处理content-inbox中的新内容...');
 
 const inboxDir = path.join(__dirname, '../content-inbox');
@@ -94,6 +97,10 @@ if (fs.existsSync(markdownDir)) {
       const genericOldPathPattern = new RegExp(`${originalTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.assets/`, 'g');
       content = content.replace(genericOldPathPattern, '/assets/');
       console.log(`  📝 通用路径修正: ${originalTitle}.assets/ → /assets/`);
+
+      // 清理可能残留的 ./assets/ 相对路径前缀
+      content = content.replace(/\.\/*assets\//g, '/assets/');
+      console.log('  🧹 去除残留的 ./assets/ 前缀');
 
       // 删除原始.assets文件夹
       fs.rmSync(assetsDir, { recursive: true });
@@ -205,12 +212,20 @@ if (fs.existsSync(assetsDir)) {
 
 console.log(`\n🎉 处理完成! 共处理 ${processedFiles} 个文件`);
 
-if (processedFiles > 0) {
-  console.log('📝 正在生成静态文件并启动预览...');
+const needsBuild = processedFiles > 0 || shouldPreview;
+
+if (needsBuild) {
+  console.log('📝 正在执行 hexo clean && hexo generate ...');
   try {
     execSync('hexo clean && hexo generate', { stdio: 'inherit' });
-    console.log('🌐 启动预览服务器: http://localhost:4000/pv-knowledge-base/');
-    execSync('hexo server', { stdio: 'inherit' });
+    console.log('✅ 静态文件已生成到 docs/ 目录');
+
+    if (shouldPreview) {
+      console.log('🌐 启动预览服务器: http://localhost:4000/pv-knowledge-base/（按 Ctrl+C 结束）');
+      execSync('hexo server', { stdio: 'inherit' });
+    } else {
+      console.log('ℹ️ 预览未自动启动。如需本地预览请运行 `npm run preview` 或在命令后追加 `--preview`。');
+    }
   } catch (error) {
     console.error('❌ 生成或启动服务器失败:', error.message);
   }
