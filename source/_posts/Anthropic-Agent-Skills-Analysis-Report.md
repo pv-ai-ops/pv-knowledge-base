@@ -65,7 +65,7 @@ Agent Skills 概念源于 Anthropic 努力弥合高度智能但上下文受限�
 
 
 
-![Equipping agents for the real world with Agent Skills ...](/assets/anthropic-agent-skills-analysis-report-imageurl=https%3a%2f%2fwww-cdn.anthropic.com%2fimages%2f4zrzovbb%2fwebsite%2fddd7e6e572ad0b6a943cacefe957248455f6d522-1650x929.webp)
+![Equipping agents for the real world with Agent Skills ...](/assets/anthropic-agent-skills-analysis-report-imageurlhttps-www-cdnanthropiccomimages4zrzovbbwebsiteddd7e6e572ad0b6a943cacefe957248455f6d522-1650x929.webp)
 
 [anthropic.com](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
 
