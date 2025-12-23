@@ -50,6 +50,66 @@ function createSafeAssetFileName(assetFile, prefix, targetAssetsDir) {
   return candidate;
 }
 
+function sanitizeUrlForMarkdown(url) {
+  const trimmed = url.trim();
+  if (!/\s/.test(trimmed) && !/[()]/.test(trimmed)) {
+    return trimmed;
+  }
+
+  return trimmed
+    .replace(/%(?![0-9A-Fa-f]{2})/g, '%25')
+    .replace(/\s/g, '%20')
+    .replace(/\(/g, '%28')
+    .replace(/\)/g, '%29');
+}
+
+function sanitizeMarkdownHttpLinks(markdown) {
+  const lines = markdown.split(/\r?\n/);
+  let inFence = false;
+  let fenceMarker = null;
+
+  const sanitized = lines.map(line => {
+    const fenceMatch = line.match(/^\s*(```|~~~)/);
+    if (fenceMatch) {
+      const marker = fenceMatch[1];
+      if (!inFence) {
+        inFence = true;
+        fenceMarker = marker;
+      } else if (marker === fenceMarker) {
+        inFence = false;
+        fenceMarker = null;
+      }
+      return line;
+    }
+
+    if (inFence) {
+      return line;
+    }
+
+    return line.replace(/\]\(\s*(https?:\/\/[^)]+?)\s*\)/g, (match, url) => {
+      const sanitizedUrl = sanitizeUrlForMarkdown(url);
+      return `](${sanitizedUrl})`;
+    });
+  });
+
+  return sanitized.join('\n');
+}
+
+function sanitizeMarkdownForPublish(content) {
+  if (!content.startsWith('---')) {
+    return sanitizeMarkdownHttpLinks(content);
+  }
+
+  const frontMatterMatch = content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
+  if (!frontMatterMatch) {
+    return sanitizeMarkdownHttpLinks(content);
+  }
+
+  const frontMatter = frontMatterMatch[0];
+  const body = content.slice(frontMatter.length);
+  return frontMatter + sanitizeMarkdownHttpLinks(body);
+}
+
 function ensureDir(dirPath) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
@@ -129,6 +189,8 @@ function processMarkdown(inboxDir, sourceDir) {
       fs.rmSync(assetsDir, { recursive: true });
       console.log('  🗑️ 清理原始assets文件夹');
     }
+
+    content = sanitizeMarkdownForPublish(content);
 
     // 检查是否已有Front Matter
     let finalContent = content;
