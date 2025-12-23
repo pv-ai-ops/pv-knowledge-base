@@ -27,12 +27,20 @@ function killByPattern(pattern) {
   return result.status === 0;
 }
 
-const stoppedByPort = killByPort(4000);
-const stoppedByPattern = stoppedByPort ? false : killByPattern('hexo(.*)server');
-const stoppedFallback = stoppedByPort || stoppedByPattern ? false : killByPattern('hexo');
+function main() {
+  const stoppedByPort = killByPort(4000);
+  const stoppedByPattern = stoppedByPort ? false : killByPattern('hexo(.*)server');
+  const stoppedFallback = stoppedByPort || stoppedByPattern ? false : killByPattern('hexo');
 
-if (stoppedByPort || stoppedByPattern || stoppedFallback) {
-  console.log('Hexo preview server stopped');
+  if (stoppedByPort || stoppedByPattern || stoppedFallback) {
+    console.log('Hexo preview server stopped');
+  } else {
+    console.log('Hexo server not running');
+  }
+}
+
+if (require.main === module) {
+  main();
 } else {
-  console.log('Hexo server not running');
+  module.exports = { killByPort, killByPattern, main };
 }

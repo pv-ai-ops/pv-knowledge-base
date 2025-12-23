@@ -2,14 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const { execSync, spawn } = require('child_process');
 
-const args = process.argv.slice(2);
-const shouldPreview = args.includes('--preview') || process.env.PUBLISH_PREVIEW === '1';
-
-console.log('🚀 开始处理content-inbox中的新内容...');
-
-const inboxDir = path.join(__dirname, '../content-inbox');
-const sourceDir = path.join(__dirname, '../source');
-
 // 创建URL安全的文件名处理函数
 function createSafeFileName(fileName) {
   let safeName = fileName;
@@ -31,18 +23,20 @@ function createSafeFileName(fileName) {
     .replace(/^-|-$/g, '');                 // 移除首尾连字符
 }
 
-// 确保目标目录存在
-if (!fs.existsSync(path.join(sourceDir, 'assets'))) {
-  fs.mkdirSync(path.join(sourceDir, 'assets'), { recursive: true });
+function ensureDir(dirPath) {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
 }
 
-let processedFiles = 0;
+function processMarkdown(inboxDir, sourceDir) {
+  let processedFiles = 0;
+  const markdownDir = path.join(inboxDir, 'markdown');
+  if (!fs.existsSync(markdownDir)) {
+    return processedFiles;
+  }
 
-// 处理Markdown文件
-const markdownDir = path.join(inboxDir, 'markdown');
-if (fs.existsSync(markdownDir)) {
   const markdownFiles = fs.readdirSync(markdownDir).filter(file => file.endsWith('.md'));
-
   markdownFiles.forEach(file => {
     const sourcePath = path.join(markdownDir, file);
     let content = fs.readFileSync(sourcePath, 'utf8');
@@ -86,7 +80,10 @@ if (fs.existsSync(markdownDir)) {
       // 更新markdown内容中的图片路径和文件名
       assetMapping.forEach((newFileName, oldFileName) => {
         // 使用正确的路径格式（避免重复路径问题）
-        const oldImageRef = new RegExp(`${originalTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.assets/${oldFileName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'g');
+        const oldImageRef = new RegExp(
+          `${originalTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\.assets/${oldFileName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`,
+          'g'
+        );
         const newImageRef = `/assets/${newFileName}`;
 
         content = content.replace(oldImageRef, newImageRef);
@@ -104,7 +101,7 @@ if (fs.existsSync(markdownDir)) {
 
       // 删除原始.assets文件夹
       fs.rmSync(assetsDir, { recursive: true });
-      console.log(`  🗑️ 清理原始assets文件夹`);
+      console.log('  🗑️ 清理原始assets文件夹');
     }
 
     // 检查是否已有Front Matter
@@ -131,28 +128,33 @@ ${content}`;
     console.log(`✅ 处理Markdown: ${file} -> ${safeFileName}`);
     processedFiles++;
   });
+
+  return processedFiles;
 }
 
-// 处理HTML文件 - 创建对应的Markdown文章并保留HTML文件
-const htmlDir = path.join(inboxDir, 'html');
-if (fs.existsSync(htmlDir)) {
+function processHtml(inboxDir, sourceDir) {
+  let processedFiles = 0;
+  const htmlDir = path.join(inboxDir, 'html');
+  if (!fs.existsSync(htmlDir)) {
+    return processedFiles;
+  }
+
   const htmlFiles = fs.readdirSync(htmlDir).filter(file => file.endsWith('.html'));
-  
   htmlFiles.forEach(file => {
     const sourcePath = path.join(htmlDir, file);
     const htmlFileName = path.basename(file, '.html');
-    
+
     // 使用统一的文件名安全处理函数
     const safeFileName = createSafeFileName(htmlFileName) + '.html';
-    
+
     // 1. 复制HTML到source根目录 (用于直接访问)
     const targetHtmlPath = path.join(sourceDir, safeFileName);
     fs.copyFileSync(sourcePath, targetHtmlPath);
-    
+
     // 2. 创建对应的Markdown文章 (用于在文章列表中显示)
     const now = new Date();
     const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
-    
+
     const markdownContent = `---
 title: ${htmlFileName}
 date: ${dateStr}
@@ -185,36 +187,39 @@ categories: [技术分析]
     const safeMarkdownFileName = createSafeFileName(htmlFileName) + '.md';
     const markdownPath = path.join(sourceDir, '_posts', safeMarkdownFileName);
     fs.writeFileSync(markdownPath, markdownContent);
-    
+
     fs.unlinkSync(sourcePath);
-    
+
     console.log(`✅ 处理HTML应用: ${file} -> ${safeFileName} (创建文章 + 保留交互功能)`);
     processedFiles++;
   });
+
+  return processedFiles;
 }
 
-// 处理资源文件
-const assetsDir = path.join(inboxDir, 'assets');
-if (fs.existsSync(assetsDir)) {
+function processAssets(inboxDir, sourceDir) {
+  let processedFiles = 0;
+  const assetsDir = path.join(inboxDir, 'assets');
+  if (!fs.existsSync(assetsDir)) {
+    return processedFiles;
+  }
+
   const assetFiles = fs.readdirSync(assetsDir);
-  
   assetFiles.forEach(file => {
     const sourcePath = path.join(assetsDir, file);
     const targetPath = path.join(sourceDir, 'assets', file);
-    
+
     fs.copyFileSync(sourcePath, targetPath);
     fs.unlinkSync(sourcePath);
-    
+
     console.log(`✅ 处理资源文件: ${file}`);
     processedFiles++;
   });
+
+  return processedFiles;
 }
 
-console.log(`\n🎉 处理完成! 共处理 ${processedFiles} 个文件`);
-
-const needsBuild = processedFiles > 0 || shouldPreview;
-
-if (needsBuild) {
+function buildSite({ shouldPreview }) {
   console.log('📝 正在执行 hexo clean && hexo generate ...');
   try {
     execSync('hexo clean && hexo generate', { stdio: 'inherit' });
@@ -235,6 +240,37 @@ if (needsBuild) {
   } catch (error) {
     console.error('❌ 生成或启动服务器失败:', error.message);
   }
+}
+
+function main(argv = process.argv.slice(2)) {
+  const shouldPreview = argv.includes('--preview') || process.env.PUBLISH_PREVIEW === '1';
+
+  console.log('🚀 开始处理content-inbox中的新内容...');
+
+  const inboxDir = path.join(__dirname, '../content-inbox');
+  const sourceDir = path.join(__dirname, '../source');
+
+  ensureDir(path.join(sourceDir, '_posts'));
+  ensureDir(path.join(sourceDir, 'assets'));
+
+  let processedFiles = 0;
+  processedFiles += processMarkdown(inboxDir, sourceDir);
+  processedFiles += processHtml(inboxDir, sourceDir);
+  processedFiles += processAssets(inboxDir, sourceDir);
+
+  console.log(`\n🎉 处理完成! 共处理 ${processedFiles} 个文件`);
+
+  const needsBuild = processedFiles > 0 || shouldPreview;
+  if (!needsBuild) {
+    console.log('📭 inbox为空，无需处理');
+    return;
+  }
+
+  buildSite({ shouldPreview });
+}
+
+if (require.main === module) {
+  main();
 } else {
-  console.log('📭 inbox为空，无需处理');
+  module.exports = { createSafeFileName, main };
 }

@@ -11,7 +11,7 @@
     "publish:preview": "node scripts/publish.js --preview",
     "preview:stop": "node scripts/stop-preview.js",
     "preview": "hexo clean && hexo generate && hexo server",
-    "cc-setup": "echo 'To use Claude Code shortcuts, run: source scripts/cc-shortcuts.sh' && echo 'Available commands: ccd (claude --dangerously-skip-permissions + original config + 64000 tokens)'"
+    "cc-setup": "echo 'To use Claude Code shortcuts, run: source tools/cc-shortcuts.sh' && echo 'Available commands: ccd (claude --dangerously-skip-permissions + original config + 64000 tokens)'"
   },
   "hexo": {
     "version": "7.3.0"

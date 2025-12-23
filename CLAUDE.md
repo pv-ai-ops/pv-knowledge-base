@@ -52,7 +52,7 @@ hexo new page "name"    # Create new page
 
 # Claude Code Shortcuts
 npm run cc-setup         # Show Claude Code shortcuts setup instructions
-# After running: source scripts/cc-shortcuts.sh
+# After running: source tools/cc-shortcuts.sh
 # Available shortcuts:
 #   ccd [args]           # claude --dangerously-skip-permissions [args] (original config + 64000 tokens)
 ```
