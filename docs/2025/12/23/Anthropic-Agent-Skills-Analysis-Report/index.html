@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/pv-knowledge-base/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/pv-knowledge-base/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/pv-knowledge-base/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/pv-knowledge-base/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/pv-knowledge-base/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"pv-ai-ops.github.io","root":"/pv-knowledge-base/","images":"/pv-knowledge-base/images","scheme":"Gemini","darkmode":true,"version":"8.24.1","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null,"enable":true,"provider":"gitalk"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/pv-knowledge-base/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/pv-knowledge-base/js/config.js" defer></script>
+
+    <meta name="description" content="主要发现 Anthropic 的战略转变：研究表明，AI 行业应优先开发模块化“技能”（Skills），而非大量专用 AI 代理（Agents）。Skills 可增强通用代理如 Claude 的领域专长，并提供可复用工作流，这有助于解决当前代理在实际任务中的上下文缺失或精度不足问题。 模块化设计优势：Skills 是简单的文件包（如包含 Markdown 指令、脚本和资源的文件夹），支持渐进式加载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Anthropic Agent Skills Analysis Report">
+<meta property="og:url" content="https://pv-ai-ops.github.io/pv-knowledge-base/2025/12/23/Anthropic-Agent-Skills-Analysis-Report/index.html">
+<meta property="og:site_name" content="药物警戒知识库 | PV Knowledge Base">
+<meta property="og:description" content="主要发现 Anthropic 的战略转变：研究表明，AI 行业应优先开发模块化“技能”（Skills），而非大量专用 AI 代理（Agents）。Skills 可增强通用代理如 Claude 的领域专长，并提供可复用工作流，这有助于解决当前代理在实际任务中的上下文缺失或精度不足问题。 模块化设计优势：Skills 是简单的文件包（如包含 Markdown 指令、脚本和资源的文件夹），支持渐进式加载">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pv-ai-ops.github.io/pv-knowledge-base/assets/anthropic-agent-skills-analysis-report-1tw55rzyzccuanx7av7v28a.png">
+<meta property="og:image" content="https://pv-ai-ops.github.io/pv-knowledge-base/assets/anthropic-agent-skills-analysis-report-imageurl=https://www-cdn.anthropic.com/images/4zrzovbb/website/ddd7e6e572ad0b6a943cacefe957248455f6d522-1650x929.webp">
+<meta property="og:image" content="https://pv-ai-ops.github.io/pv-knowledge-base/assets/anthropic-agent-skills-analysis-report-1c1rl3-rxuhc5paczccpthg.png">
+<meta property="og:image" content="https://pv-ai-ops.github.io/pv-knowledge-base/assets/anthropic-agent-skills-analysis-report-1750941347426.jpeg">
+<meta property="article:published_time" content="2025-12-22T22:47:07.000Z">
+<meta property="article:modified_time" content="2025-12-23T06:47:07.593Z">
+<meta property="article:author" content="pv-ai-ops">
+<meta property="article:tag" content="药物警戒">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pv-ai-ops.github.io/pv-knowledge-base/assets/anthropic-agent-skills-analysis-report-1tw55rzyzccuanx7av7v28a.png">
+
+
+<link rel="canonical" href="https://pv-ai-ops.github.io/pv-knowledge-base/2025/12/23/Anthropic-Agent-Skills-Analysis-Report/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://pv-ai-ops.github.io/pv-knowledge-base/2025/12/23/Anthropic-Agent-Skills-Analysis-Report/","path":"2025/12/23/Anthropic-Agent-Skills-Analysis-Report/","title":"Anthropic Agent Skills Analysis Report"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Anthropic Agent Skills Analysis Report | 药物警戒知识库 | PV Knowledge Base</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/pv-knowledge-base/js/utils.js" defer></script><script src="/pv-knowledge-base/js/motion.js" defer></script><script src="/pv-knowledge-base/js/sidebar.js" defer></script><script src="/pv-knowledge-base/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/pv-knowledge-base/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">false</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/pv-knowledge-base/js/third-party/math/mathjax.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/pv-knowledge-base/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/pv-knowledge-base/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">药物警戒知识库 | PV Knowledge Base</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">AI驱动的药物安全监测技术分享</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/pv-knowledge-base/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/pv-knowledge-base/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/pv-knowledge-base/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/pv-knowledge-base/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/pv-knowledge-base/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%8F%91%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">主要发现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E6%A6%82%E8%BF%B0"><span class="nav-number">1.1.</span> <span class="nav-text">视频概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.</span> <span class="nav-text">核心概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%8A%E5%A4%84%E4%B8%8E%E5%BA%94%E7%94%A8"><span class="nav-number">1.3.</span> <span class="nav-text">益处与应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%B9%E8%AF%84%E4%B8%8E%E8%80%83%E8%99%91"><span class="nav-number">1.4.</span> <span class="nav-text">批评与考虑</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Agent-Skills-%E7%9A%84%E8%83%8C%E6%99%AF%E4%B8%8E%E8%B5%B7%E6%BA%90"><span class="nav-number">1.5.</span> <span class="nav-text">Agent Skills 的背景与起源</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Agent-Skills-%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%EF%BC%9A%E6%8A%80%E6%9C%AF%E5%88%86%E8%A7%A3"><span class="nav-number">1.6.</span> <span class="nav-text">Agent Skills 如何工作：技术分解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%9B%8A%E5%A4%84%E4%B8%8E%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8"><span class="nav-number">1.7.</span> <span class="nav-text">益处与实际应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%B9%E8%AF%84%E4%B8%8E%E5%8F%8D%E9%A9%B3"><span class="nav-number">1.8.</span> <span class="nav-text">批评与反驳</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%AA%E6%9D%A5%E5%90%AB%E4%B9%89%E4%B8%8E%E5%BC%80%E6%94%BE%E6%A0%87%E5%87%86"><span class="nav-number">1.9.</span> <span class="nav-text">未来含义与开放标准</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%BC%95%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">关键引用</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">pv-ai-ops</p>
+  <div class="site-description" itemprop="description">专注于药物警戒、AI技术在医药安全领域的应用与创新</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/pv-knowledge-base/archives/">
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/pv-knowledge-base/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/pv-knowledge-base/tags/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/pv-ai-ops" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;pv-ai-ops" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://pv-ai-ops.github.io/pv-knowledge-base/2025/12/23/Anthropic-Agent-Skills-Analysis-Report/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/pv-knowledge-base/images/avatar.gif">
+      <meta itemprop="name" content="pv-ai-ops">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="药物警戒知识库 | PV Knowledge Base">
+      <meta itemprop="description" content="专注于药物警戒、AI技术在医药安全领域的应用与创新">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Anthropic Agent Skills Analysis Report | 药物警戒知识库 | PV Knowledge Base">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Anthropic Agent Skills Analysis Report
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-12-23 06:47:07 / 修改时间：14:47:07" itemprop="dateCreated datePublished" datetime="2025-12-23T06:47:07+08:00">2025-12-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/pv-knowledge-base/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90/" itemprop="url" rel="index"><span itemprop="name">技术分析</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="主要发现"><a href="#主要发现" class="headerlink" title="主要发现"></a>主要发现</h3><ul>
+<li><strong>Anthropic 的战略转变</strong>：研究表明，AI 行业应优先开发模块化“技能”（Skills），而非大量专用 AI 代理（Agents）。Skills 可增强通用代理如 Claude 的领域专长，并提供可复用工作流，这有助于解决当前代理在实际任务中的上下文缺失或精度不足问题。</li>
+<li><strong>模块化设计优势</strong>：Skills 是简单的文件包（如包含 Markdown 指令、脚本和资源的文件夹），支持渐进式加载信息，减少 token 使用，实现高效扩展。尽管在企业环境中显示出生产力潜力，但一些专家质疑其广泛采用，认为它类似于现有 API。</li>
+<li><strong>开放标准与生态</strong>：截至 2025 年 12 月 18 日，Agent Skills 已成为开放标准，获得 Atlassian、Canva 等伙伴贡献。虽然在生产力和安全性方面有优势，但静态性质可能需要仔细管理更新和安全。</li>
+<li><strong>潜在争议</strong>：证据倾向于 Skills 在企业设置中的益处，但实际扩展可能引入依赖管理等挑战。视频中提到此方法可能被视为“销售说辞”，若不改进底层 LLM 一致性，其效果有限。</li>
+</ul>
+<h4 id="视频概述"><a href="#视频概述" class="headerlink" title="视频概述"></a>视频概述</h4><p>YouTube 视频《Anthropic：别再造 Agent 了，未来是Skills的！》由频道“白白说大模型”于 2025 年 12 月 22 日上传，聚焦 Anthropic 从 AI 代理转向 Skills 的观点。 视频从 t&#x3D;199s 开始深入讨论，批评代理中心模式的低效，并倡导 Skills 作为可扩展替代方案。内容基于 Anthropic 的 2025 年 10 月工程文章和 12 月更新，无完整转录，但与官方公告一致。</p>
+<h4 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h4><p>Anthropic 的 Agent Skills 框架通过模块化包为 AI 代理提供实际能力。不同于从零构建的传统代理，Skills 作为通用代理如 Claude 的附加组件，提供程序知识文件。 例如，PDF Skills 允许 Claude 处理文档——其原生无法实现——通过引用指令和脚本，而不一次性加载所有内容。</p>
+<p><img src="/pv-knowledge-base/assets/anthropic-agent-skills-analysis-report-1tw55rzyzccuanx7av7v28a.png" alt="Claude Skills: A Deep Dive into Anthropic&#39;s Agent Framework ..."></p>
+<p><a target="_blank" rel="noopener" href="https://gyliu513.medium.com/claude-skills-a-deep-dive-into-anthropics-agent-framework-9c4b57eb9a27">gyliu513.medium.com</a></p>
+<p>Claude Skills: A Deep Dive into Anthropic’s Agent Framework …</p>
+<p>上图展示了 Anthropic Agent Skills 框架，说明模块化组件如何集成到核心系统中处理任务。</p>
+<h4 id="益处与应用"><a href="#益处与应用" class="headerlink" title="益处与应用"></a>益处与应用</h4><p>Skills 通过“渐进式披露”实现效率，仅加载相关细节，适用于复杂工作流。 实际中，用于创建电子表格或在 Figma 中应用品牌指南。 非工程师可构建它们，导致数千用户创建的 Skills 在会计和法律领域应用，财富 100 强公司用于内部指南。</p>
+<h4 id="批评与考虑"><a href="#批评与考虑" class="headerlink" title="批评与考虑"></a>批评与考虑</h4><p>尽管创新，一些讨论认为 Skills 若未改进 LLM 一致性，则可能为“无用销售说辞”。 其他指出它们可能不适合需要动态适应的自治代理，安全风险如提示注入也值得关注。 此方法验证了结构化指令优于模糊提示，但需清晰的标准操作程序 (SOP) 以成功。</p>
+<hr>
+<p>Anthropic 最近推动 Agent Skills 标志着 AI 发展的关键演变，挑战行业对专用代理的痴迷，转向更模块化的技能范式。本报告分析了 2025 年 12 月 22 日上传的 YouTube 视频《Anthropic：别再造 Agent 了，未来是Skills的！》，该视频由中文 AI 频道“白白说大模型”制作，似乎总结并批判 Anthropic 的框架。 视频从指定时间戳 (t&#x3D;199s) 开始，强调代理中心模式的低效，并推广 Skills 作为可扩展替代，源于 Anthropic 的 2025 年 10 月工程帖子和 12 月更新。 无公开转录，本分析基于视频标题、描述、上下文讨论，以及 Anthropic 官方帖子、行业文章和社会媒体反应的综合来源，包括 Anthropic 的官方帖子、行业文章和社会媒体反应，以提供平衡观点。 本全面分析涵盖框架起源、机制、优势、潜在缺点、实际应用以及对 AI 未来的更广泛含义，融入多样视角以确保平衡。</p>
+<h4 id="Agent-Skills-的背景与起源"><a href="#Agent-Skills-的背景与起源" class="headerlink" title="Agent Skills 的背景与起源"></a>Agent Skills 的背景与起源</h4><p>Agent Skills 概念源于 Anthropic 努力弥合高度智能但上下文受限的 AI 模型与实际任务需求之间的差距。该框架于 2025 年 10 月 16 日的工程博客中引入，解决核心问题：即使是先进的 大语言模型 (LLM) 如 Claude，也在领域特定专长或实际场景精确执行中挣扎。 Anthropic 研究者 Barry Zhang 和 Mahesh Murag 在 2025 年 12 月 8 日的演示和文章中，明确反对行业构建“大量 AI 代理”的趋势，称其低效。 相反，他们倡导用可复用“技能”装备单一通用代理——这些模块化知识包可迭代改进并共享。</p>
+<p>这一转变根源于观察：当前代理常因缺失关键上下文或性能不一致而失败，导致炒作驱动但浅显实现（如在 LLM 上附加聊天界面以溢价销售）。 所审视频呼应此观点，将 Skills 定位为 AI 的“未来”，鉴于其发布时间仅在 Anthropic 2025 年 12 月 18 日开放标准公告后几天。</p>
+<h4 id="Agent-Skills-如何工作：技术分解"><a href="#Agent-Skills-如何工作：技术分解" class="headerlink" title="Agent Skills 如何工作：技术分解"></a>Agent Skills 如何工作：技术分解</h4><p>本质上，Agent Skill 是一个目录（文件夹），包含主要 SKILL.md 文件，以 YAML 前置元数据（例如名称和描述）开头，其后是详细指令，以及可选支持文件如脚本、参考或资产。 此结构启用“渐进式披露”，代理初始仅加载轻量元数据到系统提示中。若 skill 相关，则通过工具访问完整 SKILL.md，并按需加载更深文件——防止上下文窗口过载，实现有效无限可扩展性。</p>
+<p>例如，PDF 操作 skill 可能包括：</p>
+<ul>
+<li>YAML 中的元数据用于快速扫描。</li>
+<li>SKILL.md 中的一般处理指令。</li>
+<li>单独的 forms.md 用于表单填写细节。</li>
+<li>可执行 Python 脚本用于确定性任务如提取字段，而不膨胀 token 计数。</li>
+</ul>
+<p>这与传统 AI 代理截然不同，后者往往是整体或自定义构建，导致碎片化。Skills 与 Anthropic 的 Model Context Protocol (MCP) 集成，用于外部工具通信，创建混合工作流。 创建易于访问：用户在 Claude 接口中描述需求，它生成 skill，企业计划支持组织级管理。</p>
+<p><img src="/pv-knowledge-base/assets/anthropic-agent-skills-analysis-report-imageurl=https://www-cdn.anthropic.com/images/4zrzovbb/website/ddd7e6e572ad0b6a943cacefe957248455f6d522-1650x929.webp" alt="Equipping agents for the real world with Agent Skills ..."></p>
+<p><a target="_blank" rel="noopener" href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">anthropic.com</a></p>
+<p>Equipping agents for the real world with Agent Skills …</p>
+<p>上图描绘了 Agent Skills 框架，突出文件夹结构、渐进式披露过程，以及与 AI 代理的集成以高效执行任务。</p>
+<h4 id="益处与实际应用"><a href="#益处与实际应用" class="headerlink" title="益处与实际应用"></a>益处与实际应用</h4><p>Skills 提供可组合性、可移植性和效率，将通用代理转化为专家而无需定制开发。 益处包括减少 token 使用、确定性代码执行以精确，以及跨平台如 Claude.ai、Claude Code 和 SDK 的易共享。 在企业中，它们提升生产力：Anthropic 工程师报告转向高层 AI 管理，Skills 编码最佳实践。</p>
+<p>应用跨行业：</p>
+<ul>
+<li><strong>基础 Skills</strong>：添加如网页浏览或表单填充能力。</li>
+<li><strong>第三方集成</strong>：伙伴如 Stripe 用于支付或 Notion 用于任务管理。</li>
+<li><strong>内部使用</strong>：数千用户创建的 Skills 用于会计、法律或品牌语音执行，被大型公司采用。</li>
+</ul>
+<p>社交媒体讨论赞扬其启用持续学习——代理可动态“添加”Skills，在外部存储知识以可解释性和更新。 一条 X 帖子指出生态在数周内增长至数千 Skills。</p>
+<table>
+<thead>
+<tr>
+<th>类别</th>
+<th>示例</th>
+<th>益处</th>
+<th>挑战</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>基础</td>
+<td>PDF 操作、数据分析脚本</td>
+<td>添加原生能力；确定性执行</td>
+<td>需要代码的安全沙箱</td>
+</tr>
+<tr>
+<td>第三方</td>
+<td>Jira 任务创建 (Atlassian)、设计指南 (Figma)</td>
+<td>无缝集成；伙伴生态增长</td>
+<td>依赖供应商更新</td>
+</tr>
+<tr>
+<td>内部&#x2F;企业</td>
+<td>会计工作流、法律文档审查</td>
+<td>可定制组织知识；非技术创建</td>
+<td>无动态适应可能静态</td>
+</tr>
+<tr>
+<td>高级</td>
+<td>多代理研究系统、长期项目</td>
+<td>支持重启和跨会话改进</td>
+<td>提示注入等安全风险</td>
+</tr>
+</tbody></table>
+<p>此表总结 Skills 类型，源于 Anthropic 的实现和伙伴贡献。</p>
+<p><img src="/pv-knowledge-base/assets/anthropic-agent-skills-analysis-report-1c1rl3-rxuhc5paczccpthg.png" alt="Cracking the Code of Building of AI Agents: Using Principles ..."></p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/@rajneeshkaggarwal/cracking-the-code-of-building-of-ai-agents-using-principles-from-anthropics-playbook-that-7c4954051755">medium.com</a></p>
+<p>Cracking the Code of Building of AI Agents: Using Principles …</p>
+<p>此插图显示 AI 代理增强 Skills，可视化其处理多样任务如文档编辑或工作流自动化。</p>
+<h4 id="批评与反驳"><a href="#批评与反驳" class="headerlink" title="批评与反驳"></a>批评与反驳</h4><p>尽管热情，一些观点认为 Skills 过于简单或静态，不适合需要动态适应的真正自治代理。 分析师 Holger Mueller 质疑采用，指出其与 API 相似，并对单一供应商标准持怀疑，即使 MCP 成功。 安全担忧突出：作为文本文件的 Skills 可能启用提示注入攻击，根据早期研究。 视频评论暗示 Anthropic 的宣传若无 LLM 架构全面改革，则效果不佳。</p>
+<p>支持者的反驳，包括 Anthropic 的 Barry Zhang，强调 Skills 的 AGI 兼容可组合性，并作为持续学习桥梁。 日本开发者讨论突出沙箱需求因环境耦合，而其他人视其为程序记忆扩展的“大步”。</p>
+<h4 id="未来含义与开放标准"><a href="#未来含义与开放标准" class="headerlink" title="未来含义与开放标准"></a>未来含义与开放标准</h4><p>作为 agentskills.io 的开放标准，Skills 旨在跨平台可移植，即将添加全生命周期管理功能（创建、编辑、共享）。 Anthropic 设想代理自主生成 Skills，最终将知识蒸馏到模型权重中。 这可能简化医疗或金融等关键领域的 AI，但成功取决于解决批评并在 Anthropic 生态外促进采用。</p>
+<p>总之，视频作为此辩论的及时切入点，与行业向模块化 AI 增强的更广泛转变一致。尽管 Skills 承诺可靠性和可访问性，其长期影响取决于创新与鲁棒性的平衡。</p>
+<p><img src="/pv-knowledge-base/assets/anthropic-agent-skills-analysis-report-1750941347426.jpeg" alt="AI Agent Architecture: 4 Key Modules Explained | Gaurav ..."></p>
+<p><a target="_blank" rel="noopener" href="https://www.linkedin.com/posts/gauravkheterpal_aiagents-agentarchitecture-genai-activity-7343980302039465987-8ynF">linkedin.com</a></p>
+<p>AI Agent Architecture: 4 Key Modules Explained | Gaurav …</p>
+<p>此 Anthropic 多代理系统图表说明 Skills 如何启用复杂、长期研究工作流，展示可扩展性。</p>
+<h3 id="关键引用"><a href="#关键引用" class="headerlink" title="关键引用"></a>关键引用</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills?referrer=grok.com">Equipping agents for the real world with Agent Skills - Anthropic</a></li>
+<li><a target="_blank" rel="noopener" href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview?referrer=grok.com">Agent Skills - Claude Docs</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/anthropics/skills?referrer=grok.com">anthropics&#x2F;skills: Public repository for Agent Skills - GitHub</a></li>
+<li><a target="_blank" rel="noopener" href="https://venturebeat.com/ai/anthropic-launches-enterprise-agent-skills-and-opens-the-standard?referrer=grok.com">Anthropic launches enterprise ‘Agent Skills’ and opens the standard - VentureBeat</a></li>
+<li><a target="_blank" rel="noopener" href="https://thenewstack.io/agent-skills-anthropics-next-bid-to-define-ai-standards/?referrer=grok.com">Agent Skills: Anthropic’s Next Bid to Define AI Standards - The New Stack</a></li>
+<li><a target="_blank" rel="noopener" href="https://medium.com/@martinkeywood/equipping-agents-for-the-real-world-with-agent-skills-a-practical-guide-of-a-brilliant-anthropic-0f546d9be089?referrer=grok.com">Equipping Agents for the Real World with Agent Skills: A Practical Guide - Medium</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.reddit.com/r/ClaudeAI/comments/1ppw38d/agent_skills_is_now_an_open_standard/?referrer=grok.com">Agent Skills is now an open standard - Reddit</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.reddit.com/r/Anthropic/comments/1phrhs2/agent_skills_am_i_missing_something_or_is_it_just/?referrer=grok.com">Agent Skills Am I missing something - Reddit</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/pv-knowledge-base/tags/%E8%8D%AF%E7%89%A9%E8%AD%A6%E6%88%92/" rel="tag"># 药物警戒</a>
+              <a href="/pv-knowledge-base/tags/AI/" rel="tag"># AI</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/pv-knowledge-base/2025/12/23/%E8%8C%83%E5%BC%8F%E9%87%8D%E6%9E%84-%E4%BB%8E%E6%99%BA%E8%83%BD%E4%BD%93%E5%8A%A8%E7%89%A9%E5%9B%AD%E5%88%B0%E9%80%9A%E7%94%A8%E5%86%85%E6%A0%B8%E4%B8%8E%E6%8A%80%E8%83%BD%E6%9E%B6%E6%9E%84%E7%9A%84%E6%B7%B1%E5%BA%A6%E6%BC%94%E8%BF%9B%E5%88%86%E6%9E%90%E6%8A%A5%E5%91%8A/" rel="prev" title="范式重构：从“智能体动物园”到“通用内核与技能架构”的深度演进分析报告">
+                  <i class="fa fa-angle-left"></i> 范式重构：从“智能体动物园”到“通用内核与技能架构”的深度演进分析报告
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-shield-alt"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">pv-ai-ops</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"pv-ai-ops","repo":"pv-knowledge-base","client_id":"fca74e00c1171d5deb5c","client_secret":"08d3e9828d0cd4ef25080f6c30cafeb41f4ab90f","admin_user":"asd1245dss","distraction_free_mode":false,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"3c450683f92156907ddfc55ff37b8744"}</script>
+<script src="/pv-knowledge-base/js/third-party/comments/gitalk.js" defer></script>
+
+</body>
+</html>
