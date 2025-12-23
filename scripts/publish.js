@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const { execSync, spawn } = require('child_process');
 
 // 创建URL安全的文件名处理函数
@@ -21,6 +22,32 @@ function createSafeFileName(fileName) {
     .replace(/[^\w\u4e00-\u9fa5\-]/g, '')   // 保留字母数字中文和连字符，完全移除%等特殊字符
     .replace(/-+/g, '-')                    // 多个连字符合并
     .replace(/^-|-$/g, '');                 // 移除首尾连字符
+}
+
+function createSafeAssetFileName(assetFile, prefix, targetAssetsDir) {
+  const ext = path.extname(assetFile);
+  const extLower = ext ? ext.toLowerCase() : '';
+  const baseName = ext ? path.basename(assetFile, ext) : assetFile;
+
+  let safeBase = createSafeFileName(baseName).toLowerCase();
+  if (!safeBase) {
+    safeBase = crypto.createHash('sha1').update(assetFile).digest('hex').slice(0, 16);
+  }
+
+  // 防止超长文件名导致文件系统限制
+  const maxBaseLength = 120;
+  if (safeBase.length > maxBaseLength) {
+    const hash = crypto.createHash('sha1').update(assetFile).digest('hex').slice(0, 10);
+    safeBase = safeBase.slice(0, maxBaseLength) + '-' + hash;
+  }
+
+  let candidate = `${prefix}${safeBase}${extLower}`;
+  let counter = 1;
+  while (fs.existsSync(path.join(targetAssetsDir, candidate))) {
+    candidate = `${prefix}${safeBase}-${counter}${extLower}`;
+    counter += 1;
+  }
+  return candidate;
 }
 
 function ensureDir(dirPath) {
@@ -66,8 +93,7 @@ function processMarkdown(inboxDir, sourceDir) {
 
         const assetSourcePath = path.join(assetsDir, assetFile);
 
-        // 为图片添加文章唯一前缀
-        const newAssetFileName = articlePrefix + assetFile.toLowerCase();
+        const newAssetFileName = createSafeAssetFileName(assetFile, articlePrefix, path.join(sourceDir, 'assets'));
         const assetTargetPath = path.join(sourceDir, 'assets', newAssetFileName);
 
         // 记录文件名映射关系
