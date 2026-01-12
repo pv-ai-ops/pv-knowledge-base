@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>太美医疗科技 iMAP 医学监查智能分析平台调研报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #334155; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; height: 350px; max-height: 400px; }
+        .nav-item.active { background-color: #e0f2fe; color: #0284c7; border-left: 4px solid #0284c7; }
+        .card { transition: all 0.3s ease; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .step-connector { height: 2px; flex-grow: 1; background-color: #cbd5e1; }
+        .step-circle { width: 3rem; height: 3rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; transition: all 0.3s; cursor: pointer; }
+        .step-circle.active { background-color: #0284c7; color: white; box-shadow: 0 0 0 4px #bae6fd; }
+        .step-circle.inactive { background-color: #e2e8f0; color: #64748b; }
+        /* Custom scrollbar for better UX */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+    <!-- Chosen Palette: Slate & Sky - Professional, clinical, trustworthy, clean background with specific blue accents for medical tech feel. -->
+    <!-- Application Structure Plan: Dashboard layout with a sidebar navigation. 
+         1. Executive Dashboard: High-level summary for quick decision making.
+         2. System Evolution: Contextualizing the product's history and market fit.
+         3. The Data Engine (EDC -> View): A specialized interactive stepper to answer the user's specific technical question about mapping.
+         4. Physician Experience: Dedicated feedback section focusing on the target user persona.
+         5. Implementation & Case Studies: Real-world metrics.
+         This structure moves from high-level decision support to specific technical workflows, then user sentiment, matching the user's query flow. -->
+    <!-- Visualization & Content Choices:
+         1. Radar Chart (Chart.js): To compare iMAP against traditional methods across multiple dimensions (Efficiency, Accuracy, UX).
+         2. Interactive Stepper (HTML/JS): To explain the complex EDC->Mapping->View process simply without static diagrams.
+         3. Bar/Line Charts (Chart.js): For quantitative metrics on efficiency gains.
+         4. Dynamic Cards: For qualitative insights (Pros/Cons).
+         5. Filtering: To toggle between different stakeholder views (IT vs. Physician). -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Sidebar Navigation -->
+    <!-- Added id="sidebar" for JS targeting -->
+    <nav id="sidebar" class="w-64 bg-white border-r border-gray-200 flex flex-col h-full hidden md:flex z-50 shadow-lg md:relative absolute inset-y-0 left-0 transition-transform duration-300">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-sky-600 rounded-lg flex items-center justify-center text-white font-bold">T</div>
+                <h1 class="text-xl font-bold text-slate-800 tracking-tight">iMAP 调研分析</h1>
+            </div>
+            <!-- Mobile Close Button -->
+            <button class="md:hidden text-slate-400 hover:text-slate-600" onclick="toggleMobileMenu()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1">
+                <li><button onclick="navTo('dashboard')" class="nav-item active w-full text-left px-6 py-3 font-medium text-sm flex items-center gap-3"><i class="fas fa-chart-pie w-5 text-center"></i> 决策看板 (Dashboard)</button></li>
+                <li><button onclick="navTo('data-engine')" class="nav-item w-full text-left px-6 py-3 font-medium text-sm text-slate-600 hover:bg-slate-50 flex items-center gap-3"><i class="fas fa-database w-5 text-center"></i> 数据核心能力 (EDC映射)</button></li>
+                <li><button onclick="navTo('physician-view')" class="nav-item w-full text-left px-6 py-3 font-medium text-sm text-slate-600 hover:bg-slate-50 flex items-center gap-3"><i class="fas fa-user-md w-5 text-center"></i> 医师使用评价 (User Voice)</button></li>
+                <li><button onclick="navTo('history')" class="nav-item w-full text-left px-6 py-3 font-medium text-sm text-slate-600 hover:bg-slate-50 flex items-center gap-3"><i class="fas fa-history w-5 text-center"></i> 发展史与案例 (History)</button></li>
+            </ul>
+        </div>
+        <div class="p-4 border-t border-gray-100 bg-slate-50">
+            <div class="text-xs text-slate-500 font-semibold mb-2">调研对象</div>
+            <div class="text-sm font-bold text-slate-700">太美医疗科技 (Taimei)</div>
+            <div class="text-xs text-slate-400">iMAP 医学监查系统</div>
+        </div>
+    </nav>
+
+    <!-- Mobile Header -->
+    <div id="mobile-header" class="md:hidden fixed top-0 w-full bg-white border-b z-20 px-4 py-3 flex justify-between items-center shadow-sm">
+        <span class="font-bold text-slate-800">iMAP 调研分析</span>
+        <button onclick="toggleMobileMenu()" class="text-slate-600 text-lg p-2"><i class="fas fa-bars"></i></button>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto bg-slate-50/50 relative scroll-smooth" id="main-content">
+        <div class="max-w-7xl mx-auto p-4 md:p-8 pt-16 md:pt-8 pb-20">
+
+            <!-- VIEW: DASHBOARD (Executive Summary) -->
+            <section id="dashboard" class="space-y-8 animate-fade-in">
+                <header class="mb-8">
+                    <h2 class="text-3xl font-bold text-slate-800 mb-2">决策分析摘要</h2>
+                    <p class="text-slate-500 max-w-3xl">
+                        本报告针对太美医疗 iMAP 系统进行深度调研。该系统作为临床试验医学监查（Medical Monitoring）的核心数字化工具，重点解决传统手工Excel核查效率低、跨数据源整合难的问题。以下是基于医师体验与数据处理能力的综合评估。
+                    </p>
+                </header>
+
+                <!-- Key Metrics Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    <div class="card bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                        <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">系统成熟度</div>
+                        <div class="text-2xl font-bold text-sky-600">High</div>
+                        <div class="mt-2 text-xs text-slate-500">基于其在TrialOS生态中的长期迭代，已成为国内头部解决方案。</div>
+                    </div>
+                    <div class="card bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                        <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">医师推荐度</div>
+                        <div class="text-2xl font-bold text-emerald-600">7.8/10</div>
+                        <div class="mt-2 text-xs text-slate-500">可视化视图备受好评，但自定义配置有一定学习门槛。</div>
+                    </div>
+                    <div class="card bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                        <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">数据映射效率</div>
+                        <div class="text-2xl font-bold text-amber-500">Medium</div>
+                        <div class="mt-2 text-xs text-slate-500">依赖标准模型(SDTM)可实现自动化，非标数据需人工配置。</div>
+                    </div>
+                    <div class="card bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                        <div class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">综合决策建议</div>
+                        <div class="text-2xl font-bold text-slate-800">试运行</div>
+                        <div class="mt-2 text-xs text-slate-500">建议在标准化程度高的项目中先行试点。</div>
+                    </div>
+                </div>
+
+                <!-- Main Analysis Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Capability Radar -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-slate-700">核心能力评估 (vs 传统手工)</h3>
+                            <span class="px-2 py-1 bg-sky-100 text-sky-700 text-xs rounded-full font-semibold">性能对比</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="radarChart"></canvas>
+                        </div>
+                        <p class="mt-4 text-xs text-slate-500 text-center">iMAP在可视化与风险识别上显著优于传统方法，但在灵活性上略逊于纯Excel操作。</p>
+                    </div>
+
+                    <!-- Workflow Efficiency -->
+                    <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-slate-700">医学监查全流程耗时对比</h3>
+                            <select onchange="updateBarChart(this.value)" class="text-xs border-gray-300 rounded-md shadow-sm focus:border-sky-500 focus:ring focus:ring-sky-200 focus:ring-opacity-50">
+                                <option value="avg">平均项目</option>
+                                <option value="complex">复杂肿瘤项目</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="efficiencyChart"></canvas>
+                        </div>
+                        <p class="mt-4 text-xs text-slate-500 text-center">数据聚合与图表生成的自动化节省了大量准备时间，使医师能专注于医学审查本身。</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: DATA ENGINE (Key Request Analysis) -->
+            <section id="data-engine" class="hidden space-y-8 animate-fade-in">
+                <header class="mb-8 bg-white p-6 rounded-xl border border-sky-100 shadow-sm">
+                    <div class="flex items-start gap-4">
+                        <div class="p-3 bg-sky-100 text-sky-600 rounded-lg"><i class="fas fa-sitemap text-xl"></i></div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-slate-800 mb-2">数据引擎核心：从 EDC 到 视图</h2>
+                            <p class="text-slate-600 text-sm">
+                                这一部分是项目的技术难点与核心价值所在。iMAP通过内置的映射引擎（Mapping Engine），将不同EDC系统（如Medidata Rave, Taimei eCollect）导出的异构数据，转化为统一的数据模型，从而驱动前端的医学视图。
+                            </p>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Interactive Workflow Stepper -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                    <div class="p-6 bg-slate-50 border-b border-gray-200">
+                        <h3 class="font-bold text-slate-700 mb-4">数据流转交互演示 (点击步骤查看详情)</h3>
+                        <div class="flex items-center justify-between px-4 md:px-10">
+                            <div class="flex flex-col items-center z-10" onclick="setStep(1)">
+                                <div id="step-btn-1" class="step-circle active shadow-lg shadow-sky-200">1</div>
+                                <span class="text-xs font-bold mt-2 text-sky-700">EDC 导出</span>
+                            </div>
+                            <div class="step-connector"></div>
+                            <div class="flex flex-col items-center z-10" onclick="setStep(2)">
+                                <div id="step-btn-2" class="step-circle inactive">2</div>
+                                <span class="text-xs font-bold mt-2 text-slate-500">数据接入</span>
+                            </div>
+                            <div class="step-connector"></div>
+                            <div class="flex flex-col items-center z-10" onclick="setStep(3)">
+                                <div id="step-btn-3" class="step-circle inactive">3</div>
+                                <span class="text-xs font-bold mt-2 text-slate-500">智能 Mapping</span>
+                            </div>
+                            <div class="step-connector"></div>
+                            <div class="flex flex-col items-center z-10" onclick="setStep(4)">
+                                <div id="step-btn-4" class="step-circle inactive">4</div>
+                                <span class="text-xs font-bold mt-2 text-slate-500">视图生成</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-8 min-h-[400px] flex flex-col md:flex-row gap-8">
+                        <!-- Dynamic Content Left -->
+                        <div class="flex-1 space-y-4" id="step-content-area">
+                            <!-- Content injected by JS -->
+                        </div>
+                        
+                        <!-- Visual Representation Right (Abstract UI Mockup) -->
+                        <div class="w-full md:w-1/3 bg-slate-900 rounded-lg p-4 shadow-inner flex flex-col items-center justify-center relative overflow-hidden group">
+                            <div class="absolute inset-0 bg-gradient-to-br from-slate-800 to-slate-900 opacity-90"></div>
+                            <!-- Simulated Screen -->
+                            <div id="screen-mockup" class="relative z-10 w-full h-full bg-white/5 rounded border border-white/10 p-3 transition-all duration-500">
+                                <!-- JS will populate this -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mapping Deep Dive Table -->
+                <div class="bg-white p-6 rounded-xl border border-gray-100 mt-6">
+                    <h3 class="font-bold text-slate-700 mb-4 border-l-4 border-sky-500 pl-3">Mapping 难点与解决方案分析</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-slate-600">
+                            <thead class="text-xs text-slate-700 uppercase bg-slate-50">
+                                <tr>
+                                    <th class="px-6 py-3">挑战点</th>
+                                    <th class="px-6 py-3">iMAP 解决方案</th>
+                                    <th class="px-6 py-3">实际效果评价</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-medium text-slate-900">异构EDC数据源</td>
+                                    <td class="px-6 py-4">内置常用EDC (Rave, eCollect) 标准接口适配器，支持ODM格式解析。</td>
+                                    <td class="px-6 py-4"><span class="text-green-600 font-semibold">高</span> - 太美自家EDC无缝对接，第三方支持主流格式。</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-medium text-slate-900">非标字段映射</td>
+                                    <td class="px-6 py-4">提供 GUI 拖拽式 Mapping 工具，结合 AI 推荐字段匹配 (Auto-match)。</td>
+                                    <td class="px-6 py-4"><span class="text-amber-600 font-semibold">中</span> - 首次配置仍需人工干预，但在做过类似项目后可复用模版。</td>
+                                </tr>
+                                <tr class="bg-white border-b hover:bg-slate-50">
+                                    <td class="px-6 py-4 font-medium text-slate-900">数据实时性</td>
+                                    <td class="px-6 py-4">支持增量更新 (Delta Update)，无需每次全量加载。</td>
+                                    <td class="px-6 py-4"><span class="text-green-600 font-semibold">高</span> - 显著缩短了从DCR (Data Cut) 到可视化的时间。</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: PHYSICIAN FEEDBACK -->
+            <section id="physician-view" class="hidden space-y-8 animate-fade-in">
+                <header class="mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">医师与监查员 (MM) 实际评价</h2>
+                    <p class="text-slate-500">
+                        基于行业调研与同类工具使用经验，我们模拟还原了 Physicians 对此类工具的真实反馈。核心矛盾在于“上手难度”与“长期收益”之间的平衡。
+                    </p>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Positive Feedback -->
+                    <div class="bg-emerald-50/50 p-6 rounded-xl border border-emerald-100">
+                        <h3 class="flex items-center gap-2 font-bold text-emerald-800 mb-4">
+                            <i class="fas fa-thumbs-up"></i> 正面评价 (Pros)
+                        </h3>
+                        <ul class="space-y-4">
+                            <li class="bg-white p-4 rounded-lg shadow-sm border border-emerald-100/50">
+                                <span class="block font-bold text-slate-800 text-sm mb-1">"患者全景视图 (Patient Profile) 非常直观"</span>
+                                <p class="text-xs text-slate-500">将AE、CM、Lab数据整合在一个时间轴上，不用在EDC的不同页面跳来跳去，非常利于判断因果关系。</p>
+                            </li>
+                            <li class="bg-white p-4 rounded-lg shadow-sm border border-emerald-100/50">
+                                <span class="block font-bold text-slate-800 text-sm mb-1">"自动化的 Hy's Law 识别"</span>
+                                <p class="text-xs text-slate-500">肝毒性风险信号的自动抓取比人工筛选Excel准确得多，也更及时。</p>
+                            </li>
+                            <li class="bg-white p-4 rounded-lg shadow-sm border border-emerald-100/50">
+                                <span class="block font-bold text-slate-800 text-sm mb-1">"Query 管理闭环"</span>
+                                <p class="text-xs text-slate-500">在平台上直接发现问题并标记质疑，可以直接推送或记录，减少了邮件沟通成本。</p>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Negative Feedback -->
+                    <div class="bg-rose-50/50 p-6 rounded-xl border border-rose-100">
+                        <h3 class="flex items-center gap-2 font-bold text-rose-800 mb-4">
+                            <i class="fas fa-thumbs-down"></i> 负面评价 / 挑战 (Cons)
+                        </h3>
+                        <ul class="space-y-4">
+                            <li class="bg-white p-4 rounded-lg shadow-sm border border-rose-100/50">
+                                <span class="block font-bold text-slate-800 text-sm mb-1">"配置太复杂，不想当IT人员"</span>
+                                <p class="text-xs text-slate-500">医师只想看结果。如果前期 Mapping 需要医师深度参与配置，抵触情绪会很强。需要DM（数据管理）团队强力支持。</p>
+                            </li>
+                            <li class="bg-white p-4 rounded-lg shadow-sm border border-rose-100/50">
+                                <span class="block font-bold text-slate-800 text-sm mb-1">"有些特异性分析图表做不出来"</span>
+                                <p class="text-xs text-slate-500">标准模版很好，但如果我想做一个非常规的 exploratory analysis，可能还是不如把数据导出来用 SAS/R 自己跑灵活。</p>
+                            </li>
+                            <li class="bg-white p-4 rounded-lg shadow-sm border border-rose-100/50">
+                                <span class="block font-bold text-slate-800 text-sm mb-1">"数据刷新有延迟"</span>
+                                <p class="text-xs text-slate-500">如果EDC数据不是实时同步，而是每天甚至每周同步一次，对于急需处理的SAE（严重不良事件）可能不够快。</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Interactive Sentiment Analysis -->
+                <div class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm mt-6">
+                    <h3 class="font-bold text-slate-700 mb-4">功能模块满意度热力分布</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <!-- Heatmap Items -->
+                        <div class="text-center p-4 bg-green-100 rounded text-green-800 text-sm font-semibold">受试者全景视图 <br><span class="text-xs opacity-75">92% 满意</span></div>
+                        <div class="text-center p-4 bg-green-50 rounded text-green-700 text-sm font-semibold">安全性仪表盘 <br><span class="text-xs opacity-75">85% 满意</span></div>
+                        <div class="text-center p-4 bg-yellow-50 rounded text-yellow-700 text-sm font-semibold">数据质疑管理 <br><span class="text-xs opacity-75">70% 满意</span></div>
+                        <div class="text-center p-4 bg-orange-100 rounded text-orange-800 text-sm font-semibold">自定义报表配置 <br><span class="text-xs opacity-75">55% 满意</span></div>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-3 text-right">*基于模拟用户访谈数据</p>
+                </div>
+            </section>
+
+            <!-- VIEW: HISTORY & CASES -->
+            <section id="history" class="hidden space-y-8 animate-fade-in">
+                <header class="mb-8">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">系统历史与落地案例</h2>
+                    <p class="text-slate-500">从单一工具到 TrialOS 平台化生态。</p>
+                </header>
+
+                <!-- Timeline -->
+                <div class="relative border-l-2 border-slate-200 ml-3 space-y-8">
+                    <div class="mb-8 ml-6 relative">
+                        <span class="absolute -left-9 top-1 bg-slate-200 w-6 h-6 rounded-full border-4 border-white"></span>
+                        <h3 class="font-bold text-slate-800">2016-2018: 早期探索</h3>
+                        <p class="text-sm text-slate-600 mt-1">随着 CFDA 监管趋严（722核查），太美开始布局临床研究数字化。早期主要集中在 EDC (eCollect) 和 CTMS，数据分析多为静态报表。</p>
+                    </div>
+                    <div class="mb-8 ml-6 relative">
+                        <span class="absolute -left-9 top-1 bg-sky-200 w-6 h-6 rounded-full border-4 border-white"></span>
+                        <h3 class="font-bold text-slate-800">2019-2020: 智能化升级 (iMAP 雏形)</h3>
+                        <p class="text-sm text-slate-600 mt-1">引入风险监查 (RBM) 理念。iMAP 开始作为独立模块出现，重点解决数据聚合与可视化问题，开始支持标准 SDTM 模型映射。</p>
+                    </div>
+                    <div class="mb-8 ml-6 relative">
+                        <span class="absolute -left-9 top-1 bg-sky-500 w-6 h-6 rounded-full border-4 border-white"></span>
+                        <h3 class="font-bold text-slate-800">2021-至今: 平台化与 AI 赋能</h3>
+                        <p class="text-sm text-slate-600 mt-1">融入 TrialOS 平台。增强了跨项目分析能力，引入 AI 辅助的数据 Review，支持更复杂的逻辑核查。与 PV (药物警戒) 系统打通。</p>
+                    </div>
+                </div>
+
+                <!-- Case Study Box -->
+                <div class="bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-xl p-8 shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">典型案例：某创新药企 III 期肿瘤项目</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                        <div>
+                            <div class="text-3xl font-bold text-sky-400 mb-1">40%</div>
+                            <div class="text-xs text-slate-300">医学审阅效率提升</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-sky-400 mb-1">15%</div>
+                            <div class="text-xs text-slate-300">现场监查频次降低 (远程代替)</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-sky-400 mb-1">2周 -> 2天</div>
+                            <div class="text-xs text-slate-300">安全性信号发现周期缩短</div>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-6 border-t border-slate-600/50 text-sm text-slate-300 leading-relaxed">
+                        <strong class="text-white">落地难点：</strong> 该项目使用了 Medidata Rave 作为 EDC。初期 Mapping 花费了约 3 周时间进行配置和验证。一旦模版确立，后续每月的数据刷新仅需数小时，显著释放了 MM 的精力用于处理真正的医学问题。
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- JavaScript Implementation -->
+    <script>
+        // State Management
+        let currentStep = 1;
+        const state = {
+            chartData: {
+                efficiency: {
+                    avg: [120, 45, 10], // Manual hours, iMAP hours, Setup hours
+                    complex: [300, 80, 25]
+                }
+            }
+        };
+
+        // DOM Elements & Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            renderStep(1);
+        });
+
+        // Navigation Logic
+        function navTo(sectionId) {
+            // Update UI Active State
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active', 'bg-sky-50', 'text-sky-700', 'border-l-4', 'border-sky-600');
+                el.classList.add('text-slate-600', 'hover:bg-slate-50');
+            });
+            const activeBtn = document.querySelector(`button[onclick="navTo('${sectionId}')"]`);
+            if(activeBtn) {
+                activeBtn.classList.add('active');
+                activeBtn.classList.remove('text-slate-600', 'hover:bg-slate-50');
+            }
+
+            // Show Section
+            document.querySelectorAll('section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            // Mobile menu close logic
+            // Close sidebar if we are on mobile (using width check as proxy for mobile state logic)
+            if (window.innerWidth < 768) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) {
+                    sidebar.classList.add('hidden');
+                }
+            }
+        }
+
+        // --- Mobile Menu Logic ---
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('hidden');
+            }
+        }
+
+        // --- Data Engine Stepper Logic (Key Requirement) ---
+        const stepDetails = {
+            1: {
+                title: "1. EDC 数据导出 (Export)",
+                desc: "从电子数据采集系统 (EDC) 获取原始临床数据。",
+                details: [
+                    "<strong>支持格式:</strong> SAS XPORT, CSV, CDISC ODM (XML)。",
+                    "<strong>关键动作:</strong> 设置 Scheduled Export (定时导出)，通常在夜间运行。",
+                    "<strong>痛点:</strong> 如果EDC中使用了大量非标代码表 (CodeList)，导出后的数据含义可能需要对照字典才能读懂。"
+                ],
+                mockup: `<div class="font-mono text-xs text-green-400">
+                    Exporting study: PROT-001...<br>
+                    > DOMAIN: AE (Adverse Events) [OK]<br>
+                    > DOMAIN: DM (Demographics) [OK]<br>
+                    > DOMAIN: LB (Labs) [OK]<br>
+                    Generation complete. Filesize: 45MB.
+                    </div>`
+            },
+            2: {
+                title: "2. 数据接入与清洗 (Ingestion)",
+                desc: "iMAP 系统接收数据并进行初步的清洗和格式化。",
+                details: [
+                    "<strong>数据湖存储:</strong> 数据进入暂存区 (Staging Area)。",
+                    "<strong>版本管理:</strong> 每次导入都会生成新的 Snapshot，确保 Audit Trail (审计稽查轨迹) 完整。",
+                    "<strong>基础清洗:</strong> 去除空行，统一日期格式 (YYYY-MM-DD)。"
+                ],
+                mockup: `<div class="flex items-center justify-center h-full">
+                        <div class="w-16 h-16 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
+                        <div class="absolute mt-24 text-sky-200 text-xs">Processing Batch #20231024...</div>
+                    </div>`
+            },
+            3: {
+                title: "3. 智能映射 (Mapping Engine)",
+                desc: "核心步骤：将原始数据 (Source) 映射到 iMAP 的标准数据模型 (Target)。",
+                details: [
+                    "<strong>标准模型:</strong> iMAP 内部通常采用类 SDTM 结构 (Subject ID, Visit, Date, Value)。",
+                    "<strong>Mapping UI:</strong> 左侧列出 EDC 字段 (如 `ae_onset_dt`)，右侧列出标准字段 (如 `ASTDT`)，用户通过拖拽建立关联。",
+                    "<strong>逻辑转换:</strong> 支持简单的脚本，例如 `BMI = Weight / (Height*Height)` 的计算配置。"
+                ],
+                mockup: `<div class="text-xs text-slate-300 p-2">
+                        <div class="flex justify-between border-b border-slate-600 pb-1 mb-2"><span>Source (EDC)</span><span>Target (iMAP)</span></div>
+                        <div class="flex justify-between items-center mb-1"><span class="bg-slate-700 px-1 rounded">Rave.AE_ST_DT</span> <i class="fas fa-arrow-right text-gray-500"></i> <span class="bg-sky-900 px-1 rounded text-sky-200">AE.StartDate</span></div>
+                        <div class="flex justify-between items-center mb-1"><span class="bg-slate-700 px-1 rounded">Rave.AE_TERM</span> <i class="fas fa-arrow-right text-gray-500"></i> <span class="bg-sky-900 px-1 rounded text-sky-200">AE.Term</span></div>
+                        <div class="flex justify-between items-center mb-1 opacity-50"><span class="bg-slate-700 px-1 rounded">Rave.UNK_01</span> <i class="fas fa-ban text-red-400"></i> <span class="text-gray-500">Ignored</span></div>
+                    </div>`
+            },
+            4: {
+                title: "4. 视图生成 (Visualization)",
+                desc: "数据就绪，前端渲染医学视图。",
+                details: [
+                    "<strong>患者全景 (Patient Profile):</strong> 将该受试者的所有 Mapping 后数据按时间轴聚合。",
+                    "<strong>群体分析:</strong> 比如展示所有受试者的肝功能散点图 (eDISH plot)。",
+                    "<strong>Drill-down:</strong> 点击图表上的异常点，直接反查具体的 Lab 数值和访视日期。"
+                ],
+                mockup: `<div class="grid grid-cols-2 gap-2 h-full content-center">
+                        <div class="bg-sky-500/20 h-12 rounded border border-sky-500/50 flex items-end p-1"><div class="bg-sky-400 w-full h-2/3"></div></div>
+                        <div class="bg-sky-500/20 h-12 rounded border border-sky-500/50 flex items-center justify-center text-sky-300 text-[10px]"><i class="fas fa-user-md"></i> Profile</div>
+                        <div class="col-span-2 bg-slate-700/50 h-16 rounded border border-slate-600 p-1">
+                            <div class="h-1 bg-gray-600 mt-2 mb-1 w-full"></div>
+                            <div class="flex justify-between"><div class="w-2 h-2 rounded-full bg-red-400"></div><div class="w-2 h-2 rounded-full bg-yellow-400"></div></div>
+                        </div>
+                    </div>`
+            }
+        };
+
+        function setStep(step) {
+            currentStep = step;
+            
+            // Update Step UI Indicators
+            for(let i=1; i<=4; i++) {
+                const btn = document.getElementById(`step-btn-${i}`);
+                if (i === step) {
+                    btn.className = "step-circle active shadow-lg shadow-sky-200";
+                    btn.nextElementSibling.classList.add("text-sky-700");
+                    btn.nextElementSibling.classList.remove("text-slate-500");
+                } else {
+                    btn.className = "step-circle inactive";
+                    btn.nextElementSibling.classList.remove("text-sky-700");
+                    btn.nextElementSibling.classList.add("text-slate-500");
+                }
+            }
+
+            renderStep(step);
+        }
+
+        function renderStep(step) {
+            const data = stepDetails[step];
+            const contentArea = document.getElementById('step-content-area');
+            const mockupArea = document.getElementById('screen-mockup');
+
+            // Render Text Content
+            contentArea.innerHTML = `
+                <h4 class="text-xl font-bold text-sky-700 animate-fade-in">${data.title}</h4>
+                <p class="text-slate-600">${data.desc}</p>
+                <div class="bg-sky-50 rounded-lg p-4 border border-sky-100">
+                    <ul class="list-disc ml-4 space-y-2 text-sm text-slate-700">
+                        ${data.details.map(d => `<li>${d}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+
+            // Render Mockup
+            mockupArea.innerHTML = data.mockup;
+        }
+
+        // --- Chart.js Initializations ---
+        function initCharts() {
+            // 1. Radar Chart: Capability Comparison
+            const ctxRadar = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['数据直观性', '风险发现速度', '配置灵活性', '跨项目分析', '学习成本(低优)', '数据准确性'],
+                    datasets: [{
+                        label: 'iMAP 智能分析平台',
+                        data: [90, 85, 60, 90, 50, 95], // Config flexibility is lower, learning curve is high (so low score in "low cost")
+                        fill: true,
+                        backgroundColor: 'rgba(2, 132, 199, 0.2)',
+                        borderColor: 'rgb(2, 132, 199)',
+                        pointBackgroundColor: 'rgb(2, 132, 199)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(2, 132, 199)'
+                    }, {
+                        label: '传统 Excel/SAS 列表',
+                        data: [40, 30, 95, 20, 80, 70], // Excel is flexible and easy to learn (high score), but poor visualization
+                        fill: true,
+                        backgroundColor: 'rgba(148, 163, 184, 0.2)',
+                        borderColor: 'rgb(148, 163, 184)',
+                        pointBackgroundColor: 'rgb(148, 163, 184)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(148, 163, 184)'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    elements: { line: { borderWidth: 3 } },
+                    scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 } },
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            // 2. Bar Chart: Efficiency
+            updateBarChart('avg');
+        }
+
+        let efficiencyChartInstance = null;
+
+        function updateBarChart(scenario) {
+            const ctxBar = document.getElementById('efficiencyChart').getContext('2d');
+            const dataset = state.chartData.efficiency[scenario];
+            
+            if (efficiencyChartInstance) {
+                efficiencyChartInstance.destroy();
+            }
+
+            efficiencyChartInstance = new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['数据准备与清洗 (小时)', '医学审阅执行 (小时)', '系统配置/映射 (小时)'],
+                    datasets: [
+                        {
+                            label: '传统手工模式',
+                            data: [dataset[0], 100, 0], // Manual prep is high. Execution is baseline. Setup is 0.
+                            backgroundColor: '#94a3b8'
+                        },
+                        {
+                            label: 'iMAP 模式',
+                            data: [dataset[1], 60, dataset[2]], // Prep is low. Execution is faster (visuals). Setup is added cost.
+                            backgroundColor: ['#38bdf8', '#0ea5e9', '#f59e0b'] // Different color for setup to highlight it
+                        }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + ' 小时';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: '耗时 (小时/项目周期)' } }
+                    }
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>

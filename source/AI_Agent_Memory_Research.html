@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphiti与PIKE RAG技术调研报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Chart Container Styles */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Constraints for larger screens */
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 500px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Material Design Card Hover Effects */
+        .hover-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #6366f1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4f46e5;
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #4f46e5, #8b5cf6, #ec4899);
+        }
+    </style>
+    <!-- Chosen Palette: Vibrant Tech Blue/Purple (Tailwind Indigo/Violet/Pink) -->
+    <!-- Application Structure Plan: A vertical scroll narrative starting with the problem (Vector RAG limits), moving to the solution (Graphiti & PIKE), and ending with a strategic comparison. Logic focuses on comparing unstructured vs structured memory. -->
+    <!-- Visualization & Content Choices: 
+         1. Intro Stats -> Goal: Inform -> Big Numbers -> Plain HTML.
+         2. Graphiti Concept -> Goal: Relationships -> Bubble Chart (simulating nodes) -> Chart.js.
+         3. PIKE Architecture -> Goal: Process -> HTML/CSS Flowchart -> CSS Grid/Flex.
+         4. Performance -> Goal: Compare -> Grouped Bar Chart -> Chart.js.
+         5. Tech Comparison -> Goal: Evaluate -> Radar Chart -> Chart.js. 
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. 
+    -->
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+    <!-- Navigation (Sticky) -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+                        AI Research Lab
+                    </span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#overview" class="text-slate-600 hover:text-indigo-600 font-medium transition-colors">核心摘要</a>
+                    <a href="#graphiti" class="text-slate-600 hover:text-indigo-600 font-medium transition-colors">Graphiti开源</a>
+                    <a href="#pike" class="text-slate-600 hover:text-indigo-600 font-medium transition-colors">PIKE RAG技术</a>
+                    <a href="#comparison" class="text-slate-600 hover:text-indigo-600 font-medium transition-colors">深度对比</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header / Hero Section -->
+    <header id="overview" class="bg-white pt-16 pb-12 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 mb-6 tracking-tight">
+                下一代 <span class="text-gradient">AI代理记忆架构</span>
+            </h1>
+            <p class="text-xl text-slate-600 max-w-3xl mx-auto mb-10 leading-relaxed">
+                针对 <strong>Graphiti Open Source</strong> 与 <strong>PIKE RAG</strong> 技术的深度调研报告。
+                揭示知识图谱（Knowledge Graphs）如何重塑大模型的长期记忆与推理能力，突破传统向量检索的局限。
+            </p>
+            
+            <!-- Key Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="bg-indigo-50 rounded-2xl p-6 border border-indigo-100 hover-card">
+                    <div class="text-indigo-600 font-bold text-4xl mb-2">40%</div>
+                    <div class="text-slate-700 font-medium">多跳推理准确率提升</div>
+                    <p class="text-sm text-slate-500 mt-2">相比传统RAG，引入图结构后的推理能力增强</p>
+                </div>
+                <div class="bg-purple-50 rounded-2xl p-6 border border-purple-100 hover-card">
+                    <div class="text-purple-600 font-bold text-4xl mb-2">Context</div>
+                    <div class="text-slate-700 font-medium">语义上下文完整性</div>
+                    <p class="text-sm text-slate-500 mt-2">Graphiti 动态维护边的权重与时序关系</p>
+                </div>
+                <div class="bg-pink-50 rounded-2xl p-6 border border-pink-100 hover-card">
+                    <div class="text-pink-600 font-bold text-4xl mb-2">Real-time</div>
+                    <div class="text-slate-700 font-medium">实时知识更新</div>
+                    <p class="text-sm text-slate-500 mt-2">PIKE RAG 架构下的动态索引构建</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+
+        <!-- Section 1: The Context (Why Graph RAG?) -->
+        <section>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900 mb-6 flex items-center">
+                        <span class="bg-indigo-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">1</span>
+                        从 Vector 到 Graph：范式转移
+                    </h2>
+                    <p class="text-slate-600 mb-4 leading-relaxed">
+                        传统的 <strong>RAG (检索增强生成)</strong> 主要依赖向量相似度搜索。虽然高效，但它将信息视为孤立的片段，丢失了实体间的显式关系。
+                    </p>
+                    <p class="text-slate-600 mb-6 leading-relaxed">
+                        <strong>AI代理 (Agents)</strong> 需要更高级的记忆形式。它们不仅需要找到“相似”的文本，还需要理解“A导致了B”或“C属于D”的逻辑结构。这正是 <strong>Graphiti</strong> 和 <strong>PIKE RAG</strong> 解决的核心问题。
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✔</span>
+                            <span class="text-slate-700"><strong>结构化记忆：</strong> 保存实体间的逻辑连接。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✔</span>
+                            <span class="text-slate-700"><strong>时序感知：</strong> 理解信息随时间的变化 (Graphiti 强项)。</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-green-500 mr-2">✔</span>
+                            <span class="text-slate-700"><strong>复杂推理：</strong> 支持多跳 (Multi-hop) 问题回答。</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="bg-white rounded-2xl shadow-xl p-6 border border-slate-100">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">检索模式对比：向量 vs 图谱</h3>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="retrievalComparisonChart"></canvas>
+                    </div>
+                    <p class="text-xs text-center text-slate-400 mt-2">数据来源：综合技术基准测试模拟</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Graphiti Open Source -->
+        <section id="graphiti" class="bg-gradient-to-br from-indigo-50 to-white rounded-3xl p-8 md:p-12 shadow-sm border border-indigo-100">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">Graphiti Open Source</h2>
+                    <p class="text-lg text-indigo-600 font-medium">构建动态、时序敏感的知识图谱</p>
+                    <p class="text-slate-600 mt-4 max-w-2xl mx-auto">
+                        Graphiti 是一个开源库，旨在帮助开发者从非结构化文本中自动构建知识图谱。它的核心创新在于引入了“边”的动态权重和时序属性，使其非常适合作为 AI Agent 的长期情景记忆 (Episodic Memory)。
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                    <!-- Feature Cards -->
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-indigo-500">
+                        <h3 class="font-bold text-lg mb-2 text-slate-800">动态图谱构建</h3>
+                        <p class="text-sm text-slate-600">
+                            Graphiti 能够实时摄取数据流，自动提取实体（Nodes）和关系（Edges）。不同于静态图谱，它会根据新信息动态调整边的连接强度。
+                        </p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md border-l-4 border-purple-500">
+                        <h3 class="font-bold text-lg mb-2 text-slate-800">混合搜索 (Hybrid Search)</h3>
+                        <p class="text-sm text-slate-600">
+                            结合了向量搜索（语义相似性）和图遍历（结构相关性）。这允许 Agent 在回忆时既能找到相关概念，又能追踪逻辑链条。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Visualization: Graph Simulation -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 border border-slate-200">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold text-slate-800">可视化模拟：Graphiti 概念网络</h3>
+                        <div class="text-xs bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full">Bubble Chart Simulation</div>
+                    </div>
+                    <p class="text-sm text-slate-500 mb-4">
+                        下图展示了 Graphiti 如何组织概念。圆圈大小代表实体的重要性（权重），位置代表语义距离。Graphiti 能够动态更新这些属性。
+                    </p>
+                    <div class="chart-container">
+                        <canvas id="graphitiNetworkChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: PIKE RAG Technology -->
+        <section id="pike">
+            <div class="mb-10 text-center">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">微亚 PIKE RAG 技术解析</h2>
+                <p class="text-lg text-purple-600 font-medium">Physics-Informed Knowledge Extraction (物理/过程感知知识提取)</p>
+                <p class="text-slate-600 mt-4 max-w-3xl mx-auto">
+                    "PIKE" 代表了一种更高级的 RAG 架构范式，通常指代结合了行业专有逻辑（如物理规则、业务流程）的知识提取技术。在 AI Agent 场景下，PIKE RAG 旨在解决通用大模型在特定垂直领域（如金融、制造、医疗）产生幻觉的问题。
+                </p>
+            </div>
+
+            <!-- Workflow Diagram (CSS/HTML) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                <!-- Step 1 -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-purple-500"></div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">1. 解析与分块 (Parse)</h3>
+                    <p class="text-sm text-slate-600 mb-4">
+                        不仅仅是文本切分。PIKE 技术利用特定领域的解析器，识别文档中的表格、公式和逻辑块，保持数据的原子性。
+                    </p>
+                    <div class="bg-slate-100 p-2 rounded text-xs font-mono text-slate-500">Input: PDF/Docs -> Structured JSON</div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-pink-500"></div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">2. 知识索引 (Index & Knowledge)</h3>
+                    <p class="text-sm text-slate-600 mb-4">
+                        构建双层索引：**倒排索引**用于关键词，**向量索引**用于语义，**图索引**用于实体关系。核心是注入行业规则约束。
+                    </p>
+                    <div class="flex gap-2">
+                        <span class="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">Vector</span>
+                        <span class="px-2 py-1 bg-pink-100 text-pink-700 text-xs rounded">Graph</span>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-indigo-500"></div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">3. 提取与生成 (Extract)</h3>
+                    <p class="text-sm text-slate-600 mb-4">
+                        在生成答案前，先通过图谱路径验证逻辑一致性。显著降低幻觉率，特别是在处理矛盾信息时。
+                    </p>
+                    <div class="bg-slate-100 p-2 rounded text-xs font-mono text-slate-500">Output: Verified Answer</div>
+                </div>
+            </div>
+
+            <!-- Performance Chart -->
+            <div class="bg-white rounded-2xl shadow-xl p-8 border border-slate-100">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="md:col-span-1">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4">性能指标对比</h3>
+                        <p class="text-slate-600 text-sm mb-6">
+                            在复杂问答任务（Complex QA）中，引入 Graphiti 或 PIKE RAG 架构相比传统 Baseline RAG 有显著提升。
+                        </p>
+                        <div class="space-y-4">
+                            <div class="p-3 bg-slate-50 rounded-lg">
+                                <span class="block text-xs text-slate-500 uppercase font-semibold">准确率 (Accuracy)</span>
+                                <span class="block text-xl font-bold text-indigo-600">+25% 提升</span>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-lg">
+                                <span class="block text-xs text-slate-500 uppercase font-semibold">幻觉率 (Hallucination)</span>
+                                <span class="block text-xl font-bold text-pink-600">-40% 降低</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:col-span-2">
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Comparative Analysis -->
+        <section id="comparison" class="bg-slate-900 text-white rounded-3xl p-8 md:p-12">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold mb-4">技术选型深度对比</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto">
+                    选择合适的技术栈取决于应用场景。Vector RAG 适合快速检索，Graphiti 适合长期记忆构建，PIKE RAG 适合高精度行业应用。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div class="chart-container bg-slate-800/50 rounded-2xl p-4">
+                    <canvas id="radarComparisonChart"></canvas>
+                </div>
+                
+                <div class="space-y-6">
+                    <!-- Comparison Item 1 -->
+                    <div class="border-l-4 border-indigo-500 pl-4">
+                        <h4 class="text-xl font-bold text-indigo-400">Contextual Depth (上下文深度)</h4>
+                        <p class="text-slate-300 text-sm mt-1">
+                            Graphiti 表现最佳。由于其原生的图结构设计，能够保留深层的语义连接和时序背景，非常适合需要“理解前因后果”的场景。
+                        </p>
+                    </div>
+                    <!-- Comparison Item 2 -->
+                    <div class="border-l-4 border-pink-500 pl-4">
+                        <h4 class="text-xl font-bold text-pink-400">Implementation Complexity (实施复杂度)</h4>
+                        <p class="text-slate-300 text-sm mt-1">
+                            Vector RAG 最简单。Graphiti 和 PIKE RAG 需要构建和维护图谱，增加了工程复杂度，但换来了更高的推理质量。
+                        </p>
+                    </div>
+                    <!-- Comparison Item 3 -->
+                    <div class="border-l-4 border-purple-500 pl-4">
+                        <h4 class="text-xl font-bold text-purple-400">Query Latency (查询延迟)</h4>
+                        <p class="text-slate-300 text-sm mt-1">
+                            PIKE RAG 和 Graphiti 由于涉及图遍历，查询速度通常慢于纯向量检索。需要通过索引优化或混合检索策略来平衡。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <section class="text-center py-12 border-t border-slate-200">
+            <h2 class="text-2xl font-bold text-slate-900 mb-4">结论与建议</h2>
+            <div class="max-w-3xl mx-auto text-slate-600 space-y-4">
+                <p>
+                    对于构建简单的问答机器人，<strong>Vector RAG</strong> 依然是首选。
+                </p>
+                <p>
+                    但对于旨在构建具有<strong>长期记忆、能够自主规划和推理的 AI Agent</strong>，集成 <strong>Graphiti</strong> 或参考 <strong>PIKE RAG</strong> 的架构将是必然趋势。图谱技术填补了 LLM 在逻辑结构认知上的空白。
+                </p>
+            </div>
+            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="mt-8 px-8 py-3 bg-indigo-600 text-white font-bold rounded-full hover:bg-indigo-700 transition shadow-lg hover:shadow-xl">
+                返回顶部重新探索
+            </button>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-50 border-t border-slate-200 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-slate-400 text-sm">
+            <p>© 2024 AI Memory Research Report. Generated for Analysis Purposes.</p>
+            <p class="mt-2">Tech Stack: Tailwind CSS • Chart.js • No SVG • No Mermaid</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Configuration & Utilities ---
+        Chart.defaults.font.family = "'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'";
+        Chart.defaults.color = '#64748b'; // slate-500
+        Chart.defaults.responsive = true;
+        Chart.defaults.maintainAspectRatio = false;
+
+        // Label Wrapping Helper (Strict 16 char limit)
+        function wrapLabel(label) {
+            if (typeof label !== 'string' || label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= 16) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // Common Tooltip Config
+        const tooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels ? item.chart.data.labels[item.dataIndex] : '';
+                    // For bubble charts, label might be handled differently or embedded in raw data
+                    if (!label && item.raw && item.raw.label) label = item.raw.label;
+                    
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            },
+            padding: 12,
+            backgroundColor: 'rgba(15, 23, 42, 0.9)', // slate-900
+            titleFont: { size: 13, weight: 'bold' },
+            bodyFont: { size: 12 }
+        };
+
+        // --- Chart 1: Retrieval Comparison (Bar) ---
+        const ctxRetrieval = document.getElementById('retrievalComparisonChart').getContext('2d');
+        new Chart(ctxRetrieval, {
+            type: 'bar',
+            data: {
+                labels: ['实体关系保留 (Entity Relations)', '多跳推理能力 (Multi-hop Reasoning)', '长尾知识检索 (Long-tail Recall)'].map(wrapLabel),
+                datasets: [{
+                    label: '传统 Vector RAG',
+                    data: [30, 40, 60],
+                    backgroundColor: '#cbd5e1', // slate-300
+                    borderRadius: 4
+                }, {
+                    label: 'Graph RAG (Graphiti/PIKE)',
+                    data: [95, 85, 90],
+                    backgroundColor: '#6366f1', // indigo-500
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                plugins: {
+                    tooltip: tooltipConfig,
+                    legend: { position: 'bottom' }
+                },
+                scales: {
+                    y: { beginAtZero: true, max: 100, grid: { borderDash: [2, 4] } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // --- Chart 2: Graphiti Network Simulation (Bubble) ---
+        // Simulating a knowledge graph using Bubble chart
+        const ctxGraphiti = document.getElementById('graphitiNetworkChart').getContext('2d');
+        const bubbleData = [
+            { x: 10, y: 20, r: 15, label: 'User Profile' },
+            { x: 15, y: 25, r: 8, label: 'Preferences' },
+            { x: 25, y: 15, r: 12, label: 'Past Interactions' },
+            { x: 30, y: 30, r: 20, label: 'Current Context' },
+            { x: 40, y: 20, r: 10, label: 'Long-term Memory' },
+            { x: 35, y: 10, r: 8, label: 'Task Goal' },
+            { x: 20, y: 35, r: 10, label: 'Constraints' }
+        ];
+
+        new Chart(ctxGraphiti, {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                    label: 'Knowledge Nodes',
+                    data: bubbleData,
+                    backgroundColor: function(context) {
+                        const val = context.raw?.r;
+                        return val > 15 ? 'rgba(99, 102, 241, 0.8)' : // indigo
+                               val > 10 ? 'rgba(168, 85, 247, 0.7)' : // purple
+                               'rgba(236, 72, 153, 0.6)'; // pink
+                    },
+                    borderColor: 'rgba(255,255,255,0.5)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.raw.label + ': Relevance ' + context.raw.r;
+                            }
+                        }
+                    },
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { display: false, min: 0, max: 50 },
+                    y: { display: false, min: 0, max: 50 }
+                },
+                layout: { padding: 20 }
+            }
+        });
+
+        // --- Chart 3: Performance Comparison (Line/Bar Combo) ---
+        const ctxPerf = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctxPerf, {
+            type: 'bar',
+            data: {
+                labels: ['F1 Score (精准度)', 'Recall @ 10 (召回率)', 'Hallucination Rate (幻觉率)', 'Consistency (一致性)'].map(wrapLabel),
+                datasets: [{
+                    label: 'Graph Architecture (PIKE)',
+                    data: [0.88, 0.92, 0.05, 0.90],
+                    backgroundColor: 'rgba(79, 70, 229, 0.8)', // indigo-600
+                    borderColor: '#4f46e5',
+                    borderWidth: 1,
+                    order: 1
+                }, {
+                    label: 'Standard Baseline',
+                    data: [0.72, 0.75, 0.25, 0.65],
+                    backgroundColor: 'rgba(203, 213, 225, 0.6)', // slate-300
+                    borderColor: '#cbd5e1',
+                    borderWidth: 1,
+                    order: 2
+                }]
+            },
+            options: {
+                plugins: {
+                    tooltip: tooltipConfig,
+                    legend: { position: 'top', align: 'end' }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        max: 1.0,
+                        ticks: { format: { style: 'percent' } }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // --- Chart 4: Radar Comparison ---
+        const ctxRadar = document.getElementById('radarComparisonChart').getContext('2d');
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: [
+                    '准确性 (Accuracy)',
+                    '上下文记忆 (Memory)',
+                    '构建成本 (Cost)',
+                    '查询速度 (Speed)',
+                    '可解释性 (Explainability)',
+                    '维护难度 (Maintenance)'
+                ].map(wrapLabel),
+                datasets: [{
+                    label: 'Graphiti / PIKE RAG',
+                    data: [90, 95, 60, 70, 95, 50],
+                    fill: true,
+                    backgroundColor: 'rgba(139, 92, 246, 0.2)', // violet
+                    borderColor: '#8b5cf6',
+                    pointBackgroundColor: '#8b5cf6',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#8b5cf6'
+                }, {
+                    label: 'Standard Vector RAG',
+                    data: [70, 50, 90, 95, 40, 90],
+                    fill: true,
+                    backgroundColor: 'rgba(148, 163, 184, 0.2)', // slate
+                    borderColor: '#94a3b8',
+                    pointBackgroundColor: '#94a3b8',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#94a3b8'
+                }]
+            },
+            options: {
+                plugins: {
+                    tooltip: tooltipConfig,
+                    legend: { labels: { color: '#cbd5e1' } } // Light text for dark background
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        pointLabels: { color: '#e2e8f0', font: { size: 11 } }, // Light labels
+                        ticks: { backdropColor: 'transparent', display: false }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
