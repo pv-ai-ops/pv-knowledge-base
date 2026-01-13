@@ -8,6 +8,10 @@
 - `content-inbox/html/`
   - Put interactive `*.html` apps that must remain fully interactive.
   - These are copied into `source/` root and published as-is (Hexo `skip_render`).
+- `content-inbox/pdf/`
+  - Put `*.pdf` files that should be published with a PPT-like slide viewer.
+  - These are copied into `source/assets/`, and a Markdown post is generated to embed the viewer and enable local search.
+  - If the PDF has no text layer, add a same-basename sidecar `*.search.txt`/`*.txt`/`*.md` to provide the searchable text (e.g. generated via GPT vision from rendered page images).
 - `content-inbox/assets/`
   - Put shared static assets copied into `source/assets/`.
 

@@ -116,6 +116,169 @@ function ensureDir(dirPath) {
   }
 }
 
+function copyDirSync(sourceDir, targetDir) {
+  ensureDir(targetDir);
+  const entries = fs.readdirSync(sourceDir, { withFileTypes: true });
+  entries.forEach(entry => {
+    const sourcePath = path.join(sourceDir, entry.name);
+    const targetPath = path.join(targetDir, entry.name);
+
+    if (entry.isDirectory()) {
+      copyDirSync(sourcePath, targetPath);
+      return;
+    }
+
+    if (entry.isFile()) {
+      fs.copyFileSync(sourcePath, targetPath);
+    }
+  });
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function ensurePdfJsAssets(sourceDir) {
+  const repoRoot = path.join(__dirname, '..');
+  const pdfjsRoot = path.join(repoRoot, 'node_modules', 'pdfjs-dist');
+  if (!fs.existsSync(pdfjsRoot)) {
+    console.log('  ⚠️ 未检测到 pdfjs-dist，跳过 PDF 预览器资源准备');
+    return false;
+  }
+
+  const targetDir = path.join(sourceDir, 'assets', 'pdfjs');
+  ensureDir(targetDir);
+
+  const resolveFirstExisting = candidates => {
+    for (const relativePath of candidates) {
+      const fullPath = path.join(pdfjsRoot, relativePath);
+      if (fs.existsSync(fullPath)) return fullPath;
+    }
+    return null;
+  };
+
+  const pdfBundleSource = resolveFirstExisting([
+    'build/pdf.min.js',
+    'build/pdf.js',
+    'legacy/build/pdf.min.js',
+    'legacy/build/pdf.js'
+  ]);
+  const workerSource = resolveFirstExisting([
+    'build/pdf.worker.min.js',
+    'build/pdf.worker.js',
+    'legacy/build/pdf.worker.min.js',
+    'legacy/build/pdf.worker.js'
+  ]);
+
+  if (!pdfBundleSource || !workerSource) {
+    console.log('  ⚠️ 未找到可用的 pdf.js 构建产物，跳过 PDF 预览器资源准备');
+    return false;
+  }
+
+  const pdfBundleTarget = path.join(targetDir, 'pdf.min.js');
+  const workerTarget = path.join(targetDir, 'pdf.worker.min.js');
+
+  if (!fs.existsSync(pdfBundleTarget)) {
+    fs.copyFileSync(pdfBundleSource, pdfBundleTarget);
+  }
+
+  if (!fs.existsSync(workerTarget)) {
+    fs.copyFileSync(workerSource, workerTarget);
+  }
+
+  // Optional: cmaps + standard fonts (improve rendering compatibility)
+  const cmapsSource = resolveFirstExisting(['cmaps', 'legacy/cmaps']);
+  const fontsSource = resolveFirstExisting(['standard_fonts', 'legacy/standard_fonts']);
+
+  if (cmapsSource) {
+    const cmapsTarget = path.join(targetDir, 'cmaps');
+    if (!fs.existsSync(cmapsTarget)) {
+      copyDirSync(cmapsSource, cmapsTarget);
+    }
+  }
+
+  if (fontsSource) {
+    const fontsTarget = path.join(targetDir, 'standard_fonts');
+    if (!fs.existsSync(fontsTarget)) {
+      copyDirSync(fontsSource, fontsTarget);
+    }
+  }
+
+  return true;
+}
+
+async function extractPdfTextForSearch(pdfPath, { maxChars = 200000 } = {}) {
+  let pdfjsLib;
+  const originalWarn = console.warn;
+  try {
+    console.warn = (...args) => {
+      const message = args.map(String).join(' ');
+      if (message.includes('Cannot polyfill `DOMMatrix`') || message.includes('Cannot polyfill `Path2D`')) {
+        return;
+      }
+      originalWarn(...args);
+    };
+
+    // Use legacy build for Node.js compatibility
+    pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+  } catch (error) {
+    console.log('  ⚠️ 无法加载 pdfjs-dist（将跳过PDF文本抽取，站内搜索不包含PDF全文）');
+    return '';
+  } finally {
+    console.warn = originalWarn;
+  }
+
+  let doc;
+  try {
+    const data = new Uint8Array(fs.readFileSync(pdfPath));
+    doc = await pdfjsLib.getDocument({ data, disableWorker: true }).promise;
+  } catch (error) {
+    console.log(`  ⚠️ PDF解析失败（跳过全文索引）: ${error.message}`);
+    return '';
+  }
+
+  const parts = [];
+  let totalLength = 0;
+
+  for (let pageNumber = 1; pageNumber <= doc.numPages; pageNumber += 1) {
+    const page = await doc.getPage(pageNumber);
+    const textContent = await page.getTextContent();
+    const pageText = textContent.items.map(item => item.str).join(' ').replace(/\u0000/g, '');
+    if (!pageText) continue;
+
+    parts.push(pageText);
+    totalLength += pageText.length + 1;
+    if (totalLength >= maxChars) break;
+  }
+
+  const text = parts.join(' ').replace(/\s+/g, ' ').trim();
+  return text.length > maxChars ? text.slice(0, maxChars) : text;
+}
+
+function loadPdfSidecarText(pdfDir, pdfFile) {
+  const baseName = path.basename(pdfFile, path.extname(pdfFile));
+  const candidates = [`${baseName}.search.txt`, `${baseName}.txt`, `${baseName}.md`];
+  for (const candidate of candidates) {
+    const candidatePath = path.join(pdfDir, candidate);
+    if (!fs.existsSync(candidatePath)) continue;
+    try {
+      const raw = fs.readFileSync(candidatePath, 'utf8');
+      const text = raw.replace(/\u0000/g, '').trim();
+      if (!text) continue;
+      return { text, path: candidatePath };
+    } catch (error) {
+      console.log(`  ⚠️ 读取PDF索引侧车文件失败: ${candidate} (${error.message})`);
+      continue;
+    }
+  }
+  return null;
+}
+
 function processMarkdown(inboxDir, sourceDir) {
   let processedFiles = 0;
   const markdownDir = path.join(inboxDir, 'markdown');
@@ -285,6 +448,97 @@ categories: [技术分析]
   return processedFiles;
 }
 
+async function processPdf(inboxDir, sourceDir) {
+  let processedFiles = 0;
+  const pdfDir = path.join(inboxDir, 'pdf');
+  if (!fs.existsSync(pdfDir)) {
+    return processedFiles;
+  }
+
+  const pdfFiles = fs
+    .readdirSync(pdfDir)
+    .filter(file => file.toLowerCase().endsWith('.pdf') && !file.endsWith(':Zone.Identifier'));
+
+  if (pdfFiles.length === 0) {
+    return processedFiles;
+  }
+
+  const hasPdfJs = ensurePdfJsAssets(sourceDir);
+
+  for (const file of pdfFiles) {
+    const sourcePath = path.join(pdfDir, file);
+    const originalTitle = path.basename(file, '.pdf');
+    const displayTitle = originalTitle.replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+
+    const safePdfFileName = createSafeAssetFileName(file, '', path.join(sourceDir, 'assets'));
+    const targetPdfPath = path.join(sourceDir, 'assets', safePdfFileName);
+    fs.copyFileSync(sourcePath, targetPdfPath);
+
+    const now = new Date();
+    const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
+
+    const viewerSrc = `/pv-knowledge-base/pdf-slides.html?file=${encodeURIComponent(
+      `assets/${safePdfFileName}`
+    )}&title=${encodeURIComponent(displayTitle || originalTitle)}`;
+
+    let extractedText = '';
+    let sidecarPath = null;
+    if (hasPdfJs) {
+      try {
+        extractedText = await extractPdfTextForSearch(targetPdfPath, { maxChars: 200000 });
+      } catch (error) {
+        console.log(`  ⚠️ PDF全文抽取失败（跳过索引）: ${error.message}`);
+      }
+    }
+
+    if (!extractedText) {
+      const sidecar = loadPdfSidecarText(pdfDir, file);
+      if (sidecar && sidecar.text) {
+        extractedText = sidecar.text;
+        sidecarPath = sidecar.path;
+        console.log(`  🔎 使用侧车索引文件: ${path.basename(sidecarPath)}`);
+      }
+    }
+
+    const searchIndexBlock = extractedText
+      ? `\n<div class="pdf-search-index" style="display:none">\n${escapeHtml(extractedText)}\n</div>\n`
+      : '\n<!-- PDF全文索引未生成（可能缺少pdfjs-dist或解析失败） -->\n';
+
+    const markdownContent = `---
+title: ${displayTitle || originalTitle}
+date: ${dateStr}
+tags: [药物警戒, AI, PDF]
+categories: [资料库]
+---
+
+## 📄 PDF 文档
+
+- 在线预览（幻灯片模式）：<a href="${viewerSrc}" target="_blank" rel="noopener">点击打开</a>
+- 下载：[/assets/${safePdfFileName}](/assets/${safePdfFileName})
+
+---
+
+## 🖥️ 幻灯片预览（支持全屏）
+
+<iframe src="${viewerSrc}" frameborder="0" allowfullscreen style="width: 100%; height: 82vh; min-height: 520px; max-height: 1200px; border: 1px solid #e1e5e9; border-radius: 8px; margin: 20px 0;"></iframe>
+${searchIndexBlock}`;
+
+    const safeMarkdownFileName = createSafeFileName(displayTitle || originalTitle) + '.md';
+    const markdownPath = path.join(sourceDir, '_posts', safeMarkdownFileName);
+    fs.writeFileSync(markdownPath, markdownContent);
+
+    fs.unlinkSync(sourcePath);
+    if (sidecarPath && fs.existsSync(sidecarPath)) {
+      fs.unlinkSync(sidecarPath);
+    }
+
+    console.log(`✅ 处理PDF: ${file} -> assets/${safePdfFileName} (创建文章 + 幻灯片预览${extractedText ? ' + 全文索引' : ''})`);
+    processedFiles += 1;
+  }
+
+  return processedFiles;
+}
+
 function processAssets(inboxDir, sourceDir) {
   let processedFiles = 0;
   const assetsDir = path.join(inboxDir, 'assets');
@@ -330,7 +584,7 @@ function buildSite({ shouldPreview }) {
   }
 }
 
-function main(argv = process.argv.slice(2)) {
+async function main(argv = process.argv.slice(2)) {
   const shouldPreview = argv.includes('--preview') || process.env.PUBLISH_PREVIEW === '1';
 
   console.log('🚀 开始处理content-inbox中的新内容...');
@@ -338,12 +592,18 @@ function main(argv = process.argv.slice(2)) {
   const inboxDir = path.join(__dirname, '../content-inbox');
   const sourceDir = path.join(__dirname, '../source');
 
+  ensureDir(path.join(inboxDir, 'markdown'));
+  ensureDir(path.join(inboxDir, 'html'));
+  ensureDir(path.join(inboxDir, 'assets'));
+  ensureDir(path.join(inboxDir, 'pdf'));
+
   ensureDir(path.join(sourceDir, '_posts'));
   ensureDir(path.join(sourceDir, 'assets'));
 
   let processedFiles = 0;
   processedFiles += processMarkdown(inboxDir, sourceDir);
   processedFiles += processHtml(inboxDir, sourceDir);
+  processedFiles += await processPdf(inboxDir, sourceDir);
   processedFiles += processAssets(inboxDir, sourceDir);
 
   console.log(`\n🎉 处理完成! 共处理 ${processedFiles} 个文件`);
@@ -358,7 +618,10 @@ function main(argv = process.argv.slice(2)) {
 }
 
 if (require.main === module) {
-  main();
+  main().catch(error => {
+    console.error('❌ 发布脚本执行失败:', error);
+    process.exitCode = 1;
+  });
 } else {
   module.exports = { createSafeFileName, main };
 }

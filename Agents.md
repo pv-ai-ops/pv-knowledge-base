@@ -8,6 +8,7 @@
 ## 2. 目录与素材投放
 - `content-inbox/markdown/`：放置待发布的 Markdown 文章；若存在同名 `*.assets/` 文件夹，内部资源将一并处理。
 - `content-inbox/html/`：放置需要保留交互功能的 HTML 文件；脚本会复制原文件并自动生成一篇引用 iframe 的 Markdown 文章。
+- `content-inbox/pdf/`：放置需要以“幻灯片/PPT”形式预览的 PDF 文件；脚本会复制到站点资源目录，自动生成一篇包含 iframe 预览/下载链接的 Markdown 文章，并抽取 PDF 文本用于站内搜索（若PDF无文本层，可提供同名 `.search.txt`/`.txt`/`.md` 作为索引侧车）。
 - `content-inbox/assets/`：公共共享资源（图片、附件等），会被复制到站点资源目录。
 - 不要手动修改 `source/` 与 `docs/` 中的文件；所有调整通过重新投放素材 + 发布脚本完成。
 

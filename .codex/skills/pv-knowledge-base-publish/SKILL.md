@@ -51,6 +51,7 @@ Common flags:
 
 - `content-inbox/markdown/`: new `.md` posts; optional sibling folder `Title.assets/` for images/files used by that post
 - `content-inbox/html/`: interactive `.html` apps that must be kept as-is (published via `skip_render`)
+- `content-inbox/pdf/`: `.pdf` files published with a PPT-like slide viewer; auto-generates a post and extracts text for local search (if the PDF has no text layer, add a same-basename sidecar `*.search.txt`/`*.txt`/`*.md` to provide the searchable text)
 - `content-inbox/assets/`: shared static assets copied to `source/assets/`
 
 ## Safety
