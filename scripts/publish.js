@@ -116,6 +116,158 @@ function ensureDir(dirPath) {
   }
 }
 
+function pickPreferredFileByExtension(files) {
+  if (!files || files.length === 0) return null;
+
+  const preferred = ['.webp', '.jpg', '.jpeg', '.png'];
+  const ranked = files
+    .slice()
+    .sort((a, b) => {
+      const extA = path.extname(a).toLowerCase();
+      const extB = path.extname(b).toLowerCase();
+      const rankA = preferred.includes(extA) ? preferred.indexOf(extA) : preferred.length;
+      const rankB = preferred.includes(extB) ? preferred.indexOf(extB) : preferred.length;
+      if (rankA !== rankB) return rankA - rankB;
+      return a.localeCompare(b);
+    });
+
+  return ranked[0] || null;
+}
+
+function isSupportedImage(file) {
+  const imageExts = new Set(['.jpg', '.jpeg', '.png', '.webp']);
+  return imageExts.has(path.extname(file).toLowerCase());
+}
+
+function findCoverFileByBaseName(files, baseName) {
+  if (!files || files.length === 0) return null;
+  const candidates = files
+    .filter(file => !file.endsWith(':Zone.Identifier'))
+    .filter(isSupportedImage)
+    .filter(file => path.basename(file, path.extname(file)) === baseName);
+  return pickPreferredFileByExtension(candidates);
+}
+
+function createSafeCoverFileName(baseName, ext, targetDir) {
+  const extLower = ext ? ext.toLowerCase() : '';
+
+  let safeBase = createSafeFileName(baseName);
+  if (!safeBase) {
+    safeBase = crypto.createHash('sha1').update(baseName).digest('hex').slice(0, 16);
+  }
+
+  const maxBaseLength = 120;
+  if (safeBase.length > maxBaseLength) {
+    const hash = crypto.createHash('sha1').update(baseName).digest('hex').slice(0, 10);
+    safeBase = safeBase.slice(0, maxBaseLength) + '-' + hash;
+  }
+
+  let candidate = `${safeBase}${extLower}`;
+  let counter = 1;
+  while (fs.existsSync(path.join(targetDir, candidate))) {
+    candidate = `${safeBase}-${counter}${extLower}`;
+    counter += 1;
+  }
+
+  return candidate;
+}
+
+function processCover(inboxDir, sourceDir, baseName) {
+  const coversDir = path.join(inboxDir, 'covers');
+  if (!fs.existsSync(coversDir)) return null;
+
+  const coverFiles = fs.readdirSync(coversDir);
+  const coverFile = findCoverFileByBaseName(coverFiles, baseName);
+  if (!coverFile) return null;
+
+  const coverSourcePath = path.join(coversDir, coverFile);
+  const coverExt = path.extname(coverFile);
+
+  const coversTargetDir = path.join(sourceDir, 'assets', 'covers');
+  ensureDir(coversTargetDir);
+
+  const coverTargetFileName = createSafeCoverFileName(baseName, coverExt, coversTargetDir);
+  const coverTargetPath = path.join(coversTargetDir, coverTargetFileName);
+  fs.copyFileSync(coverSourcePath, coverTargetPath);
+  fs.unlinkSync(coverSourcePath);
+
+  const zoneIdentifierPath = path.join(coversDir, `${coverFile}:Zone.Identifier`);
+  if (fs.existsSync(zoneIdentifierPath)) {
+    fs.unlinkSync(zoneIdentifierPath);
+  }
+
+  console.log(`  🖼️ 处理封面: covers/${coverFile} → covers/${coverTargetFileName}`);
+  return `/assets/covers/${coverTargetFileName}`;
+}
+
+function ensurePhotosFrontMatter(markdown, photoUrl) {
+  if (!photoUrl) return markdown;
+  if (!markdown.startsWith('---')) return markdown;
+
+  const frontMatterMatch = markdown.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
+  if (!frontMatterMatch) return markdown;
+
+  const frontMatter = frontMatterMatch[0];
+  if (/^photos\s*:/m.test(frontMatter)) return markdown;
+
+  const newline = frontMatter.includes('\r\n') ? '\r\n' : '\n';
+  const lines = frontMatter.split(/\r?\n/);
+  const closingIndex = lines.findIndex((line, idx) => idx > 0 && line.trim() === '---');
+  if (closingIndex === -1) return markdown;
+
+  const findLastIndex = predicate => {
+    let found = -1;
+    for (let i = 0; i < closingIndex; i += 1) {
+      if (predicate(lines[i])) found = i;
+    }
+    return found;
+  };
+
+  const afterDate = findLastIndex(line => /^date\s*:/i.test(line));
+  const afterTitle = findLastIndex(line => /^title\s*:/i.test(line));
+  const insertIndex = (afterDate !== -1 ? afterDate : afterTitle !== -1 ? afterTitle : 0) + 1;
+
+  const photoLine = `photos: [\"${photoUrl}\"]`;
+  lines.splice(Math.min(insertIndex, closingIndex), 0, photoLine);
+
+  const updatedFrontMatter = lines.join(newline);
+  return updatedFrontMatter + markdown.slice(frontMatter.length);
+}
+
+function ensureCoverFrontMatter(markdown, coverUrl) {
+  if (!coverUrl) return markdown;
+  if (!markdown.startsWith('---')) return markdown;
+
+  const frontMatterMatch = markdown.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n/);
+  if (!frontMatterMatch) return markdown;
+
+  const frontMatter = frontMatterMatch[0];
+  if (/^cover\s*:/m.test(frontMatter)) return markdown;
+
+  const newline = frontMatter.includes('\r\n') ? '\r\n' : '\n';
+  const lines = frontMatter.split(/\r?\n/);
+  const closingIndex = lines.findIndex((line, idx) => idx > 0 && line.trim() === '---');
+  if (closingIndex === -1) return markdown;
+
+  const findLastIndex = predicate => {
+    let found = -1;
+    for (let i = 0; i < closingIndex; i += 1) {
+      if (predicate(lines[i])) found = i;
+    }
+    return found;
+  };
+
+  const afterDate = findLastIndex(line => /^date\s*:/i.test(line));
+  const afterTitle = findLastIndex(line => /^title\s*:/i.test(line));
+  const insertIndex = (afterDate !== -1 ? afterDate : afterTitle !== -1 ? afterTitle : 0) + 1;
+
+  const coverLine = `cover: \"${coverUrl}\"`;
+  lines.splice(Math.min(insertIndex, closingIndex), 0, coverLine);
+
+  const updatedFrontMatter = lines.join(newline);
+  return updatedFrontMatter + markdown.slice(frontMatter.length);
+}
+
 function copyDirSync(sourceDir, targetDir) {
   ensureDir(targetDir);
   const entries = fs.readdirSync(sourceDir, { withFileTypes: true });
@@ -294,6 +446,9 @@ function processMarkdown(inboxDir, sourceDir) {
     // 生成URL安全的文件名
     const originalTitle = path.basename(file, '.md');
     const safeFileName = createSafeFileName(originalTitle) + '.md';
+    let coverPhotoUrl = null;
+
+    coverPhotoUrl = processCover(inboxDir, sourceDir, originalTitle);
 
     // 检查是否有同名的.assets文件夹
     const assetsDir = path.join(markdownDir, originalTitle + '.assets');
@@ -364,11 +519,15 @@ function processMarkdown(inboxDir, sourceDir) {
       finalContent = `---
 title: ${originalTitle}
 date: ${dateStr}
-tags: [药物警戒, AI]
+${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [药物警戒, AI]
 categories: [技术分析]
 ---
 
 ${content}`;
+    }
+
+    if (coverPhotoUrl) {
+      finalContent = ensureCoverFrontMatter(finalContent, coverPhotoUrl);
     }
 
     // 使用安全的文件名移动到_posts目录
@@ -406,10 +565,12 @@ function processHtml(inboxDir, sourceDir) {
     const now = new Date();
     const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
 
+    const coverPhotoUrl = processCover(inboxDir, sourceDir, htmlFileName);
+
     const markdownContent = `---
 title: ${htmlFileName}
 date: ${dateStr}
-tags: [药物警戒, AI, 交互式工具]
+${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [药物警戒, AI, 交互式工具]
 categories: [技术分析]
 ---
 
@@ -476,6 +637,7 @@ async function processPdf(inboxDir, sourceDir) {
 
     const now = new Date();
     const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
+    const coverPhotoUrl = processCover(inboxDir, sourceDir, originalTitle);
 
     const viewerSrc = `/pv-knowledge-base/pdf-slides.html?file=${encodeURIComponent(
       `assets/${safePdfFileName}`
@@ -507,7 +669,7 @@ async function processPdf(inboxDir, sourceDir) {
     const markdownContent = `---
 title: ${displayTitle || originalTitle}
 date: ${dateStr}
-tags: [药物警戒, AI, PDF]
+${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [药物警戒, AI, PDF]
 categories: [资料库]
 ---
 
@@ -594,11 +756,13 @@ async function main(argv = process.argv.slice(2)) {
 
   ensureDir(path.join(inboxDir, 'markdown'));
   ensureDir(path.join(inboxDir, 'html'));
+  ensureDir(path.join(inboxDir, 'covers'));
   ensureDir(path.join(inboxDir, 'assets'));
   ensureDir(path.join(inboxDir, 'pdf'));
 
   ensureDir(path.join(sourceDir, '_posts'));
   ensureDir(path.join(sourceDir, 'assets'));
+  ensureDir(path.join(sourceDir, 'assets', 'covers'));
 
   let processedFiles = 0;
   processedFiles += processMarkdown(inboxDir, sourceDir);
@@ -623,5 +787,12 @@ if (require.main === module) {
     process.exitCode = 1;
   });
 } else {
-  module.exports = { createSafeFileName, main };
+  module.exports = {
+    createSafeFileName,
+    findCoverFileByBaseName,
+    processCover,
+    ensureCoverFrontMatter,
+    ensurePhotosFrontMatter,
+    main
+  };
 }

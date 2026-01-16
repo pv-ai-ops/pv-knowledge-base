@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>探索自闭症的成因：交互式分析报告</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Serene Cognitive - Warm Creams, Soft Teals, and Slate Blues for a calm, scientific, and non-overstimulating environment. -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #FDFBF7; /* Warm off-white */
+            color: #334155; /* Slate 700 */
+        }
+
+        .section-card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            max-height: 50vh;
+            margin: 0 auto;
+        }
+
+        .btn-interaction {
+            transition: all 0.2s;
+        }
+        .btn-interaction:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(94, 234, 212, 0.2);
+        }
+        .btn-interaction:active {
+            transform: translateY(0);
+        }
+
+        .highlight-text {
+            color: #0D9488; /* Teal 600 */
+            font-weight: 700;
+        }
+    </style>
+    <!-- Application Structure Plan:
+         1. Hero Section: Sets the stage, defining ASD as multifactorial.
+         2. Genetics Section (The Blueprint): Uses a Doughnut chart to visualize the heavy weight of genetics vs. environment. Includes interaction to switch data sources (Twin studies vs Family studies).
+         3. Risk Factors Section (The Context): A Bar chart showing Relative Risk. Users can filter by category (Parental, Prenatal) to explore specific data points.
+         4. Neural Logic (The Mechanism): A custom Canvas visualization representing synaptic pruning differences (Abstract representation).
+         5. Myths (The Correction): Interactive cards to specifically address Vaccines and Parenting, essential for this topic.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-[#FDFBF7] min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">🧩</span>
+                <h1 class="text-xl md:text-2xl font-bold text-slate-800 tracking-tight">自闭症成因解析 <span class="text-sm font-normal text-slate-500 hidden md:inline">| 基于科学共识的交互式报告</span></h1>
+            </div>
+            <nav class="hidden md:flex space-x-6 text-sm font-medium text-slate-600">
+                <a href="#genetics" class="hover:text-teal-600 transition">遗传因素</a>
+                <a href="#environment" class="hover:text-teal-600 transition">环境风险</a>
+                <a href="#neurology" class="hover:text-teal-600 transition">神经机制</a>
+                <a href="#myths" class="hover:text-teal-600 transition">误区澄清</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 space-y-12 max-w-6xl">
+
+        <!-- Intro Section -->
+        <section class="text-center space-y-6 py-8">
+            <h2 class="text-3xl md:text-5xl font-bold text-slate-800">不仅仅是单一原因</h2>
+            <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                自闭症谱系障碍 (ASD) 的成因非常复杂。目前的科学共识认为，它是<span class="highlight-text">遗传易感性</span>与<span class="highlight-text">早期环境因素</span>共同作用的结果。本报告将带您深入数据，探索这些复杂的相互作用。
+            </p>
+            <div class="flex flex-wrap justify-center gap-4 mt-4">
+                <div class="bg-teal-50 px-6 py-3 rounded-full text-teal-800 font-medium">🧬 遗传因素占主导</div>
+                <div class="bg-blue-50 px-6 py-3 rounded-full text-blue-800 font-medium">🌍 环境因素起触发作用</div>
+                <div class="bg-rose-50 px-6 py-3 rounded-full text-rose-800 font-medium">🚫 与疫苗无关</div>
+            </div>
+        </section>
+
+        <!-- 1. Genetics Section -->
+        <section id="genetics" class="scroll-mt-24">
+            <div class="section-card p-6 md:p-10">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <!-- Text Content -->
+                    <div class="space-y-6">
+                        <div class="inline-block px-3 py-1 bg-teal-100 text-teal-800 rounded-md text-sm font-bold mb-2">核心驱动力</div>
+                        <h3 class="text-2xl font-bold text-slate-800">遗传学：蓝图的影响</h3>
+                        <p class="text-slate-600 leading-relaxed">
+                            研究表明，遗传是导致自闭症的最主要因素。如果一个家庭中有一个孩子患有自闭症，其兄弟姐妹患病的几率会显著增加。这并不意味着存在单一的"自闭症基因"，而是数百个微小的基因变异共同作用的结果。
+                        </p>
+                        
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                            <h4 class="font-bold text-slate-700 mb-2">交互探索：</h4>
+                            <p class="text-sm text-slate-500 mb-4">点击下方按钮查看不同研究模型下的遗传度估算。</p>
+                            <div class="flex flex-wrap gap-2">
+                                <button onclick="updateGeneticsChart('twins')" class="btn-interaction bg-white border border-slate-300 px-4 py-2 rounded-md text-sm font-medium hover:bg-teal-50 hover:border-teal-300 focus:ring-2 focus:ring-teal-500">双胞胎研究数据</button>
+                                <button onclick="updateGeneticsChart('family')" class="btn-interaction bg-white border border-slate-300 px-4 py-2 rounded-md text-sm font-medium hover:bg-teal-50 hover:border-teal-300 focus:ring-2 focus:ring-teal-500">广义家庭研究数据</button>
+                            </div>
+                            <div id="genetics-description" class="mt-4 text-sm text-teal-700 bg-teal-50 p-3 rounded fade-in">
+                                当前显示：双胞胎研究通常显示极高的遗传度（~80-90%），强调了基因的主导地位。
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visualization -->
+                    <div class="bg-white p-4 rounded-xl flex flex-col items-center">
+                        <div class="chart-container">
+                            <canvas id="geneticsChart"></canvas>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-2 text-center">数据来源：综合Meta分析 (Bai et al., Sandin et al.)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Environmental Factors Section -->
+        <section id="environment" class="scroll-mt-24">
+            <div class="section-card p-6 md:p-10">
+                <div class="mb-8">
+                    <div class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-md text-sm font-bold mb-2">风险调节</div>
+                    <h3 class="text-2xl font-bold text-slate-800">环境风险因素：并非直接原因</h3>
+                    <p class="text-slate-600 mt-3 max-w-4xl">
+                        "环境因素"在医学上指除了DNA以外的所有外部条件。这些因素本身通常不足以导致自闭症，但在具有遗传易感性的个体中，它们可能增加风险。请注意，这里展示的是<span class="font-bold">相对风险 (Relative Risk)</span>，即与普通人群相比增加的倍数。
+                    </p>
+                </div>
+
+                <div class="grid lg:grid-cols-3 gap-6">
+                    <!-- Controls -->
+                    <div class="lg:col-span-1 space-y-4">
+                        <div class="bg-slate-50 p-5 rounded-lg border border-slate-200 h-full">
+                            <h4 class="font-bold text-slate-700 mb-4">筛选风险类别</h4>
+                            <div class="space-y-2">
+                                <button onclick="filterRiskChart('all')" class="w-full text-left px-4 py-3 rounded-md bg-white border border-slate-200 hover:border-blue-400 transition flex justify-between items-center group">
+                                    <span>全部因素</span>
+                                    <span class="text-slate-300 group-hover:text-blue-500">●</span>
+                                </button>
+                                <button onclick="filterRiskChart('parental')" class="w-full text-left px-4 py-3 rounded-md bg-white border border-slate-200 hover:border-blue-400 transition flex justify-between items-center group">
+                                    <span>父母特征 (如年龄)</span>
+                                    <span class="text-slate-300 group-hover:text-blue-500">●</span>
+                                </button>
+                                <button onclick="filterRiskChart('prenatal')" class="w-full text-left px-4 py-3 rounded-md bg-white border border-slate-200 hover:border-blue-400 transition flex justify-between items-center group">
+                                    <span>孕期/围产期状况</span>
+                                    <span class="text-slate-300 group-hover:text-blue-500">●</span>
+                                </button>
+                                <button onclick="filterRiskChart('chemical')" class="w-full text-left px-4 py-3 rounded-md bg-white border border-slate-200 hover:border-blue-400 transition flex justify-between items-center group">
+                                    <span>药物与化学暴露</span>
+                                    <span class="text-slate-300 group-hover:text-blue-500">●</span>
+                                </button>
+                            </div>
+                            <div class="mt-6 text-xs text-slate-500">
+                                <p class="font-bold">解读提示：</p>
+                                <p>相对风险值 1.5 表示风险增加了 50%。虽然某些因素看似风险翻倍，但由于自闭症本身概率较低（约1-2%），绝对风险仍然很低。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart -->
+                    <div class="lg:col-span-2 bg-white rounded-lg">
+                        <div class="chart-container" style="height: 450px; max-height: 500px;">
+                            <canvas id="riskChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Neurological Mechanism (Abstract Viz) -->
+        <section id="neurology" class="scroll-mt-24">
+            <div class="section-card p-6 md:p-10 bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+                <div class="grid md:grid-cols-2 gap-10 items-center">
+                    <div>
+                        <div class="inline-block px-3 py-1 bg-indigo-500/20 text-indigo-200 border border-indigo-500/30 rounded-md text-sm font-bold mb-2">微观机制</div>
+                        <h3 class="text-2xl font-bold mb-4">大脑连接的差异：突触修剪</h3>
+                        <p class="text-slate-300 leading-relaxed mb-6">
+                            自闭症的一个主要理论是"突触修剪"的改变。在典型的发育过程中，大脑会清除多余的神经连接以提高效率。而在自闭症大脑中，这一过程可能不同，导致局部区域<span class="text-indigo-300 font-bold">过度连接</span>，而远距离区域连接不足。这解释了为何由于感官过载而导致对细节的极度关注。
+                        </p>
+                        
+                        <div class="bg-white/10 p-4 rounded-lg backdrop-blur-sm border border-white/10">
+                            <label class="block text-sm font-medium text-indigo-200 mb-2">拖动滑块模拟神经连接密度：</label>
+                            <input type="range" id="synapseSlider" min="1" max="100" value="50" class="w-full h-2 bg-slate-600 rounded-lg appearance-none cursor-pointer accent-indigo-400">
+                            <div class="flex justify-between text-xs text-slate-400 mt-2">
+                                <span>典型发育 (适度修剪)</span>
+                                <span>ASD倾向 (连接过剩/过度兴奋)</span>
+                            </div>
+                            <p id="synapse-text" class="mt-3 text-sm text-white font-medium">状态：平衡的神经连接网络</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center">
+                        <div class="relative w-full max-w-sm aspect-square bg-slate-950 rounded-full overflow-hidden border-4 border-slate-700 shadow-2xl">
+                            <canvas id="brainCanvas" class="w-full h-full"></canvas>
+                            <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+                                <span class="text-slate-700 opacity-20 text-9xl">🧠</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Myth Busting -->
+        <section id="myths" class="scroll-mt-24 pb-12">
+            <div class="text-center mb-10">
+                <h3 class="text-2xl font-bold text-slate-800">破除迷思：什么<span class="text-rose-600">不是</span>原因</h3>
+                <p class="text-slate-600">点击卡片查看科学事实</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div onclick="toggleCard(this)" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 cursor-pointer hover:shadow-md transition group h-64 relative perspective-1000">
+                    <div class="card-front absolute inset-0 flex flex-col items-center justify-center p-6 backface-hidden transition-transform duration-500">
+                        <div class="text-4xl mb-4">💉</div>
+                        <h4 class="text-lg font-bold text-slate-800">迷思：疫苗导致自闭症</h4>
+                        <p class="text-sm text-slate-400 mt-2">点击揭示真相</p>
+                    </div>
+                    <div class="card-back absolute inset-0 bg-teal-50 flex flex-col items-center justify-center p-6 backface-hidden rotate-y-180 transition-transform duration-500 opacity-0 pointer-events-none">
+                        <div class="text-teal-600 font-bold mb-2">科学事实：无关</div>
+                        <p class="text-sm text-slate-700 text-center">
+                            这是已被最彻底推翻的理论。涉及数百万儿童的大规模研究从未发现MMR疫苗（或疫苗中的硫柳汞）与自闭症之间存在任何联系。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div onclick="toggleCard(this)" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 cursor-pointer hover:shadow-md transition group h-64 relative perspective-1000">
+                    <div class="card-front absolute inset-0 flex flex-col items-center justify-center p-6 backface-hidden transition-transform duration-500">
+                        <div class="text-4xl mb-4">❄️</div>
+                        <h4 class="text-lg font-bold text-slate-800">迷思："冰箱妈妈"理论</h4>
+                        <p class="text-sm text-slate-400 mt-2">点击揭示真相</p>
+                    </div>
+                    <div class="card-back absolute inset-0 bg-teal-50 flex flex-col items-center justify-center p-6 backface-hidden rotate-y-180 transition-transform duration-500 opacity-0 pointer-events-none">
+                        <div class="text-teal-600 font-bold mb-2">科学事实：绝对错误</div>
+                        <p class="text-sm text-slate-700 text-center">
+                            50年代曾错误地认为母亲冷漠导致孩子自闭。这一理论早已被抛弃。教养方式不会导致自闭症，自闭症是神经发育的生物学差异。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div onclick="toggleCard(this)" class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 cursor-pointer hover:shadow-md transition group h-64 relative perspective-1000">
+                    <div class="card-front absolute inset-0 flex flex-col items-center justify-center p-6 backface-hidden transition-transform duration-500">
+                        <div class="text-4xl mb-4">📱</div>
+                        <h4 class="text-lg font-bold text-slate-800">迷思：电子屏幕导致自闭</h4>
+                        <p class="text-sm text-slate-400 mt-2">点击揭示真相</p>
+                    </div>
+                    <div class="card-back absolute inset-0 bg-teal-50 flex flex-col items-center justify-center p-6 backface-hidden rotate-y-180 transition-transform duration-500 opacity-0 pointer-events-none">
+                        <div class="text-teal-600 font-bold mb-2">科学事实：因果倒置</div>
+                        <p class="text-sm text-slate-700 text-center">
+                            虽然过度使用屏幕对儿童发育不利，但它不会导致自闭症。相反，自闭症儿童可能因为社交困难而更倾向于沉浸在电子设备中。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white py-8 border-t border-slate-200 mt-auto">
+        <div class="container mx-auto px-4 text-center text-slate-400 text-sm">
+            <p>© 2024 自闭症成因交互式分析报告 | 仅供信息参考，不构成医疗建议</p>
+            <p class="mt-2">所有数据基于目前的流行病学统计与遗传学研究共识。</p>
+        </div>
+    </footer>
+
+    <!-- CSS for Card Flip (Embedded for interaction logic) -->
+    <style>
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+        .card-flipped .card-front {
+            transform: rotateY(180deg);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .card-flipped .card-back {
+            transform: rotateY(0deg);
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- 1. Genetics Chart Logic ---
+        let geneticsChartInstance = null;
+        
+        const geneticsData = {
+            twins: {
+                labels: ['遗传因素 (基因)', '环境因素'],
+                data: [83, 17],
+                text: "双胞胎研究表明，同卵双胞胎如果一人患病，另一人患病的概率极高，显示了极强的遗传关联。"
+            },
+            family: {
+                labels: ['遗传因素 (基因)', '环境因素'],
+                data: [55, 45],
+                text: "广义家庭队列研究通过分析数百万人口，认为环境因素的占比可能比传统双胞胎研究显示的要高一些，但遗传仍占主导。"
+            }
+        };
+
+        function initGeneticsChart() {
+            const ctx = document.getElementById('geneticsChart').getContext('2d');
+            geneticsChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: geneticsData.twins.labels,
+                    datasets: [{
+                        data: geneticsData.twins.data,
+                        backgroundColor: ['#2DD4BF', '#94A3B8'], // Teal-400, Slate-400
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { family: "'Noto Sans SC', sans-serif" } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.raw + '%';
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%',
+                }
+            });
+        }
+
+        function updateGeneticsChart(type) {
+            const data = geneticsData[type];
+            geneticsChartInstance.data.datasets[0].data = data.data;
+            geneticsChartInstance.update();
+            
+            // Update description text
+            const descEl = document.getElementById('genetics-description');
+            descEl.innerText = data.text;
+            descEl.classList.remove('fade-in');
+            void descEl.offsetWidth; // trigger reflow
+            descEl.classList.add('fade-in');
+        }
+
+        // --- 2. Risk Factors Chart Logic ---
+        let riskChartInstance = null;
+
+        const riskData = [
+            { label: '如果同胞患有ASD', value: 10.0, category: 'parental', color: '#F43F5E' }, // Highly elevated
+            { label: '父亲年龄 > 45岁', value: 1.5, category: 'parental', color: '#FB923C' },
+            { label: '母亲年龄 > 40岁', value: 1.3, category: 'parental', color: '#FB923C' },
+            { label: '早产 (<37周)', value: 1.4, category: 'prenatal', color: '#60A5FA' },
+            { label: '低出生体重', value: 1.6, category: 'prenatal', color: '#60A5FA' },
+            { label: '孕期接触丙戊酸(药物)', value: 2.9, category: 'chemical', color: '#A855F7' },
+            { label: '孕期严重感染', value: 1.2, category: 'prenatal', color: '#60A5FA' },
+            { label: '孕期接触杀虫剂', value: 1.3, category: 'chemical', color: '#A855F7' }
+        ];
+
+        function initRiskChart() {
+            const ctx = document.getElementById('riskChart').getContext('2d');
+            // Sort initially by value
+            const sortedData = [...riskData].sort((a, b) => b.value - a.value);
+
+            riskChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedData.map(d => d.label),
+                    datasets: [{
+                        label: '相对风险比 (Relative Risk)',
+                        data: sortedData.map(d => d.value),
+                        backgroundColor: sortedData.map(d => d.color),
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Horizontal bar chart
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: { display: true, text: '相对风险倍数 (1 = 普通人群风险)' },
+                            grid: { color: '#f1f5f9' }
+                        },
+                        y: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `风险增加: ${context.raw} 倍`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function filterRiskChart(category) {
+            let filtered = riskData;
+            if (category !== 'all') {
+                filtered = riskData.filter(d => d.category === category);
+            }
+            // Sort
+            filtered.sort((a, b) => b.value - a.value);
+
+            riskChartInstance.data.labels = filtered.map(d => d.label);
+            riskChartInstance.data.datasets[0].data = filtered.map(d => d.value);
+            riskChartInstance.data.datasets[0].backgroundColor = filtered.map(d => d.color);
+            riskChartInstance.update();
+        }
+
+        // --- 3. Neural Connectivity Canvas Logic ---
+        const canvas = document.getElementById('brainCanvas');
+        const ctx = canvas.getContext('2d');
+        let nodes = [];
+        let connectionDensity = 50; // default value
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
+            initNodes();
+        }
+
+        function initNodes() {
+            nodes = [];
+            const count = 40;
+            for(let i=0; i<count; i++) {
+                nodes.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5
+                });
+            }
+        }
+
+        function drawBrain() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Update node positions
+            nodes.forEach(node => {
+                node.x += node.vx;
+                node.y += node.vy;
+                if(node.x < 0 || node.x > canvas.width) node.vx *= -1;
+                if(node.y < 0 || node.y > canvas.height) node.vy *= -1;
+                
+                // Draw Node
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, 2, 0, Math.PI * 2);
+                ctx.fillStyle = "#818cf8"; // Indigo-400
+                ctx.fill();
+            });
+
+            // Draw Connections based on Slider Threshold
+            // High slider value = smaller distance required to connect? No.
+            // High slider value = MORE connections (Larger distance allowed).
+            // Slider 1-100. Max distance 20 to 150.
+            const maxDist = 20 + (connectionDensity * 1.5); 
+            
+            ctx.strokeStyle = `rgba(99, 102, 241, ${0.1 + (connectionDensity/200)})`; // Opacity varies
+            ctx.lineWidth = 1;
+
+            for(let i=0; i<nodes.length; i++) {
+                for(let j=i+1; j<nodes.length; j++) {
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+
+                    if (dist < maxDist) {
+                        ctx.beginPath();
+                        ctx.moveTo(nodes[i].x, nodes[i].y);
+                        ctx.lineTo(nodes[j].x, nodes[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(drawBrain);
+        }
+
+        document.getElementById('synapseSlider').addEventListener('input', (e) => {
+            connectionDensity = parseInt(e.target.value);
+            const textEl = document.getElementById('synapse-text');
+            if(connectionDensity < 30) {
+                textEl.innerText = "状态：连接稀疏 (修剪过度)";
+                textEl.className = "mt-3 text-sm text-slate-400 font-medium";
+            } else if (connectionDensity > 70) {
+                textEl.innerText = "状态：连接过剩/过度活跃 (常见于ASD)";
+                textEl.className = "mt-3 text-sm text-indigo-300 font-medium";
+            } else {
+                textEl.innerText = "状态：平衡的神经连接网络";
+                textEl.className = "mt-3 text-sm text-white font-medium";
+            }
+        });
+
+        // --- 4. Myth Card Logic ---
+        function toggleCard(cardElement) {
+            cardElement.classList.toggle('card-flipped');
+        }
+
+        // --- Initialization ---
+        window.addEventListener('load', () => {
+            initGeneticsChart();
+            initRiskChart();
+            resizeCanvas();
+            drawBrain();
+        });
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+        });
+
+    </script>
+</body>
+</html>

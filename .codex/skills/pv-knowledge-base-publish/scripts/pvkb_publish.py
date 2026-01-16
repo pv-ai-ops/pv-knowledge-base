@@ -110,9 +110,23 @@ def git_status(settings: Settings) -> list[StatusEntry]:
 
 
 def _is_under_allowed_roots(path: str) -> bool:
-    if path in {"docs", "source"}:
+    if path in {
+        "docs",
+        "source",
+        "scripts",
+        "Agents.md",
+        "package.json",
+        "package-lock.json",
+        "_config.yml",
+        "_config.next.yml",
+        "content-inbox/README.md",
+    }:
         return True
-    return path.startswith(("docs/", "source/"))
+    if path.startswith(("docs/", "source/", "scripts/")):
+        return True
+    if path.startswith(".codex/skills/pv-knowledge-base-publish/"):
+        return True
+    return False
 
 
 def _find_extra_entries(entries: Iterable[StatusEntry]) -> list[StatusEntry]:
@@ -176,7 +190,24 @@ def deploy(settings: Settings) -> None:
     if settings.include_all:
         run(["git", "add", "-A"], cwd=settings.repo, dry_run=settings.dry_run)
     else:
-        run(["git", "add", "docs", "source"], cwd=settings.repo, dry_run=settings.dry_run)
+        run(
+            [
+                "git",
+                "add",
+                "docs",
+                "source",
+                "scripts",
+                "Agents.md",
+                "package.json",
+                "package-lock.json",
+                "_config.yml",
+                "_config.next.yml",
+                "content-inbox/README.md",
+                ".codex/skills/pv-knowledge-base-publish",
+            ],
+            cwd=settings.repo,
+            dry_run=settings.dry_run,
+        )
 
     diff_rc = run(
         ["git", "diff", "--cached", "--quiet"],

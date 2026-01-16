@@ -9,6 +9,7 @@
 - **markdown/**: 放置 `.md` 格式的博客文章
 - **html/**: 放置 `.html` 格式的交互式应用
 - **pdf/**: 放置需要发布成“幻灯片预览”的 `.pdf` 文件（会自动生成对应文章并支持站内搜索；如PDF无文本层，可额外提供同名 `.search.txt` 作为索引侧车）
+- **covers/**: 放置文章封面图片（与正文 assets 拆分）；文件名需与对应 Markdown/HTML/PDF 基名一致，例如 `Foo.md` → `covers/Foo.jpg`（支持：jpg/jpeg/png/webp；未提供则不展示）
 - **assets/**: 放置图片、文档等资源文件
 
 ### 发布流程
