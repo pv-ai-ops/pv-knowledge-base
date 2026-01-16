@@ -52,4 +52,5 @@
 - 保持 Markdown 文件使用 UTF-8，无需额外 BOM。
 - 避免在自动生成的文件上直接手改，如需调整请修改原始素材并重新执行发布流程。
 - 使用 `--preview`/`npm run publish:preview` 会在后台启动预览，完成检查后记得运行 `npm run preview:stop`（脚本会通过端口查杀 Hexo 实例）；直接运行 `npm run preview` 时依旧使用 `Ctrl+C` 结束。
+- 从 Windows 复制/下载的文件可能会带 `*:Zone.Identifier` 侧车文件；发布脚本会自动清理，无需手动处理。
 - 若脚本失败或遇到特殊场景（例如需保留未压缩的资源目录结构），请记录原因并与团队沟通后再处理。

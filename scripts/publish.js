@@ -116,6 +116,48 @@ function ensureDir(dirPath) {
   }
 }
 
+function cleanupZoneIdentifierFiles(rootDir) {
+  if (!fs.existsSync(rootDir)) return 0;
+
+  let removed = 0;
+
+  const walk = dir => {
+    let entries;
+    try {
+      entries = fs.readdirSync(dir, { withFileTypes: true });
+    } catch (error) {
+      console.log(`  ⚠️ 读取目录失败，跳过清理: ${dir} (${error.message})`);
+      return;
+    }
+
+    entries.forEach(entry => {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        walk(fullPath);
+        return;
+      }
+
+      if (!entry.isFile()) return;
+      if (!entry.name.endsWith(':Zone.Identifier')) return;
+
+      try {
+        fs.unlinkSync(fullPath);
+        removed += 1;
+      } catch (error) {
+        console.log(`  ⚠️ 无法删除 Zone.Identifier: ${fullPath} (${error.message})`);
+      }
+    });
+  };
+
+  walk(rootDir);
+
+  if (removed > 0) {
+    console.log(`  🧹 清理 Zone.Identifier 侧车文件: ${removed} 个`);
+  }
+
+  return removed;
+}
+
 function pickPreferredFileByExtension(files) {
   if (!files || files.length === 0) return null;
 
@@ -760,6 +802,8 @@ async function main(argv = process.argv.slice(2)) {
   ensureDir(path.join(inboxDir, 'assets'));
   ensureDir(path.join(inboxDir, 'pdf'));
 
+  const cleanedZoneFiles = cleanupZoneIdentifierFiles(inboxDir);
+
   ensureDir(path.join(sourceDir, '_posts'));
   ensureDir(path.join(sourceDir, 'assets'));
   ensureDir(path.join(sourceDir, 'assets', 'covers'));
@@ -774,7 +818,7 @@ async function main(argv = process.argv.slice(2)) {
 
   const needsBuild = processedFiles > 0 || shouldPreview;
   if (!needsBuild) {
-    console.log('📭 inbox为空，无需处理');
+    console.log(cleanedZoneFiles > 0 ? '📭 inbox已清理完毕，无需处理' : '📭 inbox为空，无需处理');
     return;
   }
 
