@@ -3,10 +3,10 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: 药物警戒知识库 | PV Knowledge Base
-subtitle: 'AI驱动的药物安全监测技术分享'
-description: '专注于药物警戒、AI技术在医药安全领域的应用与创新'
-keywords: 药物警戒, Pharmacovigilance, AI, 医药安全, Drug Safety, Machine Learning
+title: AI知识库 | AI Knowledge Base
+subtitle: 'AI驱动的技术与知识分享'
+description: '专注于 AI 技术、智能体与工程实践的知识分享'
+keywords: AI, Artificial Intelligence, LLM, Large Language Model, Agent, 智能体, Machine Learning
 author: pv-ai-ops
 language: zh-CN
 timezone: ''

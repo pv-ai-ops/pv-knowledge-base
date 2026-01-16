@@ -519,7 +519,7 @@ function processMarkdown(inboxDir, sourceDir) {
       finalContent = `---
 title: ${originalTitle}
 date: ${dateStr}
-${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [药物警戒, AI]
+${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [AI]
 categories: [技术分析]
 ---
 
@@ -570,7 +570,7 @@ function processHtml(inboxDir, sourceDir) {
     const markdownContent = `---
 title: ${htmlFileName}
 date: ${dateStr}
-${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [药物警戒, AI, 交互式工具]
+${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [AI, 交互式工具]
 categories: [技术分析]
 ---
 
@@ -669,7 +669,7 @@ async function processPdf(inboxDir, sourceDir) {
     const markdownContent = `---
 title: ${displayTitle || originalTitle}
 date: ${dateStr}
-${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [药物警戒, AI, PDF]
+${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [AI, PDF]
 categories: [资料库]
 ---
 
