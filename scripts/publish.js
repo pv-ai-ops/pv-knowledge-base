@@ -3,6 +3,8 @@ const path = require('path');
 const crypto = require('crypto');
 const { execSync, spawn } = require('child_process');
 
+const RESERVED_INBOX_DIRS = new Set(['markdown', 'html', 'covers', 'assets', 'pdf']);
+
 // 创建URL安全的文件名处理函数
 function createSafeFileName(fileName) {
   let safeName = fileName;
@@ -214,6 +216,50 @@ function createSafeCoverFileName(baseName, ext, targetDir) {
   return candidate;
 }
 
+function createUniqueMarkdownFileName(baseName, targetDir) {
+  let safeBase = createSafeFileName(baseName);
+  if (!safeBase) {
+    safeBase = crypto.createHash('sha1').update(baseName).digest('hex').slice(0, 16);
+  }
+
+  const maxBaseLength = 120;
+  if (safeBase.length > maxBaseLength) {
+    const hash = crypto.createHash('sha1').update(baseName).digest('hex').slice(0, 10);
+    safeBase = safeBase.slice(0, maxBaseLength) + '-' + hash;
+  }
+
+  let candidate = `${safeBase}.md`;
+  let counter = 1;
+  while (fs.existsSync(path.join(targetDir, candidate))) {
+    candidate = `${safeBase}-${counter}.md`;
+    counter += 1;
+  }
+
+  return candidate;
+}
+
+function copyCoverFileToSource(coverSourcePath, sourceDir, baseName) {
+  const coverExt = path.extname(coverSourcePath);
+  const coversTargetDir = path.join(sourceDir, 'assets', 'covers');
+  ensureDir(coversTargetDir);
+
+  const coverTargetFileName = createSafeCoverFileName(baseName, coverExt, coversTargetDir);
+  const coverTargetPath = path.join(coversTargetDir, coverTargetFileName);
+  fs.copyFileSync(coverSourcePath, coverTargetPath);
+
+  return {
+    coverUrl: `/assets/covers/${coverTargetFileName}`,
+    targetFileName: coverTargetFileName,
+    targetPath: coverTargetPath
+  };
+}
+
+function removeFileIfExists(filePath) {
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+  }
+}
+
 function processCover(inboxDir, sourceDir, baseName) {
   const coversDir = path.join(inboxDir, 'covers');
   if (!fs.existsSync(coversDir)) return null;
@@ -223,23 +269,14 @@ function processCover(inboxDir, sourceDir, baseName) {
   if (!coverFile) return null;
 
   const coverSourcePath = path.join(coversDir, coverFile);
-  const coverExt = path.extname(coverFile);
-
-  const coversTargetDir = path.join(sourceDir, 'assets', 'covers');
-  ensureDir(coversTargetDir);
-
-  const coverTargetFileName = createSafeCoverFileName(baseName, coverExt, coversTargetDir);
-  const coverTargetPath = path.join(coversTargetDir, coverTargetFileName);
-  fs.copyFileSync(coverSourcePath, coverTargetPath);
+  const { coverUrl, targetFileName } = copyCoverFileToSource(coverSourcePath, sourceDir, baseName);
   fs.unlinkSync(coverSourcePath);
 
   const zoneIdentifierPath = path.join(coversDir, `${coverFile}:Zone.Identifier`);
-  if (fs.existsSync(zoneIdentifierPath)) {
-    fs.unlinkSync(zoneIdentifierPath);
-  }
+  removeFileIfExists(zoneIdentifierPath);
 
-  console.log(`  🖼️ 处理封面: covers/${coverFile} → covers/${coverTargetFileName}`);
-  return `/assets/covers/${coverTargetFileName}`;
+  console.log(`  🖼️ 处理封面: covers/${coverFile} → covers/${targetFileName}`);
+  return coverUrl;
 }
 
 function ensurePhotosFrontMatter(markdown, photoUrl) {
@@ -412,46 +449,52 @@ async function extractPdfTextForSearch(pdfPath, { maxChars = 200000 } = {}) {
   try {
     console.warn = (...args) => {
       const message = args.map(String).join(' ');
-      if (message.includes('Cannot polyfill `DOMMatrix`') || message.includes('Cannot polyfill `Path2D`')) {
+      if (
+        message.includes('Cannot polyfill `DOMMatrix`') ||
+        message.includes('Cannot polyfill `Path2D`') ||
+        message.includes("Cannot find module 'canvas'")
+      ) {
         return;
       }
       originalWarn(...args);
     };
 
-    // Use legacy build for Node.js compatibility
-    pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
-  } catch (error) {
-    console.log('  ⚠️ 无法加载 pdfjs-dist（将跳过PDF文本抽取，站内搜索不包含PDF全文）');
-    return '';
+    try {
+      // Use legacy build for Node.js compatibility
+      pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
+    } catch (error) {
+      console.log('  ⚠️ 无法加载 pdfjs-dist（将跳过PDF文本抽取，站内搜索不包含PDF全文）');
+      return '';
+    }
+
+    let doc;
+    try {
+      const data = new Uint8Array(fs.readFileSync(pdfPath));
+      doc = await pdfjsLib.getDocument({ data, disableWorker: true }).promise;
+    } catch (error) {
+      console.log(`  ⚠️ PDF解析失败（跳过全文索引）: ${error.message}`);
+      return '';
+    }
+
+    const parts = [];
+    let totalLength = 0;
+
+    for (let pageNumber = 1; pageNumber <= doc.numPages; pageNumber += 1) {
+      const page = await doc.getPage(pageNumber);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map(item => item.str).join(' ').replace(/\u0000/g, '');
+      if (!pageText) continue;
+
+      parts.push(pageText);
+      totalLength += pageText.length + 1;
+      if (totalLength >= maxChars) break;
+    }
+
+    const text = parts.join(' ').replace(/\s+/g, ' ').trim();
+    return text.length > maxChars ? text.slice(0, maxChars) : text;
   } finally {
     console.warn = originalWarn;
   }
-
-  let doc;
-  try {
-    const data = new Uint8Array(fs.readFileSync(pdfPath));
-    doc = await pdfjsLib.getDocument({ data, disableWorker: true }).promise;
-  } catch (error) {
-    console.log(`  ⚠️ PDF解析失败（跳过全文索引）: ${error.message}`);
-    return '';
-  }
-
-  const parts = [];
-  let totalLength = 0;
-
-  for (let pageNumber = 1; pageNumber <= doc.numPages; pageNumber += 1) {
-    const page = await doc.getPage(pageNumber);
-    const textContent = await page.getTextContent();
-    const pageText = textContent.items.map(item => item.str).join(' ').replace(/\u0000/g, '');
-    if (!pageText) continue;
-
-    parts.push(pageText);
-    totalLength += pageText.length + 1;
-    if (totalLength >= maxChars) break;
-  }
-
-  const text = parts.join(' ').replace(/\s+/g, ' ').trim();
-  return text.length > maxChars ? text.slice(0, maxChars) : text;
 }
 
 function loadPdfSidecarText(pdfDir, pdfFile) {
@@ -471,6 +514,285 @@ function loadPdfSidecarText(pdfDir, pdfFile) {
     }
   }
   return null;
+}
+
+function getCurrentDateString() {
+  return new Date().toISOString().slice(0, 19).replace('T', ' ');
+}
+
+function createPdfViewerSrc(pdfAssetFileName, title) {
+  return `/pv-knowledge-base/pdf-slides.html?file=${encodeURIComponent(
+    `assets/${pdfAssetFileName}`
+  )}&title=${encodeURIComponent(title)}`;
+}
+
+function createPdfSearchIndexBlock(extractedText) {
+  return extractedText
+    ? `\n<div class="pdf-search-index" style="display:none">\n${escapeHtml(extractedText)}\n</div>\n`
+    : '\n<!-- PDF全文索引未生成（可能缺少pdfjs-dist或解析失败） -->\n';
+}
+
+function createStandalonePdfMarkdown({ title, dateStr, coverPhotoUrl, viewerSrc, pdfAssetFileName, extractedText }) {
+  return `---
+title: ${title}
+date: ${dateStr}
+${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [AI, PDF]
+categories: [资料库]
+---
+
+## 📄 PDF 文档
+
+- 在线预览（幻灯片模式）：<a href="${viewerSrc}" target="_blank" rel="noopener">点击打开</a>
+- 下载：[/assets/${pdfAssetFileName}](/assets/${pdfAssetFileName})
+
+---
+
+## 🖥️ 幻灯片预览（支持全屏）
+
+<iframe src="${viewerSrc}" frameborder="0" allowfullscreen style="width: 100%; height: 82vh; min-height: 520px; max-height: 1200px; border: 1px solid #e1e5e9; border-radius: 8px; margin: 20px 0;"></iframe>
+${createPdfSearchIndexBlock(extractedText)}`;
+}
+
+function createPdfAttachmentSection({ viewerSrc, pdfAssetFileName, extractedText }) {
+  return `## 📎 附件资料
+
+- 在线预览（幻灯片模式）：<a href="${viewerSrc}" target="_blank" rel="noopener">点击打开</a>
+- 下载：[/assets/${pdfAssetFileName}](/assets/${pdfAssetFileName})
+
+## 🖥️ 幻灯片预览（支持全屏）
+
+<iframe src="${viewerSrc}" frameborder="0" allowfullscreen style="width: 100%; height: 82vh; min-height: 520px; max-height: 1200px; border: 1px solid #e1e5e9; border-radius: 8px; margin: 20px 0;"></iframe>
+${createPdfSearchIndexBlock(extractedText).trimEnd()}`;
+}
+
+function appendMarkdownSection(markdown, section) {
+  return `${markdown.replace(/\s+$/, '')}\n\n---\n\n${section.trim()}\n`;
+}
+
+async function importPdfAsset({ sourcePdfPath, sourcePdfFileName, sourceDir, displayTitle, lookupDir, hasPdfJs }) {
+  const safePdfFileName = createSafeAssetFileName(sourcePdfFileName, '', path.join(sourceDir, 'assets'));
+  const targetPdfPath = path.join(sourceDir, 'assets', safePdfFileName);
+  fs.copyFileSync(sourcePdfPath, targetPdfPath);
+
+  let extractedText = '';
+  let sidecarPath = null;
+  if (hasPdfJs) {
+    try {
+      extractedText = await extractPdfTextForSearch(targetPdfPath, { maxChars: 200000 });
+    } catch (error) {
+      console.log(`  ⚠️ PDF全文抽取失败（跳过索引）: ${error.message}`);
+    }
+  }
+
+  if (!extractedText) {
+    const sidecar = loadPdfSidecarText(lookupDir, sourcePdfFileName);
+    if (sidecar && sidecar.text) {
+      extractedText = sidecar.text;
+      sidecarPath = sidecar.path;
+    }
+  }
+
+  return {
+    safePdfFileName,
+    targetPdfPath,
+    viewerSrc: createPdfViewerSrc(safePdfFileName, displayTitle),
+    extractedText,
+    sidecarPath
+  };
+}
+
+function inspectBundleDirectory(bundleDir) {
+  const entries = fs.readdirSync(bundleDir, { withFileTypes: true });
+  const nestedDirs = entries.filter(entry => entry.isDirectory()).map(entry => entry.name);
+  const files = entries
+    .filter(entry => entry.isFile())
+    .map(entry => entry.name)
+    .filter(file => !file.endsWith(':Zone.Identifier'));
+
+  const pdfFiles = files.filter(file => path.extname(file).toLowerCase() === '.pdf');
+  const officeFiles = files.filter(file => {
+    const ext = path.extname(file).toLowerCase();
+    return ext === '.ppt' || ext === '.pptx';
+  });
+  const imageFiles = files.filter(isSupportedImage);
+
+  const pdfSidecarCandidates = new Set();
+  if (pdfFiles.length === 1) {
+    const pdfBaseName = path.basename(pdfFiles[0], path.extname(pdfFiles[0]));
+    [`${pdfBaseName}.search.txt`, `${pdfBaseName}.txt`, `${pdfBaseName}.md`].forEach(candidate => {
+      pdfSidecarCandidates.add(candidate);
+    });
+  }
+
+  const markdownFiles = files.filter(file => path.extname(file).toLowerCase() === '.md');
+  const primaryMarkdownFiles = markdownFiles.filter(file => !pdfSidecarCandidates.has(file));
+  const sidecarFiles = files.filter(file => pdfSidecarCandidates.has(file));
+  const allowedFiles = new Set([...primaryMarkdownFiles, ...pdfFiles, ...imageFiles, ...sidecarFiles, ...officeFiles]);
+  const unsupportedFiles = files.filter(file => !allowedFiles.has(file));
+
+  return {
+    nestedDirs,
+    files,
+    pdfFiles,
+    officeFiles,
+    imageFiles,
+    primaryMarkdownFiles,
+    sidecarFiles,
+    unsupportedFiles
+  };
+}
+
+function validateBundleInspection(inspection) {
+  const errors = [];
+
+  if (inspection.nestedDirs.length > 0) {
+    errors.push(`包含未支持的子目录: ${inspection.nestedDirs.join(', ')}`);
+  }
+
+  if (inspection.officeFiles.length > 0) {
+    errors.push(`包含 PowerPoint 源文件，请先转换为 PDF: ${inspection.officeFiles.join(', ')}`);
+  }
+
+  if (inspection.primaryMarkdownFiles.length !== 1) {
+    errors.push(`需要且只能有 1 个主 Markdown 文件，当前为 ${inspection.primaryMarkdownFiles.length} 个`);
+  }
+
+  if (inspection.pdfFiles.length > 1) {
+    errors.push(`最多只能有 1 个 PDF 文件，当前为 ${inspection.pdfFiles.length} 个`);
+  }
+
+  if (inspection.imageFiles.length > 1) {
+    errors.push(`最多只能有 1 张封面图，当前为 ${inspection.imageFiles.length} 张`);
+  }
+
+  if (inspection.unsupportedFiles.length > 0) {
+    errors.push(`包含未支持的文件: ${inspection.unsupportedFiles.join(', ')}`);
+  }
+
+  return errors;
+}
+
+function cleanupCreatedPaths(paths) {
+  paths
+    .slice()
+    .reverse()
+    .forEach(createdPath => {
+      try {
+        if (fs.existsSync(createdPath)) {
+          fs.rmSync(createdPath, { recursive: true, force: true });
+        }
+      } catch (error) {
+        console.log(`  ⚠️ 回滚失败，需手动检查: ${createdPath} (${error.message})`);
+      }
+    });
+}
+
+async function processBundleDirectories(inboxDir, sourceDir) {
+  let processedFiles = 0;
+  const bundleEntries = fs
+    .readdirSync(inboxDir, { withFileTypes: true })
+    .filter(entry => entry.isDirectory())
+    .filter(entry => !RESERVED_INBOX_DIRS.has(entry.name))
+    .sort((a, b) => a.name.localeCompare(b.name, 'zh-Hans-CN'));
+
+  if (bundleEntries.length === 0) {
+    return processedFiles;
+  }
+
+  const bundleDirs = bundleEntries.map(entry => path.join(inboxDir, entry.name));
+  const hasBundlePdf = bundleDirs.some(bundleDir => inspectBundleDirectory(bundleDir).pdfFiles.length > 0);
+  const hasPdfJs = hasBundlePdf ? ensurePdfJsAssets(sourceDir) : false;
+
+  for (const bundleDir of bundleDirs) {
+    const bundleName = path.basename(bundleDir);
+    const inspection = inspectBundleDirectory(bundleDir);
+    const validationErrors = validateBundleInspection(inspection);
+
+    if (validationErrors.length > 0) {
+      console.log(`⚠️ 跳过目录式文章: ${bundleName}`);
+      validationErrors.forEach(error => {
+        console.log(`  - ${error}`);
+      });
+      continue;
+    }
+
+    const markdownFile = inspection.primaryMarkdownFiles[0];
+    const pdfFile = inspection.pdfFiles[0] || null;
+    const coverFile = inspection.imageFiles[0] || null;
+    const articleTitle = path.basename(markdownFile, '.md');
+    const safeMarkdownFileName = createUniqueMarkdownFileName(articleTitle, path.join(sourceDir, '_posts'));
+    const targetMarkdownPath = path.join(sourceDir, '_posts', safeMarkdownFileName);
+    const createdPaths = [];
+
+    try {
+      let content = fs.readFileSync(path.join(bundleDir, markdownFile), 'utf8');
+      content = sanitizeMarkdownForPublish(content);
+
+      let coverPhotoUrl = null;
+      if (coverFile) {
+        const coverInfo = copyCoverFileToSource(path.join(bundleDir, coverFile), sourceDir, articleTitle);
+        coverPhotoUrl = coverInfo.coverUrl;
+        createdPaths.push(coverInfo.targetPath);
+        console.log(`  🖼️ 目录封面: ${bundleName}/${coverFile} → ${coverInfo.targetFileName}`);
+      }
+
+      let pdfSection = '';
+      if (pdfFile) {
+        const pdfInfo = await importPdfAsset({
+          sourcePdfPath: path.join(bundleDir, pdfFile),
+          sourcePdfFileName: pdfFile,
+          sourceDir,
+          displayTitle: articleTitle,
+          lookupDir: bundleDir,
+          hasPdfJs
+        });
+
+        createdPaths.push(pdfInfo.targetPdfPath);
+        if (pdfInfo.sidecarPath) {
+          console.log(`  🔎 使用侧车索引文件: ${path.basename(pdfInfo.sidecarPath)}`);
+        }
+
+        pdfSection = createPdfAttachmentSection({
+          viewerSrc: pdfInfo.viewerSrc,
+          pdfAssetFileName: pdfInfo.safePdfFileName,
+          extractedText: pdfInfo.extractedText
+        });
+      }
+
+      let finalContent = content;
+      if (!finalContent.startsWith('---')) {
+        finalContent = `---
+title: ${articleTitle}
+date: ${getCurrentDateString()}
+${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [AI]
+categories: [技术分析]
+---
+
+${content}`;
+      }
+
+      if (coverPhotoUrl) {
+        finalContent = ensureCoverFrontMatter(finalContent, coverPhotoUrl);
+      }
+
+      if (pdfSection) {
+        finalContent = appendMarkdownSection(finalContent, pdfSection);
+      }
+
+      fs.writeFileSync(targetMarkdownPath, finalContent);
+      createdPaths.push(targetMarkdownPath);
+
+      fs.rmSync(bundleDir, { recursive: true, force: true });
+      console.log(`✅ 处理目录式文章: ${bundleName} -> ${safeMarkdownFileName}${pdfFile ? ' (+ PDF附件)' : ''}`);
+      processedFiles += 1;
+    } catch (error) {
+      cleanupCreatedPaths(createdPaths);
+      console.log(`⚠️ 处理目录式文章失败，已跳过: ${bundleName}`);
+      console.log(`  - ${error.message}`);
+    }
+  }
+
+  return processedFiles;
 }
 
 function processMarkdown(inboxDir, sourceDir) {
@@ -555,8 +877,7 @@ function processMarkdown(inboxDir, sourceDir) {
     // 检查是否已有Front Matter
     let finalContent = content;
     if (!content.startsWith('---')) {
-      const now = new Date();
-      const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
+      const dateStr = getCurrentDateString();
 
       finalContent = `---
 title: ${originalTitle}
@@ -604,8 +925,7 @@ function processHtml(inboxDir, sourceDir) {
     fs.copyFileSync(sourcePath, targetHtmlPath);
 
     // 2. 创建对应的Markdown文章 (用于在文章列表中显示)
-    const now = new Date();
-    const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
+    const dateStr = getCurrentDateString();
 
     const coverPhotoUrl = processCover(inboxDir, sourceDir, htmlFileName);
 
@@ -672,71 +992,40 @@ async function processPdf(inboxDir, sourceDir) {
     const sourcePath = path.join(pdfDir, file);
     const originalTitle = path.basename(file, '.pdf');
     const displayTitle = originalTitle.replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
-
-    const safePdfFileName = createSafeAssetFileName(file, '', path.join(sourceDir, 'assets'));
-    const targetPdfPath = path.join(sourceDir, 'assets', safePdfFileName);
-    fs.copyFileSync(sourcePath, targetPdfPath);
-
-    const now = new Date();
-    const dateStr = now.toISOString().slice(0, 19).replace('T', ' ');
+    const dateStr = getCurrentDateString();
     const coverPhotoUrl = processCover(inboxDir, sourceDir, originalTitle);
+    const pdfInfo = await importPdfAsset({
+      sourcePdfPath: sourcePath,
+      sourcePdfFileName: file,
+      sourceDir,
+      displayTitle: displayTitle || originalTitle,
+      lookupDir: pdfDir,
+      hasPdfJs
+    });
 
-    const viewerSrc = `/pv-knowledge-base/pdf-slides.html?file=${encodeURIComponent(
-      `assets/${safePdfFileName}`
-    )}&title=${encodeURIComponent(displayTitle || originalTitle)}`;
-
-    let extractedText = '';
-    let sidecarPath = null;
-    if (hasPdfJs) {
-      try {
-        extractedText = await extractPdfTextForSearch(targetPdfPath, { maxChars: 200000 });
-      } catch (error) {
-        console.log(`  ⚠️ PDF全文抽取失败（跳过索引）: ${error.message}`);
-      }
+    if (pdfInfo.sidecarPath) {
+      console.log(`  🔎 使用侧车索引文件: ${path.basename(pdfInfo.sidecarPath)}`);
     }
 
-    if (!extractedText) {
-      const sidecar = loadPdfSidecarText(pdfDir, file);
-      if (sidecar && sidecar.text) {
-        extractedText = sidecar.text;
-        sidecarPath = sidecar.path;
-        console.log(`  🔎 使用侧车索引文件: ${path.basename(sidecarPath)}`);
-      }
-    }
-
-    const searchIndexBlock = extractedText
-      ? `\n<div class="pdf-search-index" style="display:none">\n${escapeHtml(extractedText)}\n</div>\n`
-      : '\n<!-- PDF全文索引未生成（可能缺少pdfjs-dist或解析失败） -->\n';
-
-    const markdownContent = `---
-title: ${displayTitle || originalTitle}
-date: ${dateStr}
-${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [AI, PDF]
-categories: [资料库]
----
-
-## 📄 PDF 文档
-
-- 在线预览（幻灯片模式）：<a href="${viewerSrc}" target="_blank" rel="noopener">点击打开</a>
-- 下载：[/assets/${safePdfFileName}](/assets/${safePdfFileName})
-
----
-
-## 🖥️ 幻灯片预览（支持全屏）
-
-<iframe src="${viewerSrc}" frameborder="0" allowfullscreen style="width: 100%; height: 82vh; min-height: 520px; max-height: 1200px; border: 1px solid #e1e5e9; border-radius: 8px; margin: 20px 0;"></iframe>
-${searchIndexBlock}`;
+    const markdownContent = createStandalonePdfMarkdown({
+      title: displayTitle || originalTitle,
+      dateStr,
+      coverPhotoUrl,
+      viewerSrc: pdfInfo.viewerSrc,
+      pdfAssetFileName: pdfInfo.safePdfFileName,
+      extractedText: pdfInfo.extractedText
+    });
 
     const safeMarkdownFileName = createSafeFileName(displayTitle || originalTitle) + '.md';
     const markdownPath = path.join(sourceDir, '_posts', safeMarkdownFileName);
     fs.writeFileSync(markdownPath, markdownContent);
 
     fs.unlinkSync(sourcePath);
-    if (sidecarPath && fs.existsSync(sidecarPath)) {
-      fs.unlinkSync(sidecarPath);
+    if (pdfInfo.sidecarPath && fs.existsSync(pdfInfo.sidecarPath)) {
+      fs.unlinkSync(pdfInfo.sidecarPath);
     }
 
-    console.log(`✅ 处理PDF: ${file} -> assets/${safePdfFileName} (创建文章 + 幻灯片预览${extractedText ? ' + 全文索引' : ''})`);
+    console.log(`✅ 处理PDF: ${file} -> assets/${pdfInfo.safePdfFileName} (创建文章 + 幻灯片预览${pdfInfo.extractedText ? ' + 全文索引' : ''})`);
     processedFiles += 1;
   }
 
@@ -809,6 +1098,7 @@ async function main(argv = process.argv.slice(2)) {
   ensureDir(path.join(sourceDir, 'assets', 'covers'));
 
   let processedFiles = 0;
+  processedFiles += await processBundleDirectories(inboxDir, sourceDir);
   processedFiles += processMarkdown(inboxDir, sourceDir);
   processedFiles += processHtml(inboxDir, sourceDir);
   processedFiles += await processPdf(inboxDir, sourceDir);
