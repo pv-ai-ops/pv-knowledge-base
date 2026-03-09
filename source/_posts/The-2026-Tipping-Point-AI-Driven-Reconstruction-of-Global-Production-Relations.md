@@ -1,12 +1,23 @@
 ---
 title: The 2026 Tipping Point AI-Driven Reconstruction of Global Production Relations
 date: 2026-03-08 11:50:10
+photos: ["/assets/covers/The-2026-Tipping-Point-AI-Driven-Reconstruction-of-Global-Production-Relations.png"]
 cover: "/assets/covers/The-2026-Tipping-Point-AI-Driven-Reconstruction-of-Global-Production-Relations.png"
 tags: [AI]
 categories: [技术分析]
 ---
+## 📎 附件资料
 
-# The 2026 Tipping Point: AI-Driven Reconstruction of Global Production Relations
+- 在线预览（幻灯片模式）：<a href="/pv-knowledge-base/pdf-slides.html?file=assets%2F2026_ai_paradigm_shift.pdf&title=The%202026%20Tipping%20Point%20AI-Driven%20Reconstruction%20of%20Global%20Production%20Relations" target="_blank" rel="noopener">点击打开</a>
+- 下载：[/assets/2026_ai_paradigm_shift.pdf](/assets/2026_ai_paradigm_shift.pdf)
+
+## 🖥️ 幻灯片预览（支持全屏）
+
+<iframe src="/pv-knowledge-base/pdf-slides.html?file=assets%2F2026_ai_paradigm_shift.pdf&title=The%202026%20Tipping%20Point%20AI-Driven%20Reconstruction%20of%20Global%20Production%20Relations" frameborder="0" allowfullscreen style="width: 100%; height: 82vh; min-height: 520px; max-height: 1200px; border: 1px solid #e1e5e9; border-radius: 8px; margin: 20px 0;"></iframe>
+
+<!-- PDF全文索引未生成（可能缺少pdfjs-dist或解析失败） -->
+
+---
 
 ## 1. The Macro Perspective: 2026 as the Definitive Strategic Inflection Point
 
@@ -86,16 +97,3 @@ To remain in the **Top 15%**, decision-makers must execute a three-step "Surviva
 3. **Join the Vanguard:** If you cannot beat the efficiency curve, you must join it. Resistance is not a strategy; it is a path to the bottom 60%.
 
 **The Final Verdict:** The coming 18 months will define the winners and losers of the next decade. Success is no longer found in defending what you have built, but in your willingness to destroy your current success to build future relevance. The era of the "both/and" is over; the era of radical efficiency has begun.
-
----
-
-## 📎 附件资料
-
-- 在线预览（幻灯片模式）：<a href="/pv-knowledge-base/pdf-slides.html?file=assets%2F2026_ai_paradigm_shift.pdf&title=The%202026%20Tipping%20Point%20AI-Driven%20Reconstruction%20of%20Global%20Production%20Relations" target="_blank" rel="noopener">点击打开</a>
-- 下载：[/assets/2026_ai_paradigm_shift.pdf](/assets/2026_ai_paradigm_shift.pdf)
-
-## 🖥️ 幻灯片预览（支持全屏）
-
-<iframe src="/pv-knowledge-base/pdf-slides.html?file=assets%2F2026_ai_paradigm_shift.pdf&title=The%202026%20Tipping%20Point%20AI-Driven%20Reconstruction%20of%20Global%20Production%20Relations" frameborder="0" allowfullscreen style="width: 100%; height: 82vh; min-height: 520px; max-height: 1200px; border: 1px solid #e1e5e9; border-radius: 8px; margin: 20px 0;"></iframe>
-
-<!-- PDF全文索引未生成（可能缺少pdfjs-dist或解析失败） -->

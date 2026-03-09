@@ -1,12 +1,23 @@
 ---
 title: The Coming AI Flood Tian Yuandong on Memory, Moats, and Why the Logic of the World is Shifting
 date: 2026-03-08 11:50:10
+photos: ["/assets/covers/The-Coming-AI-Flood-Tian-Yuandong-on-Memory-Moats-and-Why-the-Logic-of-the-World-is-Shifting.png"]
 cover: "/assets/covers/The-Coming-AI-Flood-Tian-Yuandong-on-Memory-Moats-and-Why-the-Logic-of-the-World-is-Shifting.png"
 tags: [AI]
 categories: [技术分析]
 ---
+## 📎 附件资料
 
-# The Coming AI Flood: Tian Yuandong on Memory, Moats, and Why the Logic of the World is Shifting
+- 在线预览（幻灯片模式）：<a href="/pv-knowledge-base/pdf-slides.html?file=assets%2Ffull_stack_ai_reconstruction.pdf&title=The%20Coming%20AI%20Flood%20Tian%20Yuandong%20on%20Memory%2C%20Moats%2C%20and%20Why%20the%20Logic%20of%20the%20World%20is%20Shifting" target="_blank" rel="noopener">点击打开</a>
+- 下载：[/assets/full_stack_ai_reconstruction.pdf](/assets/full_stack_ai_reconstruction.pdf)
+
+## 🖥️ 幻灯片预览（支持全屏）
+
+<iframe src="/pv-knowledge-base/pdf-slides.html?file=assets%2Ffull_stack_ai_reconstruction.pdf&title=The%20Coming%20AI%20Flood%20Tian%20Yuandong%20on%20Memory%2C%20Moats%2C%20and%20Why%20the%20Logic%20of%20the%20World%20is%20Shifting" frameborder="0" allowfullscreen style="width: 100%; height: 82vh; min-height: 520px; max-height: 1200px; border: 1px solid #e1e5e9; border-radius: 8px; margin: 20px 0;"></iframe>
+
+<!-- PDF全文索引未生成（可能缺少pdfjs-dist或解析失败） -->
+
+---
 
 The pace of artificial intelligence development has reached a velocity that threatens to outstrip human physiological limits. In a candid dialogue with *Silicon Valley Vector*, Tian Yuandong—former Research Director at Meta and a pioneer in large-scale model optimization—suggests we are standing in the deceptive calm before a cataclysmic surge. While industry observers fixate on the release cycles of new models, they are often blind to a more profound structural transformation: the "logic" of the world is being fundamentally rewritten. The impending displacement we face is not merely a failure of individual competence, but a total obsolescence of the industry’s underlying axioms.
 
@@ -57,16 +68,3 @@ The industry currently suffers from a "path dependency." Large labs continue to 
 As we automate the friction out of our lives, we face a final, existential question:
 
 *When the "transactional" parts of your life are fully automated by agents, what will you do with the "experience" that remains?*
-
----
-
-## 📎 附件资料
-
-- 在线预览（幻灯片模式）：<a href="/pv-knowledge-base/pdf-slides.html?file=assets%2Ffull_stack_ai_reconstruction.pdf&title=The%20Coming%20AI%20Flood%20Tian%20Yuandong%20on%20Memory%2C%20Moats%2C%20and%20Why%20the%20Logic%20of%20the%20World%20is%20Shifting" target="_blank" rel="noopener">点击打开</a>
-- 下载：[/assets/full_stack_ai_reconstruction.pdf](/assets/full_stack_ai_reconstruction.pdf)
-
-## 🖥️ 幻灯片预览（支持全屏）
-
-<iframe src="/pv-knowledge-base/pdf-slides.html?file=assets%2Ffull_stack_ai_reconstruction.pdf&title=The%20Coming%20AI%20Flood%20Tian%20Yuandong%20on%20Memory%2C%20Moats%2C%20and%20Why%20the%20Logic%20of%20the%20World%20is%20Shifting" frameborder="0" allowfullscreen style="width: 100%; height: 82vh; min-height: 520px; max-height: 1200px; border: 1px solid #e1e5e9; border-radius: 8px; margin: 20px 0;"></iframe>
-
-<!-- PDF全文索引未生成（可能缺少pdfjs-dist或解析失败） -->

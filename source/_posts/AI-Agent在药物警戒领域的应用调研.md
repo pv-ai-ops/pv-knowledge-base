@@ -4,9 +4,6 @@ date: 2025-09-18 01:54:29
 tags: [药物警戒, AI]
 categories: [技术分析]
 ---
-
-# AI Agent在药物警戒领域的应用调研
-
 ## AI Agent在药物警戒中的主要应用场景
 
 药物警戒（Pharmacovigilance，PV）涉及对药品不良事件进行监测和处理，以保障用药安全。随着数据量激增和信息来源日益多样，传统人工方法难以及时、高效地应对。人工智能代理（AI Agent）通过自动化和智能分析正在帮助提升药物警戒的效率和准确性[researchgate.net](https://www.researchgate.net/publication/394123083_Artificial_intelligence_in_pharmacovigilance_a_narrative_review_and_practical_experience_with_an_expert-defined_Bayesian_network_tool#:~:text=Results AI has greatl y,detection%2C surveillance%2C and ADR reporting)[ema.europa.eu](https://www.ema.europa.eu/en/news/reflection-paper-use-artificial-intelligence-lifecycle-medicines#:~:text=At the marketing,report management and signal detection)。其主要应用场景包括：

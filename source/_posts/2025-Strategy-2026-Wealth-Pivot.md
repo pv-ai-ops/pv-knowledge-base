@@ -1,6 +1,7 @@
 ---
 title: 2025 Strategy 2026 Wealth Pivot
 date: 2026-01-16 01:25:10
+photos: ["/assets/covers/2025_Strategy_2026_Wealth_Pivot.png"]
 cover: "/assets/covers/2025_Strategy_2026_Wealth_Pivot.png"
 tags: [药物警戒, AI, PDF]
 categories: [资料库]

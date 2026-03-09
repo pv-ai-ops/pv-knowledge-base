@@ -1,6 +1,7 @@
 ---
 title: Global AI Frontlines
 date: 2026-01-16 01:25:10
+photos: ["/assets/covers/Global_AI_Frontlines.png"]
 cover: "/assets/covers/Global_AI_Frontlines.png"
 tags: [药物警戒, AI, PDF]
 categories: [资料库]

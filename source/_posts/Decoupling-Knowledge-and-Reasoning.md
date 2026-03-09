@@ -1,6 +1,7 @@
 ---
 title: Decoupling Knowledge and Reasoning
 date: 2026-01-16 01:25:10
+photos: ["/assets/covers/Decoupling_Knowledge_and_Reasoning.png"]
 cover: "/assets/covers/Decoupling_Knowledge_and_Reasoning.png"
 tags: [药物警戒, AI, PDF]
 categories: [资料库]

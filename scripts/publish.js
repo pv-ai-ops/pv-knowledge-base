@@ -112,6 +112,55 @@ function sanitizeMarkdownForPublish(content) {
   return frontMatter + sanitizeMarkdownHttpLinks(body);
 }
 
+function splitFrontMatter(content) {
+  const frontMatterMatch = content.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/);
+  if (!frontMatterMatch) {
+    return { frontMatter: '', body: content };
+  }
+
+  const frontMatter = frontMatterMatch[0];
+  return {
+    frontMatter,
+    body: content.slice(frontMatter.length)
+  };
+}
+
+function extractFrontMatterTitle(frontMatter) {
+  if (!frontMatter) return '';
+
+  const titleMatch = frontMatter.match(/^title\s*:\s*(.+)$/m);
+  if (!titleMatch) return '';
+
+  return titleMatch[1].trim().replace(/^['"]|['"]$/g, '');
+}
+
+function normalizeComparableText(text) {
+  return String(text || '')
+    .toLowerCase()
+    .replace(/<[^>]+>/g, '')
+    .replace(/[*_`~]/g, '')
+    .replace(/[\s\-_:：,，.。!?！？"'“”‘’()（）[\]【】]/g, '')
+    .trim();
+}
+
+function stripLeadingDuplicateTitleHeading(markdown, fallbackTitle = '') {
+  const { frontMatter, body } = splitFrontMatter(markdown);
+  const title = extractFrontMatterTitle(frontMatter) || fallbackTitle;
+  if (!title) return markdown;
+
+  const headingMatch = body.match(/^(\s*#\s+(.+?)\r?\n(?:\r?\n)*)/);
+  if (!headingMatch) return markdown;
+
+  const headingText = headingMatch[2].trim();
+  if (!headingText) return markdown;
+
+  if (normalizeComparableText(title) !== normalizeComparableText(headingText)) {
+    return markdown;
+  }
+
+  return frontMatter + body.slice(headingMatch[1].length).replace(/^\r?\n+/, '');
+}
+
 function ensureDir(dirPath) {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
@@ -536,7 +585,7 @@ function createStandalonePdfMarkdown({ title, dateStr, coverPhotoUrl, viewerSrc,
   return `---
 title: ${title}
 date: ${dateStr}
-${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [AI, PDF]
+${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\nphotos: [\"${coverPhotoUrl}\"]\n` : ''}tags: [AI, PDF]
 categories: [资料库]
 ---
 
@@ -565,8 +614,18 @@ function createPdfAttachmentSection({ viewerSrc, pdfAssetFileName, extractedText
 ${createPdfSearchIndexBlock(extractedText).trimEnd()}`;
 }
 
-function appendMarkdownSection(markdown, section) {
-  return `${markdown.replace(/\s+$/, '')}\n\n---\n\n${section.trim()}\n`;
+function prependMarkdownSection(markdown, section) {
+  const trimmedSection = section.trim();
+  if (!trimmedSection) return markdown;
+
+  const { frontMatter, body } = splitFrontMatter(markdown);
+  const trimmedBody = body.replace(/^\s+/, '');
+
+  if (!frontMatter) {
+    return `${trimmedSection}\n\n---\n\n${markdown.trimStart()}`;
+  }
+
+  return `${frontMatter}${trimmedSection}\n\n---\n\n${trimmedBody}`;
 }
 
 async function importPdfAsset({ sourcePdfPath, sourcePdfFileName, sourceDir, displayTitle, lookupDir, hasPdfJs }) {
@@ -773,10 +832,13 @@ ${content}`;
 
       if (coverPhotoUrl) {
         finalContent = ensureCoverFrontMatter(finalContent, coverPhotoUrl);
+        finalContent = ensurePhotosFrontMatter(finalContent, coverPhotoUrl);
       }
 
+      finalContent = stripLeadingDuplicateTitleHeading(finalContent, articleTitle);
+
       if (pdfSection) {
-        finalContent = appendMarkdownSection(finalContent, pdfSection);
+        finalContent = prependMarkdownSection(finalContent, pdfSection);
       }
 
       fs.writeFileSync(targetMarkdownPath, finalContent);
@@ -891,7 +953,10 @@ ${content}`;
 
     if (coverPhotoUrl) {
       finalContent = ensureCoverFrontMatter(finalContent, coverPhotoUrl);
+      finalContent = ensurePhotosFrontMatter(finalContent, coverPhotoUrl);
     }
+
+    finalContent = stripLeadingDuplicateTitleHeading(finalContent, originalTitle);
 
     // 使用安全的文件名移动到_posts目录
     const targetPath = path.join(sourceDir, '_posts', safeFileName);
@@ -929,7 +994,7 @@ function processHtml(inboxDir, sourceDir) {
 
     const coverPhotoUrl = processCover(inboxDir, sourceDir, htmlFileName);
 
-    const markdownContent = `---
+    let markdownContent = `---
 title: ${htmlFileName}
 date: ${dateStr}
 ${coverPhotoUrl ? `cover: \"${coverPhotoUrl}\"\n` : ''}tags: [AI, 交互式工具]
@@ -957,6 +1022,10 @@ categories: [技术分析]
 - 专业的技术分析
 
 上方为完整功能的交互式应用，支持所有动态功能和数据可视化。`;
+
+    if (coverPhotoUrl) {
+      markdownContent = ensurePhotosFrontMatter(markdownContent, coverPhotoUrl);
+    }
 
     const safeMarkdownFileName = createSafeFileName(htmlFileName) + '.md';
     const markdownPath = path.join(sourceDir, '_posts', safeMarkdownFileName);
@@ -1127,6 +1196,11 @@ if (require.main === module) {
     processCover,
     ensureCoverFrontMatter,
     ensurePhotosFrontMatter,
+    splitFrontMatter,
+    extractFrontMatterTitle,
+    normalizeComparableText,
+    stripLeadingDuplicateTitleHeading,
+    prependMarkdownSection,
     main
   };
 }

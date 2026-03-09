@@ -18,6 +18,7 @@ npm-debug.log*
 
 # System
 .env
+.recovery/
 
 # Keep content-inbox directory structure but ignore contents
 content-inbox/*

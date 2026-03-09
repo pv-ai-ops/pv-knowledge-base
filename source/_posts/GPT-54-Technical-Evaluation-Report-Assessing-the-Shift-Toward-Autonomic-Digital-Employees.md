@@ -1,12 +1,23 @@
 ---
 title: GPT-5.4 Technical Evaluation Report Assessing the Shift Toward Autonomic Digital Employees
 date: 2026-03-08 11:50:10
+photos: ["/assets/covers/GPT-54-Technical-Evaluation-Report-Assessing-the-Shift-Toward-Autonomic-Digital-Employees.png"]
 cover: "/assets/covers/GPT-54-Technical-Evaluation-Report-Assessing-the-Shift-Toward-Autonomic-Digital-Employees.png"
 tags: [AI]
 categories: [技术分析]
 ---
+## 📎 附件资料
 
-# GPT-5.4 Technical Evaluation Report: Assessing the Shift Toward Autonomic Digital Employees
+- 在线预览（幻灯片模式）：<a href="/pv-knowledge-base/pdf-slides.html?file=assets%2Fgpt-54_digital_employee_briefing.pdf&title=GPT-5.4%20Technical%20Evaluation%20Report%20Assessing%20the%20Shift%20Toward%20Autonomic%20Digital%20Employees" target="_blank" rel="noopener">点击打开</a>
+- 下载：[/assets/gpt-54_digital_employee_briefing.pdf](/assets/gpt-54_digital_employee_briefing.pdf)
+
+## 🖥️ 幻灯片预览（支持全屏）
+
+<iframe src="/pv-knowledge-base/pdf-slides.html?file=assets%2Fgpt-54_digital_employee_briefing.pdf&title=GPT-5.4%20Technical%20Evaluation%20Report%20Assessing%20the%20Shift%20Toward%20Autonomic%20Digital%20Employees" frameborder="0" allowfullscreen style="width: 100%; height: 82vh; min-height: 520px; max-height: 1200px; border: 1px solid #e1e5e9; border-radius: 8px; margin: 20px 0;"></iframe>
+
+<!-- PDF全文索引未生成（可能缺少pdfjs-dist或解析失败） -->
+
+---
 
 ## 1. Executive Summary and Strategic Context
 
@@ -141,16 +152,3 @@ The deployment of GPT-5.4 is actively **restructuring** the workforce. Data show
 - **Cannibalizing General Talent:** While general software and administrative roles are being **displaced**, vacancies for AI-specific developers are surging.
 
 GPT-5.4 has moved from answering questions to occupying workstations. It is no longer an assistant; it is a digital employee that is quietly, but aggressively, infiltrating the global workforce.
-
----
-
-## 📎 附件资料
-
-- 在线预览（幻灯片模式）：<a href="/pv-knowledge-base/pdf-slides.html?file=assets%2Fgpt-54_digital_employee_briefing.pdf&title=GPT-5.4%20Technical%20Evaluation%20Report%20Assessing%20the%20Shift%20Toward%20Autonomic%20Digital%20Employees" target="_blank" rel="noopener">点击打开</a>
-- 下载：[/assets/gpt-54_digital_employee_briefing.pdf](/assets/gpt-54_digital_employee_briefing.pdf)
-
-## 🖥️ 幻灯片预览（支持全屏）
-
-<iframe src="/pv-knowledge-base/pdf-slides.html?file=assets%2Fgpt-54_digital_employee_briefing.pdf&title=GPT-5.4%20Technical%20Evaluation%20Report%20Assessing%20the%20Shift%20Toward%20Autonomic%20Digital%20Employees" frameborder="0" allowfullscreen style="width: 100%; height: 82vh; min-height: 520px; max-height: 1200px; border: 1px solid #e1e5e9; border-radius: 8px; margin: 20px 0;"></iframe>
-
-<!-- PDF全文索引未生成（可能缺少pdfjs-dist或解析失败） -->

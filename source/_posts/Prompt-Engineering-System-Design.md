@@ -1,6 +1,7 @@
 ---
 title: Prompt Engineering System Design
 date: 2026-01-16 01:25:10
+photos: ["/assets/covers/Prompt_Engineering_System_Design.png"]
 cover: "/assets/covers/Prompt_Engineering_System_Design.png"
 tags: [药物警戒, AI, PDF]
 categories: [资料库]
