@@ -79,3 +79,45 @@ Before pushing `doc-page`, check the affected generated files:
 - `source/_posts/<slug>.md`: front matter contains `cover` and `photos`, body does not start with a duplicate H1, and any PDF section is at the top.
 - `docs/<yyyy>/<mm>/<dd>/<slug>/index.html`: contains `post-gallery` when a cover is expected, and shows the PDF preview block near the start of `.post-body`.
 - `docs/index.html` or the relevant archive page: includes the new post card and cover image.
+
+## Share Message Template
+
+When the user asks for a blurb to post in a work chat after publishing:
+
+- Default to a plain coworker tone. Avoid AI-sounding phrasing such as "大家可以先快速浏览标题，按兴趣点进详情" unless the user explicitly wants polished promo copy.
+- Start with one short sentence that says how many articles were added and the broad topic area.
+- Then list titles and links in numbered form.
+- End with one short sentence like "感兴趣的可以直接点开看" or "有空可以按自己关心的主题看".
+- If the site embeds PDFs, it is fine to mention that some articles support quick attachment preview.
+
+Recommended template:
+
+```text
+同事们好，最近整理了 {count} 篇文章，主要是 {topic_summary}。链接放在下面了，大家有空可以按自己关心的主题看：
+
+1. {title_1}
+{url_1}
+
+2. {title_2}
+{url_2}
+
+...
+
+感兴趣的可以直接点开看。
+```
+
+If the user specifically asks to "去掉AI味", prefer this style:
+
+```text
+同事们好，最近整理了 {count} 篇文章，内容主要集中在 {topic_summary}。链接放在下面了，大家有空可以按自己关心的主题看：
+
+1. {title_1}
+{url_1}
+
+2. {title_2}
+{url_2}
+
+...
+
+感兴趣的可以直接点开看，有些文章里也放了附件预览，浏览起来会更快一些。
+```

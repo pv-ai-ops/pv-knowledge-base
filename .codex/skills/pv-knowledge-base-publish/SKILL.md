@@ -76,3 +76,4 @@ Before deploy, verify the affected generated pages and source posts:
 ## Notes
 
 For repo specifics and troubleshooting, read `references/pvkb-workflow.md`.
+If the user asks for a group-share blurb after publishing, use the share-message guidance in that reference and default to a plain coworker tone instead of polished marketing copy.
